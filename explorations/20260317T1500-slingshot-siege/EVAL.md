@@ -86,13 +86,17 @@ The slingshot affordance is immediate — kids understand pull back, aim, releas
 | **Average** | **7.1/10** |
 
 ## Verdict
-Slingshot Siege scores 8.7/10, just under Stomp Rockets' 8.8 — but it wins on different axes. It's the **most skill-expressive** game (9/10 vs 8/10) and the **most durable** (9/10 vs 8/10). No pneumatics, no bladders, no moving parts that can fail. It trades raw chaos and full-body physicality for **strategic depth and interpersonal competition**. This is the game where rivalries form.
+Slingshot Siege scores 7.1/10. It is not in the same tier as Stomp Rockets (8.8), which is built on a proven physical mechanic that every kid can execute. The gap between these two concepts is real and significant.
 
-**The 2-player differentiator:** This is the only game in the lineup where the two players are in **direct, face-to-face conflict** with a shared battlefield. In Stomp Rockets and Air Plinko, players are side-by-side doing the same thing in parallel. In Tornado Alley, players interact through shared balls but stand at opposite ends of a table. In Slingshot Siege, you are **staring down your opponent through arrow slits in a castle wall**, launching projectiles at their kingdom while they do the same to yours. The head-to-head format creates a social dynamic that no other concept achieves. Kids don't just remember the game — they remember the BATTLE.
+**What this concept actually has:** The face-to-face format is a genuinely strong idea. Direct competition across a shared wall creates social dynamics — rivalry, trash talk, personal stakes — that side-by-side parallel play does not. This is the concept's real differentiator and it's worth preserving in whatever form the game takes.
 
-**Biggest risk:** Slingshot accuracy from 5 feet. Whiffle balls are lightweight with high drag — the trajectory is a slow arc, not a laser beam. If the gates are too small or the distance too far, kids will miss constantly and get frustrated. **Prototype one slingshot + one wall section with gates before committing to the full build.** The tubing tension, gate sizes, and shooting distance may need tuning. Consider starting with slightly larger gates (add ½" to each) and narrowing them later if the game is too easy.
+**What this concept actually risks:** The entire design depends on kids being able to aim a slingshot with a whiffle ball and hit a 3.5" gate from 5 feet away. Whiffle balls have holes that create inconsistent drag, wobble, and curve. Theraband tubing is difficult to calibrate for consistent launch force. Nobody has tested this. If the hit rate is below ~40%, the game is frustrating for most players and the skill/luck balance collapses into pure luck. This is not a minor risk — it is the concept's existential question.
 
-**Biggest upgrade opportunity:** Paint the moat interiors with UV-reactive paint and add a blacklight strip behind each peg grid. Under blacklight, the neon pegs glow, the castle feels like a dungeon, and the balls leave glowing trails through the cascade. Nighttime Slingshot Siege becomes a whole different experience.
+**Do not build the full game before prototyping the shooting mechanic.** Build one slingshot station, cut three gate sizes in a piece of plywood, and have 10 kids fire 12 whiffle balls each. Measure the hit rate by gate tier. If the main gates (largest) get hit less than 50% of the time, the concept needs fundamental changes — larger gates, shorter distance, different projectiles, or a different launch mechanic entirely.
+
+**When to build:** Only after prototyping confirms that the shooting mechanic produces a satisfying hit rate (roughly 40-60% on the main gates for an average 2nd-3rd grader). If it does, several scores above would rise and the concept could reach the 8+ range on the strength of its competitive format.
+
+**When to walk away:** If prototyping shows that whiffle ball accuracy is too inconsistent to tune, the face-to-face format should be transplanted onto a more reliable mechanic (e.g., underhand tossing, rolling, or a guided launcher).
 
 ## Head-to-Head Comparison
 
