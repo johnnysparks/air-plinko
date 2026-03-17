@@ -38,6 +38,10 @@
 - Stick figures in side cross-sections effectively communicate player height and interaction posture — worth the 10 lines of code
 - For games with projectile/swing mechanics, show the object in its "ready" position AND a ghost at the impact point — the two positions connected by a trajectory arc communicate the full action in a single frame
 - Flying/scattering objects (debris, blocks) at partial opacity with slight rotation angles convey impact energy and chaos without animation
+- For tech-augmented concepts (CV, monitors, cameras), show THREE views: physical setup (front), physical construction (side cross-section), AND the digital display layout (monitor mockup). The monitor mockup is essential — it communicates the software experience that makes the concept unique
+- When showing camera FOV cones, use dashed low-opacity lines from the lens to the field edges. This immediately communicates "this camera sees this area" without cluttering the diagram
+- Connection lines between compute (Pi, laptop) and peripherals (cameras, monitor, speakers) should use dashed lines with labeled protocol (USB, HDMI, AUX) — communicates the wiring without looking like structural elements
+- For pose detection visualization, show a stick figure with colored joint dots and bone lines — the "skeleton overlay" look is universally recognized from sports/fitness apps and immediately communicates "computer vision tracking"
 - A "gameplay sequence" strip at the bottom (numbered circles with short labels connected by arrows) is an effective way to communicate game flow in a static diagram — especially for non-obvious games
 - Radial gradient fills on spheres/balls create convincing 3D depth on a 2D canvas — place the highlight offset from center toward the "light source"
 - For freestanding structures (gantry, frame), showing sandbags/anchoring in the diagram communicates stability and safety — reviewers immediately understand "this won't tip over"

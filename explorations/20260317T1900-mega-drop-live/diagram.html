@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mega Drop Live — Diagram</title>
+<!-- screenshot: 900x2000 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a1a;
+    color: #e0e0e0;
+    font-family: 'Courier New', monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    min-height: 2000px;
+  }
+  h1 {
+    font-size: 28px;
+    color: #00ff88;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    margin-bottom: 4px;
+    text-shadow: 0 0 20px rgba(0,255,136,0.5);
+  }
+  .subtitle {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+  }
+  canvas { display: block; margin-bottom: 20px; }
+  .section-label {
+    font-size: 16px;
+    color: #00ff88;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin: 10px 0;
+    text-shadow: 0 0 10px rgba(0,255,136,0.3);
+  }
+  .legend {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px 20px;
+    margin: 10px 0 15px 0;
+    width: 860px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: #ccc;
+  }
+  .legend-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .specs {
+    width: 860px;
+    border: 1px solid #333;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 10px 0;
+  }
+  .specs table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .specs th {
+    background: #1a1a2e;
+    color: #00ff88;
+    padding: 6px 10px;
+    text-align: left;
+    border-bottom: 1px solid #333;
+  }
+  .specs td {
+    padding: 5px 10px;
+    border-bottom: 1px solid #222;
+    color: #ccc;
+  }
+  .specs tr:last-child td { border-bottom: none; }
+  .flow-strip {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 10px 0;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .flow-step {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+  .flow-circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #00ff88;
+    color: #0a0a1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+  .flow-label {
+    font-size: 10px;
+    color: #aaa;
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+  .flow-arrow {
+    color: #444;
+    font-size: 16px;
+    margin: 0 6px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Mega Drop Live</h1>
+<div class="subtitle">Computer Vision Plinko — Game Show Edition</div>
+
+<div class="section-label">Front View — Full Booth Setup</div>
+<canvas id="frontView" width="860" height="700"></canvas>
+
+<div class="section-label">Side Cross-Section</div>
+<canvas id="sideView" width="860" height="400"></canvas>
+
+<div class="section-label">Monitor Display Layout</div>
+<canvas id="monitorView" width="860" height="340"></canvas>
+
+<div class="section-label">Gameplay Flow</div>
+<div class="flow-strip">
+  <div class="flow-step"><div class="flow-circle">1</div><div class="flow-label">Attract Mode</div></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><div class="flow-circle">2</div><div class="flow-label">Player Detected</div></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><div class="flow-circle">3</div><div class="flow-label">Pose Power-Up</div></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><div class="flow-circle">4</div><div class="flow-label">Ball Drop</div></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><div class="flow-circle">5</div><div class="flow-label">CV Tracking</div></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><div class="flow-circle">6</div><div class="flow-label">Score + FX</div></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step"><div class="flow-circle">7</div><div class="flow-label">Replay</div></div>
+</div>
+
+<div class="section-label">Legend</div>
+<div class="legend">
+  <div class="legend-item"><div class="legend-swatch" style="background:#2a2a3e;border:1px solid #555;"></div>Plywood (matte black)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:rgba(150,200,255,0.3);border:1px solid rgba(150,200,255,0.5);"></div>Acrylic (clear)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#f0f0f0;"></div>Pegs (white dowels)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#ff4444;"></div>Red ball / Red player</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#4488ff;"></div>Blue ball / Blue player</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#00ff88;"></div>Scoring zones / UI accents</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#ffaa00;"></div>LED strip (interior)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#aa44ff;"></div>Camera / CV system</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#ff6600;"></div>Raspberry Pi / compute</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#666;"></div>Speakers</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#3a7ca5;"></div>Monitor / display</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#8B4513;"></div>Lumber (frame/legs)</div>
+</div>
+
+<div class="specs">
+  <table>
+    <tr><th colspan="2">Key Specifications</th></tr>
+    <tr><td>Board Dimensions</td><td>48"W × 60"H × 4"D, tilted 15° from vertical</td></tr>
+    <tr><td>Total Footprint</td><td>~8 ft wide × 3 ft deep (board + monitor + speakers)</td></tr>
+    <tr><td>Pegs</td><td>52 white dowels, ¾" dia × 3" long, offset grid at 6" spacing</td></tr>
+    <tr><td>Scoring Zones</td><td>7 channels: 10 | 25 | 50 | 100 | 50 | 25 | 10</td></tr>
+    <tr><td>Cameras</td><td>2× USB webcam (1080p board cam + 720p player cam)</td></tr>
+    <tr><td>Compute</td><td>Raspberry Pi 4 (4GB) — OpenCV + MediaPipe + Chromium kiosk</td></tr>
+    <tr><td>Display</td><td>32–43" TV via HDMI, powered speakers via 3.5mm aux</td></tr>
+    <tr><td>Power</td><td>~120W total (single standard outlet)</td></tr>
+    <tr><td>Balls</td><td>12× whiffle balls (6 red, 6 blue), 2.75" diameter</td></tr>
+    <tr><td>Est. Cost</td><td>$350–480 (depends on TV sourcing)</td></tr>
+    <tr><td>Setup Time</td><td>~15 minutes (tool-free assembly)</td></tr>
+  </table>
+</div>
+
+<script>
+// ============================================================
+// FRONT VIEW — Full booth setup with board, monitor, cameras
+// ============================================================
+(function() {
+  const c = document.getElementById('frontView');
+  const ctx = c.getContext('2d');
+  const W = c.width, H = c.height;
+
+  // Background
+  ctx.fillStyle = '#0a0a1a';
+  ctx.fillRect(0, 0, W, H);
+
+  // Ground line
+  ctx.strokeStyle = '#333';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(20, H - 40);
+  ctx.lineTo(W - 20, H - 40);
+  ctx.stroke();
+
+  // ---- PLINKO BOARD (left-center) ----
+  const bx = 80, by = 60, bw = 340, bh = 520;
+
+  // Back panel (matte black plywood)
+  ctx.fillStyle = '#1a1a2e';
+  ctx.fillRect(bx, by, bw, bh);
+  ctx.strokeStyle = '#444';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(bx, by, bw, bh);
+
+  // Edge rails (lumber frame)
+  ctx.strokeStyle = '#8B4513';
+  ctx.lineWidth = 6;
+  ctx.strokeRect(bx - 3, by - 3, bw + 6, bh + 6);
+
+  // Acrylic overlay (translucent)
+  ctx.fillStyle = 'rgba(150, 200, 255, 0.06)';
+  ctx.fillRect(bx, by, bw, bh);
+  ctx.strokeStyle = 'rgba(150, 200, 255, 0.3)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  ctx.strokeRect(bx + 2, by + 2, bw - 4, bh - 4);
+  ctx.setLineDash([]);
+
+  // LED strip at top interior
+  ctx.strokeStyle = '#ffaa00';
+  ctx.lineWidth = 3;
+  ctx.shadowColor = '#ffaa00';
+  ctx.shadowBlur = 8;
+  ctx.beginPath();
+  ctx.moveTo(bx + 10, by + 8);
+  ctx.lineTo(bx + bw - 10, by + 8);
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // Label LED
+  ctx.fillStyle = '#ffaa00';
+  ctx.font = '9px Courier New';
+  ctx.fillText('LED STRIP', bx + bw/2 - 25, by + 22);
+
+  // Drop slots at top
+  const slotCount = 5;
+  const slotW = 28;
+  const slotSpacing = bw / (slotCount + 1);
+  ctx.fillStyle = '#333';
+  for (let i = 0; i < slotCount; i++) {
+    const sx = bx + slotSpacing * (i + 1) - slotW/2;
+    ctx.fillRect(sx, by - 3, slotW, 10);
+  }
+  ctx.fillStyle = '#888';
+  ctx.font = '8px Courier New';
+  ctx.fillText('DROP SLOTS', bx + bw/2 - 28, by - 8);
+
+  // Pegs (white dots, offset grid)
+  const pegRows = 8;
+  const pegStartY = by + 60;
+  const pegEndY = by + bh - 100;
+  const pegSpacingY = (pegEndY - pegStartY) / (pegRows - 1);
+  const pegSpacingX = bw / 8;
+
+  for (let row = 0; row < pegRows; row++) {
+    const isOddRow = row % 2 === 0;
+    const pegsInRow = isOddRow ? 7 : 6;
+    const offsetX = isOddRow ? 0 : pegSpacingX / 2;
+    const startX = bx + pegSpacingX + offsetX;
+
+    for (let col = 0; col < pegsInRow; col++) {
+      const px = startX + col * pegSpacingX;
+      const py = pegStartY + row * pegSpacingY;
+
+      // Peg glow
+      ctx.shadowColor = 'rgba(255,255,255,0.3)';
+      ctx.shadowBlur = 4;
+      ctx.fillStyle = '#e8e8e8';
+      ctx.beginPath();
+      ctx.arc(px, py, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+  }
+
+  // Scoring zones at bottom
+  const zoneY = by + bh - 55;
+  const zoneH = 50;
+  const scores = [10, 25, 50, 100, 50, 25, 10];
+  const zoneW = bw / scores.length;
+
+  for (let i = 0; i < scores.length; i++) {
+    const zx = bx + i * zoneW;
+    const isCenter = i === 3;
+    const brightness = isCenter ? 1 : (scores[i] === 50 ? 0.7 : (scores[i] === 25 ? 0.5 : 0.3));
+
+    // Zone fill
+    ctx.fillStyle = `rgba(0, 255, 136, ${brightness * 0.2})`;
+    ctx.fillRect(zx + 1, zoneY, zoneW - 2, zoneH);
+
+    // Zone border
+    ctx.strokeStyle = `rgba(0, 255, 136, ${brightness * 0.7})`;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(zx + 1, zoneY, zoneW - 2, zoneH);
+
+    // Divider
+    if (i > 0) {
+      ctx.strokeStyle = '#8B4513';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(zx, zoneY);
+      ctx.lineTo(zx, zoneY + zoneH);
+      ctx.stroke();
+    }
+
+    // Score label
+    ctx.fillStyle = isCenter ? '#00ff88' : '#aaa';
+    ctx.font = isCenter ? 'bold 16px Courier New' : '13px Courier New';
+    ctx.textAlign = 'center';
+    ctx.fillText(scores[i], zx + zoneW/2, zoneY + zoneH/2 + 5);
+  }
+  ctx.textAlign = 'left';
+
+  // Ball tracking visualization — red ball with trail
+  const ballTrail = [
+    {x: bx + 180, y: by + 140},
+    {x: bx + 165, y: by + 180},
+    {x: bx + 185, y: by + 220},
+    {x: bx + 170, y: by + 260},
+    {x: bx + 195, y: by + 300},
+  ];
+
+  // Trail
+  for (let i = 0; i < ballTrail.length - 1; i++) {
+    const alpha = (i + 1) / ballTrail.length * 0.6;
+    ctx.strokeStyle = `rgba(255, 68, 68, ${alpha})`;
+    ctx.lineWidth = 3;
+    ctx.shadowColor = 'rgba(255, 68, 68, 0.5)';
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    ctx.moveTo(ballTrail[i].x, ballTrail[i].y);
+    ctx.lineTo(ballTrail[i+1].x, ballTrail[i+1].y);
+    ctx.stroke();
+  }
+  ctx.shadowBlur = 0;
+
+  // Red ball
+  const rb = ballTrail[ballTrail.length - 1];
+  const grad = ctx.createRadialGradient(rb.x - 3, rb.y - 3, 2, rb.x, rb.y, 12);
+  grad.addColorStop(0, '#ff8888');
+  grad.addColorStop(1, '#cc2222');
+  ctx.fillStyle = grad;
+  ctx.shadowColor = 'rgba(255,68,68,0.7)';
+  ctx.shadowBlur = 12;
+  ctx.beginPath();
+  ctx.arc(rb.x, rb.y, 11, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+
+  // Blue ball (lower in field)
+  const bbx = bx + 260, bby = by + 380;
+  const bgrad = ctx.createRadialGradient(bbx - 3, bby - 3, 2, bbx, bby, 12);
+  bgrad.addColorStop(0, '#88aaff');
+  bgrad.addColorStop(1, '#2244cc');
+  ctx.fillStyle = bgrad;
+  ctx.shadowColor = 'rgba(68,136,255,0.7)';
+  ctx.shadowBlur = 12;
+  ctx.beginPath();
+  ctx.arc(bbx, bby, 11, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+
+  // Blue trail
+  const blueTrail = [
+    {x: bx + 240, y: by + 260},
+    {x: bx + 255, y: by + 300},
+    {x: bx + 245, y: by + 340},
+    {x: bbx, y: bby},
+  ];
+  for (let i = 0; i < blueTrail.length - 1; i++) {
+    const alpha = (i + 1) / blueTrail.length * 0.6;
+    ctx.strokeStyle = `rgba(68, 136, 255, ${alpha})`;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(blueTrail[i].x, blueTrail[i].y);
+    ctx.lineTo(blueTrail[i+1].x, blueTrail[i+1].y);
+    ctx.stroke();
+  }
+
+  // Board cam at top
+  ctx.fillStyle = '#aa44ff';
+  const camW = 30, camH = 20;
+  const camX = bx + bw/2 - camW/2, camY = by - 28;
+  ctx.fillRect(camX, camY, camW, camH);
+  ctx.fillStyle = '#222';
+  ctx.beginPath();
+  ctx.arc(camX + camW/2, camY + camH/2, 6, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#aa44ff';
+  ctx.beginPath();
+  ctx.arc(camX + camW/2, camY + camH/2, 4, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Camera label
+  ctx.fillStyle = '#aa44ff';
+  ctx.font = '9px Courier New';
+  ctx.fillText('BOARD CAM', camX - 12, camY - 5);
+  ctx.fillText('1080p USB', camX - 8, camY + camH + 42);
+
+  // Camera FOV lines (dashed)
+  ctx.strokeStyle = 'rgba(170, 68, 255, 0.3)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([3, 3]);
+  ctx.beginPath();
+  ctx.moveTo(camX + camW/2, camY + camH);
+  ctx.lineTo(bx + 10, by + bh - 10);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(camX + camW/2, camY + camH);
+  ctx.lineTo(bx + bw - 10, by + bh - 10);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // A-frame legs
+  ctx.strokeStyle = '#8B4513';
+  ctx.lineWidth = 5;
+  // Left leg
+  ctx.beginPath();
+  ctx.moveTo(bx - 3, by + bh + 3);
+  ctx.lineTo(bx - 20, H - 40);
+  ctx.stroke();
+  // Right leg
+  ctx.beginPath();
+  ctx.moveTo(bx + bw + 3, by + bh + 3);
+  ctx.lineTo(bx + bw + 20, H - 40);
+  ctx.stroke();
+
+  // Rubber feet
+  ctx.fillStyle = '#444';
+  ctx.fillRect(bx - 28, H - 45, 16, 6);
+  ctx.fillRect(bx + bw + 12, H - 45, 16, 6);
+
+  // Ball return trough label
+  ctx.fillStyle = '#666';
+  ctx.font = '9px Courier New';
+  ctx.fillText('BALL RETURN (behind)', bx + bw/2 - 50, by + bh + 20);
+  ctx.fillText('COLLECTION BIN', bx + bw/2 - 40, H - 48);
+
+  // Collection bin
+  ctx.strokeStyle = '#555';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(bx + bw/2 - 40, H - 65, 80, 22);
+
+  // ---- MONITOR (right side) ----
+  const mx = 500, my = 90, mw = 280, mh = 190;
+
+  // Monitor bezel
+  ctx.fillStyle = '#222';
+  ctx.fillRect(mx - 8, my - 8, mw + 16, mh + 16);
+  ctx.strokeStyle = '#3a7ca5';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(mx - 8, my - 8, mw + 16, mh + 16);
+
+  // Monitor screen
+  ctx.fillStyle = '#0d1117';
+  ctx.fillRect(mx, my, mw, mh);
+
+  // Monitor content preview
+  ctx.fillStyle = '#00ff88';
+  ctx.font = 'bold 11px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('MEGA DROP LIVE', mx + mw/2, my + 18);
+
+  // Mini board view
+  ctx.strokeStyle = '#333';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(mx + 10, my + 28, 130, 100);
+  ctx.fillStyle = '#888';
+  ctx.font = '8px Courier New';
+  ctx.fillText('BOARD CAM', mx + 75, my + 40);
+  ctx.fillText('(augmented)', mx + 75, my + 52);
+
+  // Mini player view
+  ctx.strokeRect(mx + 148, my + 28, 120, 100);
+  ctx.fillText('PLAYER CAM', mx + 208, my + 40);
+  ctx.fillText('(pose detect)', mx + 208, my + 52);
+
+  // Mini stick figure in player cam
+  const sx = mx + 208, sy = my + 78;
+  ctx.strokeStyle = '#aa44ff';
+  ctx.lineWidth = 2;
+  // Head
+  ctx.beginPath();
+  ctx.arc(sx, sy - 18, 6, 0, Math.PI * 2);
+  ctx.stroke();
+  // Body
+  ctx.beginPath();
+  ctx.moveTo(sx, sy - 12);
+  ctx.lineTo(sx, sy + 5);
+  ctx.stroke();
+  // Arms (T-pose)
+  ctx.beginPath();
+  ctx.moveTo(sx - 18, sy - 6);
+  ctx.lineTo(sx + 18, sy - 6);
+  ctx.stroke();
+  // Legs
+  ctx.beginPath();
+  ctx.moveTo(sx, sy + 5);
+  ctx.lineTo(sx - 10, sy + 20);
+  ctx.moveTo(sx, sy + 5);
+  ctx.lineTo(sx + 10, sy + 20);
+  ctx.stroke();
+  // Pose skeleton dots
+  const joints = [
+    [sx, sy-18], [sx, sy-6], [sx-18, sy-6], [sx+18, sy-6],
+    [sx, sy+5], [sx-10, sy+20], [sx+10, sy+20]
+  ];
+  ctx.fillStyle = '#00ff88';
+  joints.forEach(([jx, jy]) => {
+    ctx.beginPath();
+    ctx.arc(jx, jy, 2, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // Score display
+  ctx.fillStyle = '#ff4444';
+  ctx.font = 'bold 10px Courier New';
+  ctx.fillText('RED: 175', mx + 60, my + mh - 20);
+  ctx.fillStyle = '#4488ff';
+  ctx.fillText('BLUE: 230', mx + 210, my + mh - 20);
+  ctx.fillStyle = '#ffaa00';
+  ctx.fillText('⚡ COMBO x2', mx + mw/2, my + mh - 8);
+
+  ctx.textAlign = 'left';
+
+  // Player cam on monitor
+  ctx.fillStyle = '#aa44ff';
+  const pcW = 24, pcH = 16;
+  ctx.fillRect(mx + mw/2 - pcW/2, my - 30, pcW, pcH);
+  ctx.fillStyle = '#222';
+  ctx.beginPath();
+  ctx.arc(mx + mw/2, my - 22, 5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#aa44ff';
+  ctx.beginPath();
+  ctx.arc(mx + mw/2, my - 22, 3, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#aa44ff';
+  ctx.font = '9px Courier New';
+  ctx.fillText('PLAYER CAM 720p', mx + mw/2 - 42, my - 35);
+
+  // Player cam FOV (toward viewer/players)
+  ctx.strokeStyle = 'rgba(170, 68, 255, 0.25)';
+  ctx.setLineDash([3, 3]);
+  ctx.beginPath();
+  ctx.moveTo(mx + mw/2, my - 14);
+  ctx.lineTo(mx + mw/2 - 80, my + mh + 120);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(mx + mw/2, my - 14);
+  ctx.lineTo(mx + mw/2 + 80, my + mh + 120);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Monitor stand
+  ctx.fillStyle = '#333';
+  ctx.fillRect(mx + mw/2 - 15, my + mh + 8, 30, 80);
+  ctx.fillRect(mx + mw/2 - 40, my + mh + 85, 80, 8);
+
+  // Monitor stand leg to ground
+  ctx.strokeStyle = '#333';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(mx + mw/2, my + mh + 93);
+  ctx.lineTo(mx + mw/2, H - 40);
+  ctx.stroke();
+
+  // Monitor label
+  ctx.fillStyle = '#3a7ca5';
+  ctx.font = '10px Courier New';
+  ctx.fillText('32-43" TV MONITOR', mx + 10, my + mh + 30);
+  ctx.fillText('(HDMI from Pi)', mx + 30, my + mh + 44);
+
+  // ---- SPEAKERS ----
+  // Left speaker
+  const spkW = 35, spkH = 50;
+  ctx.fillStyle = '#555';
+  ctx.fillRect(mx - 50, my + mh - 10, spkW, spkH);
+  ctx.strokeStyle = '#777';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(mx - 50, my + mh - 10, spkW, spkH);
+  // Speaker cone
+  ctx.beginPath();
+  ctx.arc(mx - 50 + spkW/2, my + mh + 15, 10, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(mx - 50 + spkW/2, my + mh + 15, 4, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // Right speaker
+  ctx.fillStyle = '#555';
+  ctx.fillRect(mx + mw + 15, my + mh - 10, spkW, spkH);
+  ctx.strokeStyle = '#777';
+  ctx.strokeRect(mx + mw + 15, my + mh - 10, spkW, spkH);
+  ctx.beginPath();
+  ctx.arc(mx + mw + 15 + spkW/2, my + mh + 15, 10, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(mx + mw + 15 + spkW/2, my + mh + 15, 4, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // Speaker labels
+  ctx.fillStyle = '#666';
+  ctx.font = '8px Courier New';
+  ctx.fillText('20W+', mx - 48, my + mh + 52);
+  ctx.fillText('20W+', mx + mw + 18, my + mh + 52);
+
+  // Sound waves from speakers
+  ctx.strokeStyle = 'rgba(102,102,102,0.4)';
+  ctx.lineWidth = 1;
+  for (let i = 1; i <= 3; i++) {
+    ctx.beginPath();
+    ctx.arc(mx - 50 - 5, my + mh + 15, 10 + i * 8, -0.5, 0.5);
+    ctx.stroke();
+  }
+  for (let i = 1; i <= 3; i++) {
+    ctx.beginPath();
+    ctx.arc(mx + mw + 50 + 5, my + mh + 15, 10 + i * 8, Math.PI - 0.5, Math.PI + 0.5);
+    ctx.stroke();
+  }
+
+  // ---- RASPBERRY PI (bottom right, behind board) ----
+  const piX = mx + 60, piY = my + mh + 100;
+  ctx.fillStyle = '#ff6600';
+  ctx.fillRect(piX, piY, 50, 35);
+  ctx.strokeStyle = '#cc5500';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(piX, piY, 50, 35);
+
+  // Pi label
+  ctx.fillStyle = '#ff6600';
+  ctx.font = 'bold 9px Courier New';
+  ctx.fillText('Raspberry', piX - 5, piY + 14);
+  ctx.fillText('Pi 4', piX + 10, piY + 26);
+
+  // Connection lines from Pi
+  ctx.strokeStyle = 'rgba(255, 102, 0, 0.4)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([2, 2]);
+
+  // Pi → Monitor (HDMI)
+  ctx.beginPath();
+  ctx.moveTo(piX + 25, piY);
+  ctx.lineTo(mx + mw/2, my + mh + 8);
+  ctx.stroke();
+  ctx.fillStyle = '#888';
+  ctx.font = '7px Courier New';
+  ctx.fillText('HDMI', piX - 15, piY - 5);
+
+  // Pi → Board cam
+  ctx.beginPath();
+  ctx.moveTo(piX, piY + 17);
+  ctx.lineTo(bx + bw/2, by - 18);
+  ctx.stroke();
+  ctx.fillText('USB', bx + bw/2 + 20, by - 5);
+
+  // Pi → Player cam
+  ctx.beginPath();
+  ctx.moveTo(piX + 50, piY + 10);
+  ctx.lineTo(mx + mw/2, my - 14);
+  ctx.stroke();
+  ctx.fillText('USB', mx + mw/2 + 18, my - 20);
+
+  // Pi → Speakers
+  ctx.beginPath();
+  ctx.moveTo(piX + 50, piY + 25);
+  ctx.lineTo(mx + mw + 32, my + mh + 40);
+  ctx.stroke();
+  ctx.fillText('AUX', mx + mw + 10, my + mh + 65);
+
+  ctx.setLineDash([]);
+
+  // ---- STICK FIGURE PLAYERS ----
+  // Player 1 (red, left)
+  function drawPlayer(px, py, color, label) {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    // Head
+    ctx.beginPath();
+    ctx.arc(px, py, 10, 0, Math.PI * 2);
+    ctx.stroke();
+    // Body
+    ctx.beginPath();
+    ctx.moveTo(px, py + 10);
+    ctx.lineTo(px, py + 40);
+    ctx.stroke();
+    // Arms reaching toward board
+    ctx.beginPath();
+    ctx.moveTo(px - 15, py + 20);
+    ctx.lineTo(px + 20, py + 15);
+    ctx.stroke();
+    // Legs
+    ctx.beginPath();
+    ctx.moveTo(px, py + 40);
+    ctx.lineTo(px - 12, py + 60);
+    ctx.moveTo(px, py + 40);
+    ctx.lineTo(px + 12, py + 60);
+    ctx.stroke();
+    // Label
+    ctx.fillStyle = color;
+    ctx.font = '9px Courier New';
+    ctx.textAlign = 'center';
+    ctx.fillText(label, px, py - 16);
+    ctx.textAlign = 'left';
+  }
+
+  drawPlayer(bx + bw/4, H - 120, '#ff4444', 'PLAYER 1 (RED)');
+  drawPlayer(bx + 3*bw/4, H - 120, '#4488ff', 'PLAYER 2 (BLUE)');
+
+  // ---- DIMENSION ANNOTATIONS ----
+  ctx.strokeStyle = '#555';
+  ctx.fillStyle = '#888';
+  ctx.font = '10px Courier New';
+  ctx.lineWidth = 1;
+
+  // Width dimension
+  ctx.beginPath();
+  ctx.moveTo(bx, by - 40);
+  ctx.lineTo(bx + bw, by - 40);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(bx, by - 45);
+  ctx.lineTo(bx, by - 35);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(bx + bw, by - 45);
+  ctx.lineTo(bx + bw, by - 35);
+  ctx.stroke();
+  ctx.textAlign = 'center';
+  ctx.fillText('48" (4 ft)', bx + bw/2, by - 46);
+
+  // Height dimension
+  ctx.beginPath();
+  ctx.moveTo(bx - 25, by);
+  ctx.lineTo(bx - 25, by + bh);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(bx - 30, by);
+  ctx.lineTo(bx - 20, by);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(bx - 30, by + bh);
+  ctx.lineTo(bx - 20, by + bh);
+  ctx.stroke();
+
+  ctx.save();
+  ctx.translate(bx - 38, by + bh/2);
+  ctx.rotate(-Math.PI/2);
+  ctx.fillText('60" (5 ft)', 0, 0);
+  ctx.restore();
+  ctx.textAlign = 'left';
+
+  // Total footprint
+  ctx.fillStyle = '#555';
+  ctx.font = '10px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('← Total footprint: ~8 ft wide →', W/2, H - 20);
+  ctx.textAlign = 'left';
+
+  // Power strip
+  ctx.fillStyle = '#444';
+  ctx.fillRect(mx + 10, H - 60, 70, 14);
+  ctx.strokeStyle = '#666';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(mx + 10, H - 60, 70, 14);
+  ctx.fillStyle = '#888';
+  ctx.font = '7px Courier New';
+  ctx.fillText('POWER STRIP (~120W)', mx + 12, H - 50);
+})();
+
+// ============================================================
+// SIDE CROSS-SECTION
+// ============================================================
+(function() {
+  const c = document.getElementById('sideView');
+  const ctx = c.getContext('2d');
+  const W = c.width, H = c.height;
+
+  ctx.fillStyle = '#0a0a1a';
+  ctx.fillRect(0, 0, W, H);
+
+  // Ground line
+  ctx.strokeStyle = '#333';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(20, H - 30);
+  ctx.lineTo(W - 20, H - 30);
+  ctx.stroke();
+
+  // Section label
+  ctx.fillStyle = '#555';
+  ctx.font = '9px Courier New';
+  ctx.fillText('LOOKING FROM THE SIDE →', 30, 20);
+
+  // ---- TILTED BOARD (side view) ----
+  // Board tilted 15° from vertical
+  const angle = 15 * Math.PI / 180;
+  const boardBottom = {x: 250, y: H - 35};
+  const boardHeight = 280; // visual height
+  const boardTop = {
+    x: boardBottom.x + Math.sin(angle) * boardHeight,
+    y: boardBottom.y - Math.cos(angle) * boardHeight
+  };
+
+  // Back panel (plywood)
+  ctx.strokeStyle = '#8B4513';
+  ctx.lineWidth = 6;
+  ctx.beginPath();
+  ctx.moveTo(boardBottom.x, boardBottom.y);
+  ctx.lineTo(boardTop.x, boardTop.y);
+  ctx.stroke();
+
+  // Front panel (acrylic) - offset by depth
+  const depth = 25; // visual depth for 4"
+  const acrylicBottom = {x: boardBottom.x + depth, y: boardBottom.y};
+  const acrylicTop = {x: boardTop.x + depth, y: boardTop.y};
+
+  ctx.strokeStyle = 'rgba(150, 200, 255, 0.5)';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([4, 3]);
+  ctx.beginPath();
+  ctx.moveTo(acrylicBottom.x, acrylicBottom.y);
+  ctx.lineTo(acrylicTop.x, acrylicTop.y);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Gap label
+  ctx.fillStyle = '#888';
+  ctx.font = '9px Courier New';
+  const midY = (boardBottom.y + boardTop.y) / 2;
+  const midX = (boardBottom.x + boardTop.x) / 2;
+  ctx.fillText('4" gap', midX + depth + 8, midY);
+
+  // Depth arrows
+  ctx.strokeStyle = '#666';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(midX, midY + 10);
+  ctx.lineTo(midX + depth, midY + 10);
+  ctx.stroke();
+
+  // Pegs in side view (dots along back panel)
+  for (let i = 0; i < 6; i++) {
+    const t = 0.2 + i * 0.12;
+    const px = boardBottom.x + (boardTop.x - boardBottom.x) * t + 8;
+    const py = boardBottom.y + (boardTop.y - boardBottom.y) * t;
+    ctx.fillStyle = '#e8e8e8';
+    ctx.beginPath();
+    ctx.arc(px, py, 3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.fillStyle = '#888';
+  ctx.font = '8px Courier New';
+  ctx.fillText('PEGS', midX + 5, midY - 30);
+
+  // Ball in the gap
+  const ballT = 0.5;
+  const ballX = boardBottom.x + (boardTop.x - boardBottom.x) * ballT + depth/2;
+  const ballY = boardBottom.y + (boardTop.y - boardBottom.y) * ballT;
+  const bgrad = ctx.createRadialGradient(ballX - 2, ballY - 2, 1, ballX, ballY, 8);
+  bgrad.addColorStop(0, '#ff8888');
+  bgrad.addColorStop(1, '#cc2222');
+  ctx.fillStyle = bgrad;
+  ctx.shadowColor = 'rgba(255,68,68,0.5)';
+  ctx.shadowBlur = 8;
+  ctx.beginPath();
+  ctx.arc(ballX, ballY, 8, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+
+  // LED strip at top inside
+  ctx.strokeStyle = '#ffaa00';
+  ctx.lineWidth = 3;
+  ctx.shadowColor = '#ffaa00';
+  ctx.shadowBlur = 6;
+  ctx.beginPath();
+  ctx.arc(boardTop.x + 5, boardTop.y + 5, 4, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = '#ffaa00';
+  ctx.font = '8px Courier New';
+  ctx.fillText('LED', boardTop.x + 12, boardTop.y + 8);
+
+  // Board cam at top
+  ctx.fillStyle = '#aa44ff';
+  ctx.fillRect(boardTop.x + depth/2 - 8, boardTop.y - 20, 16, 12);
+  ctx.fillStyle = '#222';
+  ctx.beginPath();
+  ctx.arc(boardTop.x + depth/2, boardTop.y - 14, 4, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#aa44ff';
+  ctx.font = '8px Courier New';
+  ctx.fillText('BOARD CAM', boardTop.x + depth/2 + 12, boardTop.y - 12);
+
+  // Camera FOV cone downward
+  ctx.strokeStyle = 'rgba(170, 68, 255, 0.2)';
+  ctx.setLineDash([2, 2]);
+  ctx.beginPath();
+  ctx.moveTo(boardTop.x + depth/2, boardTop.y - 8);
+  ctx.lineTo(boardBottom.x - 10, boardBottom.y);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(boardTop.x + depth/2, boardTop.y - 8);
+  ctx.lineTo(acrylicBottom.x + 10, acrylicBottom.y);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Rear support leg
+  ctx.strokeStyle = '#8B4513';
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(boardBottom.x - 5, boardBottom.y);
+  ctx.lineTo(boardBottom.x - 60, H - 30);
+  ctx.stroke();
+
+  // Cross brace
+  const braceY = H - 30 - 80;
+  const legT = 80 / (H - 30 - boardBottom.y);
+  const braceX = boardBottom.x - 5 - 55 * legT;
+  ctx.beginPath();
+  ctx.moveTo(braceX - 10, braceY);
+  ctx.lineTo(braceX + 40, braceY);
+  ctx.stroke();
+
+  // Angle label
+  ctx.fillStyle = '#888';
+  ctx.font = '10px Courier New';
+  ctx.fillText('15°', boardBottom.x + 35, boardBottom.y - 20);
+
+  // Angle arc
+  ctx.strokeStyle = '#666';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.arc(boardBottom.x, boardBottom.y, 30, -Math.PI/2, -Math.PI/2 + angle, false);
+  ctx.stroke();
+
+  // Ball return behind board
+  ctx.strokeStyle = '#555';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(boardBottom.x - 15, boardBottom.y - 40);
+  ctx.lineTo(boardBottom.x - 15, boardBottom.y + 5);
+  ctx.lineTo(boardBottom.x - 40, boardBottom.y + 15);
+  ctx.stroke();
+  ctx.fillStyle = '#555';
+  ctx.font = '8px Courier New';
+  ctx.fillText('BALL', boardBottom.x - 55, boardBottom.y - 10);
+  ctx.fillText('RETURN', boardBottom.x - 60, boardBottom.y);
+  ctx.fillText('CHUTE', boardBottom.x - 58, boardBottom.y + 10);
+
+  // Collection bin
+  ctx.strokeStyle = '#555';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(boardBottom.x - 55, H - 48, 40, 18);
+  ctx.fillStyle = '#555';
+  ctx.font = '7px Courier New';
+  ctx.fillText('BIN', boardBottom.x - 45, H - 36);
+
+  // ---- MONITOR (side view) ----
+  const monX = 520, monY = 80;
+  ctx.fillStyle = '#222';
+  ctx.fillRect(monX, monY, 8, 120);
+  ctx.strokeStyle = '#3a7ca5';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(monX, monY, 8, 120);
+
+  // Monitor stand
+  ctx.fillStyle = '#333';
+  ctx.fillRect(monX - 2, monY + 120, 12, 60);
+  ctx.fillRect(monX - 15, monY + 178, 38, 5);
+
+  ctx.strokeStyle = '#333';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(monX + 4, monY + 183);
+  ctx.lineTo(monX + 4, H - 30);
+  ctx.stroke();
+
+  // Monitor label
+  ctx.fillStyle = '#3a7ca5';
+  ctx.font = '9px Courier New';
+  ctx.fillText('MONITOR', monX + 20, monY + 60);
+  ctx.fillText('(side)', monX + 20, monY + 72);
+
+  // Player cam on top of monitor
+  ctx.fillStyle = '#aa44ff';
+  ctx.fillRect(monX - 2, monY - 15, 12, 10);
+  ctx.fillStyle = '#aa44ff';
+  ctx.font = '8px Courier New';
+  ctx.fillText('PLAYER CAM', monX + 15, monY - 8);
+
+  // Speaker (side view, next to monitor)
+  ctx.fillStyle = '#555';
+  ctx.fillRect(monX + 50, monY + 80, 20, 35);
+  ctx.strokeStyle = '#777';
+  ctx.strokeRect(monX + 50, monY + 80, 20, 35);
+  ctx.fillStyle = '#666';
+  ctx.font = '8px Courier New';
+  ctx.fillText('SPEAKER', monX + 48, monY + 128);
+
+  // ---- RASPBERRY PI (behind board) ----
+  ctx.fillStyle = '#ff6600';
+  ctx.fillRect(boardBottom.x - 40, boardBottom.y - 100, 22, 16);
+  ctx.fillStyle = '#ff6600';
+  ctx.font = '8px Courier New';
+  ctx.fillText('Pi 4', boardBottom.x - 48, boardBottom.y - 105);
+  ctx.fillText('(mounted', boardBottom.x - 55, boardBottom.y - 78);
+  ctx.fillText('on back)', boardBottom.x - 55, boardBottom.y - 68);
+
+  // ---- STICK FIGURE PLAYER ----
+  const px = 420, py = H - 120;
+  ctx.strokeStyle = '#ff4444';
+  ctx.lineWidth = 2;
+  // Head
+  ctx.beginPath();
+  ctx.arc(px, py, 10, 0, Math.PI * 2);
+  ctx.stroke();
+  // Body
+  ctx.beginPath();
+  ctx.moveTo(px, py + 10);
+  ctx.lineTo(px, py + 40);
+  ctx.stroke();
+  // Arms (reaching toward board)
+  ctx.beginPath();
+  ctx.moveTo(px - 20, py + 18);
+  ctx.lineTo(px + 5, py + 20);
+  ctx.stroke();
+  // Legs
+  ctx.beginPath();
+  ctx.moveTo(px, py + 40);
+  ctx.lineTo(px - 12, py + 58);
+  ctx.moveTo(px, py + 40);
+  ctx.lineTo(px + 12, py + 58);
+  ctx.stroke();
+
+  ctx.fillStyle = '#ff4444';
+  ctx.font = '9px Courier New';
+  ctx.fillText('PLAYER', px - 15, py - 16);
+
+  // Distance labels
+  ctx.fillStyle = '#555';
+  ctx.font = '9px Courier New';
+  ctx.fillText('~4-6 ft from player cam', px - 40, py + 78);
+
+  // Rubber feet
+  ctx.fillStyle = '#444';
+  ctx.fillRect(boardBottom.x - 68, H - 33, 16, 4);
+
+})();
+
+// ============================================================
+// MONITOR DISPLAY LAYOUT
+// ============================================================
+(function() {
+  const c = document.getElementById('monitorView');
+  const ctx = c.getContext('2d');
+  const W = c.width, H = c.height;
+
+  // Monitor bezel
+  ctx.fillStyle = '#222';
+  ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = '#3a7ca5';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(2, 2, W - 4, H - 4);
+
+  // Screen area
+  const pad = 15;
+  ctx.fillStyle = '#0d1117';
+  ctx.fillRect(pad, pad, W - pad*2, H - pad*2);
+
+  // Title bar
+  ctx.fillStyle = '#00ff88';
+  ctx.font = 'bold 18px Courier New';
+  ctx.textAlign = 'center';
+  ctx.shadowColor = 'rgba(0,255,136,0.5)';
+  ctx.shadowBlur = 10;
+  ctx.fillText('MEGA DROP LIVE', W/2, pad + 28);
+  ctx.shadowBlur = 0;
+
+  // High score
+  ctx.fillStyle = '#ffaa00';
+  ctx.font = '11px Courier New';
+  ctx.textAlign = 'right';
+  ctx.fillText('🏆 HIGH SCORE: 680', W - pad - 15, pad + 28);
+  ctx.textAlign = 'left';
+
+  // ---- Board cam view (left) ----
+  const bcX = pad + 15, bcY = pad + 42, bcW = 390, bcH = 210;
+  ctx.strokeStyle = '#444';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(bcX, bcY, bcW, bcH);
+
+  // Dark board background
+  ctx.fillStyle = '#0a0a16';
+  ctx.fillRect(bcX, bcY, bcW, bcH);
+
+  // Mini peg grid
+  for (let row = 0; row < 5; row++) {
+    const isOdd = row % 2 === 0;
+    const count = isOdd ? 6 : 5;
+    const spacing = bcW / 8;
+    const offset = isOdd ? 0 : spacing/2;
+    for (let col = 0; col < count; col++) {
+      const px = bcX + spacing + offset + col * spacing;
+      const py = bcY + 30 + row * 30;
+      ctx.fillStyle = 'rgba(255,255,255,0.3)';
+      ctx.beginPath();
+      ctx.arc(px, py, 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  // Augmented ball with glowing trail
+  const trail = [
+    {x: bcX + 150, y: bcY + 50},
+    {x: bcX + 140, y: bcY + 80},
+    {x: bcX + 160, y: bcY + 110},
+    {x: bcX + 148, y: bcY + 140},
+  ];
+  for (let i = 0; i < trail.length - 1; i++) {
+    const alpha = (i + 1) / trail.length;
+    ctx.strokeStyle = `rgba(255, 68, 68, ${alpha * 0.7})`;
+    ctx.lineWidth = 4;
+    ctx.shadowColor = 'rgba(255,68,68,0.6)';
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    ctx.moveTo(trail[i].x, trail[i].y);
+    ctx.lineTo(trail[i+1].x, trail[i+1].y);
+    ctx.stroke();
+  }
+  ctx.shadowBlur = 0;
+
+  // Glowing red ball
+  const rbx = trail[trail.length-1].x, rby = trail[trail.length-1].y;
+  ctx.shadowColor = 'rgba(255,68,68,0.8)';
+  ctx.shadowBlur = 15;
+  const rg = ctx.createRadialGradient(rbx-2, rby-2, 1, rbx, rby, 9);
+  rg.addColorStop(0, '#ffaaaa');
+  rg.addColorStop(0.5, '#ff4444');
+  rg.addColorStop(1, '#cc0000');
+  ctx.fillStyle = rg;
+  ctx.beginPath();
+  ctx.arc(rbx, rby, 9, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+
+  // Blue ball
+  const bbx2 = bcX + 280, bby2 = bcY + 100;
+  ctx.shadowColor = 'rgba(68,136,255,0.8)';
+  ctx.shadowBlur = 15;
+  const bg = ctx.createRadialGradient(bbx2-2, bby2-2, 1, bbx2, bby2, 9);
+  bg.addColorStop(0, '#aaccff');
+  bg.addColorStop(0.5, '#4488ff');
+  bg.addColorStop(1, '#0044cc');
+  ctx.fillStyle = bg;
+  ctx.beginPath();
+  ctx.arc(bbx2, bby2, 9, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+
+  // Scoring zones at bottom of board view
+  const zones = [10, 25, 50, 100, 50, 25, 10];
+  const zw = bcW / zones.length;
+  for (let i = 0; i < zones.length; i++) {
+    const zx = bcX + i * zw;
+    const isCenter = i === 3;
+    ctx.fillStyle = isCenter ? 'rgba(0,255,136,0.3)' : 'rgba(0,255,136,0.1)';
+    ctx.fillRect(zx, bcY + bcH - 25, zw, 25);
+    ctx.strokeStyle = 'rgba(0,255,136,0.5)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(zx, bcY + bcH - 25, zw, 25);
+    ctx.fillStyle = isCenter ? '#00ff88' : '#558866';
+    ctx.font = isCenter ? 'bold 11px Courier New' : '9px Courier New';
+    ctx.textAlign = 'center';
+    ctx.fillText(zones[i], zx + zw/2, bcY + bcH - 8);
+  }
+  ctx.textAlign = 'left';
+
+  // "BOARD CAM" label
+  ctx.fillStyle = '#aa44ff';
+  ctx.font = '9px Courier New';
+  ctx.fillText('📹 BOARD CAM (AUGMENTED)', bcX + 5, bcY + 15);
+
+  // ---- Player cam view (right) ----
+  const pcX = bcX + bcW + 15, pcY = bcY, pcW = 390, pcH = 130;
+  ctx.strokeStyle = '#444';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(pcX, pcY, pcW, pcH);
+  ctx.fillStyle = '#0a0a16';
+  ctx.fillRect(pcX, pcY, pcW, pcH);
+
+  // Stick figure with pose skeleton (T-pose)
+  const figX = pcX + pcW/2, figY = pcY + 40;
+  ctx.strokeStyle = 'rgba(170, 68, 255, 0.4)';
+  ctx.lineWidth = 2;
+  // Body
+  ctx.beginPath();
+  ctx.moveTo(figX, figY + 8);
+  ctx.lineTo(figX, figY + 40);
+  ctx.stroke();
+  // Arms T-pose
+  ctx.beginPath();
+  ctx.moveTo(figX - 50, figY + 15);
+  ctx.lineTo(figX + 50, figY + 15);
+  ctx.stroke();
+  // Legs
+  ctx.beginPath();
+  ctx.moveTo(figX, figY + 40);
+  ctx.lineTo(figX - 20, figY + 65);
+  ctx.moveTo(figX, figY + 40);
+  ctx.lineTo(figX + 20, figY + 65);
+  ctx.stroke();
+  // Head
+  ctx.beginPath();
+  ctx.arc(figX, figY, 8, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // Skeleton joints (green dots)
+  const figJoints = [
+    [figX, figY], [figX, figY+15], [figX-50, figY+15], [figX+50, figY+15],
+    [figX-25, figY+15], [figX+25, figY+15],
+    [figX, figY+40], [figX-20, figY+65], [figX+20, figY+65]
+  ];
+  ctx.fillStyle = '#00ff88';
+  figJoints.forEach(([jx, jy]) => {
+    ctx.beginPath();
+    ctx.arc(jx, jy, 3, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // Skeleton lines (green)
+  ctx.strokeStyle = '#00ff88';
+  ctx.lineWidth = 1.5;
+  const bones = [[0,1],[1,2],[1,3],[1,6],[6,7],[6,8],[2,4],[3,5]];
+  bones.forEach(([a,b]) => {
+    ctx.beginPath();
+    ctx.moveTo(figJoints[a][0], figJoints[a][1]);
+    ctx.lineTo(figJoints[b][0], figJoints[b][1]);
+    ctx.stroke();
+  });
+
+  // "PLAYER CAM" label
+  ctx.fillStyle = '#aa44ff';
+  ctx.font = '9px Courier New';
+  ctx.fillText('📹 PLAYER CAM (POSE DETECT)', pcX + 5, pcY + 15);
+
+  // ---- Power-up display ----
+  const puX = pcX, puY = pcY + pcH + 10, puW = pcW, puH = 68;
+  ctx.strokeStyle = '#444';
+  ctx.strokeRect(puX, puY, puW, puH);
+  ctx.fillStyle = '#0f1520';
+  ctx.fillRect(puX, puY, puW, puH);
+
+  // Active power-up
+  ctx.fillStyle = '#00ff88';
+  ctx.font = 'bold 13px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('POWER-UP ACTIVE', puX + puW/2, puY + 18);
+
+  ctx.fillStyle = '#ffaa00';
+  ctx.font = 'bold 16px Courier New';
+  ctx.fillText('💪 SCATTER SHOT', puX + puW/2, puY + 42);
+
+  ctx.fillStyle = '#888';
+  ctx.font = '10px Courier New';
+  ctx.fillText('Drop 3 balls at once!', puX + puW/2, puY + 58);
+  ctx.textAlign = 'left';
+
+  // ---- Score bar at bottom ----
+  const sbY = bcY + bcH + 12;
+  ctx.fillStyle = '#111822';
+  ctx.fillRect(pad + 15, sbY, W - pad*2 - 30, 42);
+  ctx.strokeStyle = '#333';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(pad + 15, sbY, W - pad*2 - 30, 42);
+
+  // Red score
+  ctx.fillStyle = '#ff4444';
+  ctx.font = 'bold 18px Courier New';
+  ctx.textAlign = 'left';
+  ctx.fillText('🔴 RED: 175', pad + 30, sbY + 28);
+
+  // Combo
+  ctx.fillStyle = '#ffaa00';
+  ctx.font = 'bold 14px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('⚡ COMBO x2 ⚡', W/2, sbY + 28);
+
+  // Blue score
+  ctx.fillStyle = '#4488ff';
+  ctx.font = 'bold 18px Courier New';
+  ctx.textAlign = 'right';
+  ctx.fillText('BLUE: 230 🔵', W - pad - 30, sbY + 28);
+  ctx.textAlign = 'left';
+
+  // Leaderboard strip
+  ctx.fillStyle = '#0a0e14';
+  ctx.fillRect(pad + 15, sbY + 44, W - pad*2 - 30, 22);
+  ctx.fillStyle = '#666';
+  ctx.font = '10px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('📊 TODAY: 1. Max 680  |  2. Luna 520  |  3. Kai 485  |  4. Zoe 410  |  5. YOU? 🎯', W/2, sbY + 58);
+  ctx.textAlign = 'left';
+})();
+</script>
+
+</body>
+</html>
