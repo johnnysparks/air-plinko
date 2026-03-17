@@ -25,3 +25,6 @@
 - When scoring buckets/zones are tightly packed horizontally, their labels can overlap. Use smaller font or vertically stagger labels for narrow adjacent elements
 - For vertical games (tall boards), choose FRONT + SIDE views rather than TOP-DOWN + SIDE. The front view is the player's perspective and communicates the most gameplay information
 - Show multiple trajectories (weak vs strong) to communicate variable mechanics — use different opacities to distinguish primary vs secondary examples
+- For complex machines with moving parts (flippers, bumpers), show GHOST positions at reduced opacity to communicate range of motion. This immediately conveys "this thing moves" without animation
+- Cable/linkage mechanisms (like bike cable to flipper) benefit from showing the external control AND the internal part connected by a dashed line — communicates the actuation path
+- When a game has distinct vertical zones (bumper zone, peg field, flipper zone), use subtle colored bands on a sidebar to annotate the zone structure — helps readers understand spatial layout at a glance

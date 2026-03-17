@@ -1,27 +1,30 @@
 # Screenshot Skill
 
-## Strategy
-Find a browser. Use `--headless --screenshot`. No libraries needed.
+## Primary Method: Playwright (confirmed working)
 
-## Step 1: Find a browser
+Playwright is globally installed at `/opt/node22/lib/node_modules/playwright` with Chromium.
 
-```bash
-# Playwright-managed browsers (any version)
-find /root/.cache/ms-playwright -name "chrome" 2>/dev/null
-find /home -path "*/ms-playwright/*/chrome" 2>/dev/null
-
-# System-installed
-which chromium-browser chromium google-chrome google-chrome-stable 2>/dev/null
-
-# Other common locations
-ls /snap/chromium/current/usr/lib/chromium-browser/chrome 2>/dev/null
-ls /usr/lib/chromium-browser/chromium-browser 2>/dev/null
-ls /opt/google/chrome/chrome 2>/dev/null
+```javascript
+const { chromium } = require('/opt/node22/lib/node_modules/playwright');
+(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage({ viewport: { width: 1200, height: 900 } });
+  await page.goto('file://' + __dirname + '/diagram.html');
+  await page.waitForTimeout(2000); // allow Three.js / CSS animations to render
+  await page.screenshot({ path: 'diagram.png' });
+  await browser.close();
+})();
 ```
 
-Pick the first one that exists and is executable.
+### Key Notes
+- **Must use absolute path** to module: `require('/opt/node22/lib/node_modules/playwright')`
+- `require('playwright')` does NOT work (not in local node_modules)
+- Use `file://` protocol with absolute paths for local HTML files
+- Wait at least 2s for Three.js scenes to initialize
+- Default viewport 1200×900 works well for 3D diagrams
+- Chromium runs headless by default — no display server needed
 
-## Step 2: Screenshot
+## Fallback Method: Direct Chrome CLI
 
 ```bash
 $CHROME_PATH --headless --no-sandbox --disable-gpu \
@@ -29,10 +32,8 @@ $CHROME_PATH --headless --no-sandbox --disable-gpu \
   file://$HTML_PATH 2>/dev/null
 ```
 
-One command, zero installs.
-
-- `--no-sandbox` is needed when running as root (common in containers)
-- `2>/dev/null` suppresses harmless dbus errors in headless environments
+- `--no-sandbox` needed when running as root
+- `2>/dev/null` suppresses dbus errors
 
 ## Avoiding clipped content
 
