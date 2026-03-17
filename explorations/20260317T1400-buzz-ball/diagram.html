@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BUZZ BALL — Concept Diagram</title>
+<!-- screenshot: 1000x1500 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1a1a0e; color: #e0e0e0; font-family: 'Courier New', monospace; padding: 20px; min-height: 1500px; }
+  h1 { text-align: center; color: #FFD700; margin-bottom: 2px; font-size: 32px; letter-spacing: 4px; }
+  .subtitle { text-align: center; color: #b89a3c; margin-bottom: 24px; font-size: 14px; }
+  .views { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; }
+  .view { background: #2a2a1e; border: 1px solid #444; border-radius: 8px; padding: 16px; }
+  .view h2 { color: #FFD700; margin-bottom: 12px; font-size: 15px; text-align: center; }
+  canvas { display: block; }
+  .legend { margin-top: 24px; max-width: 800px; margin-left: auto; margin-right: auto; }
+  .legend h3 { color: #FFD700; margin-bottom: 10px; }
+  .legend-item { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; font-size: 12px; }
+  .legend-swatch { width: 16px; height: 16px; border-radius: 3px; flex-shrink: 0; }
+  .specs { margin-top: 24px; max-width: 800px; margin-left: auto; margin-right: auto; background: #2a2a1e; border: 1px solid #444; border-radius: 8px; padding: 16px; }
+  .specs h3 { color: #FFD700; margin-bottom: 10px; }
+  .specs table { width: 100%; font-size: 12px; }
+  .specs td { padding: 3px 8px; }
+  .specs td:first-child { color: #999; }
+</style>
+</head>
+<body>
+
+<h1>BUZZ BALL</h1>
+<p class="subtitle">honeycomb plinko × bee bumpers × spring launchers — Grattan Elementary Carnival</p>
+
+<div class="views">
+  <div class="view">
+    <h2>FRONT VIEW (Player Perspective)</h2>
+    <canvas id="front" width="460" height="680"></canvas>
+  </div>
+  <div class="view">
+    <h2>SIDE VIEW (Cross Section)</h2>
+    <canvas id="side" width="240" height="680"></canvas>
+  </div>
+</div>
+
+<div class="legend">
+  <h3>LEGEND</h3>
+  <div class="legend-item"><div class="legend-swatch" style="background:#1a1a0e; border:2px solid #FFD700"></div> Back panel (¾" plywood, matte black with gold honeycomb stencil)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:rgba(255,215,0,0.15); border:1px solid #FFD700"></div> Acrylic front panel (¼" clear)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#FFD700"></div> Hex peg caps — gold (3D printed, on ¾" dowels)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#333"></div> Hex peg caps — black (alternating with gold)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:repeating-linear-gradient(90deg, #FFD700 0 4px, #222 4px 8px)"></div> Bee Bumpers (×3) — spring-loaded hex pucks, yellow/black stripes</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#c0c0c0"></div> Spring plunger launchers (×2) + launch tubes</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#DAA520"></div> Honey pot scoring buckets (hexagonal, 7 across bottom)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#e8e84a"></div> Pollen balls (yellow whiffle balls)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#8B4513"></div> Cam axle + hand crank (bumper drive mechanism, behind board)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#CD7F32"></div> Brass bell (above Queen's Cell)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#666"></div> Modular A-frame (hinged legs, wing nut joints)</div>
+</div>
+
+<div class="specs">
+  <h3>KEY SPECS</h3>
+  <table>
+    <tr><td>Playing field</td><td>48" W × 72" H × 5" deep</td></tr>
+    <tr><td>Tilt</td><td>~20° from vertical</td></tr>
+    <tr><td>Peak height on frame</td><td>~80" (6'8")</td></tr>
+    <tr><td>Peg grid</td><td>Hex pattern, ~90 pegs, 5" center-to-center</td></tr>
+    <tr><td>Bee bumpers</td><td>3 × spring-loaded, cam-driven, 5" hex pucks</td></tr>
+    <tr><td>Scoring buckets</td><td>7 hex pots: 50 / 100 / 200 / 500 / 200 / 100 / 50</td></tr>
+    <tr><td>Ball</td><td>Yellow whiffle ball (2.75" dia), 5 per player</td></tr>
+    <tr><td>Power</td><td>NONE — all mechanical!</td></tr>
+    <tr><td>Est. cost</td><td>~$450–520</td></tr>
+  </table>
+</div>
+
+<script>
+// ══════════════════════════════════
+// FRONT VIEW
+// ══════════════════════════════════
+const fc = document.getElementById('front').getContext('2d');
+const FW = 460, FH = 680;
+
+// Honeycomb background pattern on board
+fc.fillStyle = '#1a1a0e';
+fc.fillRect(0, 0, FW, FH);
+
+// Board outline
+const bx = 30, by = 40, bw = 400, bh = 560;
+fc.fillStyle = '#111';
+fc.fillRect(bx, by, bw, bh);
+
+// Gold honeycomb stencil on back panel
+fc.strokeStyle = 'rgba(255,215,0,0.12)';
+fc.lineWidth = 1;
+const hexR = 18;
+for (let row = 0; row < 22; row++) {
+  for (let col = 0; col < 14; col++) {
+    const cx = bx + 15 + col * (hexR * 1.74);
+    const cy = by + 15 + row * (hexR * 1.5) + (col % 2 === 1 ? hexR * 0.75 : 0);
+    if (cx > bx + bw - 10 || cy > by + bh - 10) continue;
+    fc.beginPath();
+    for (let i = 0; i < 6; i++) {
+      const a = Math.PI / 3 * i - Math.PI / 6;
+      const px = cx + hexR * Math.cos(a);
+      const py = cy + hexR * Math.sin(a);
+      if (i === 0) fc.moveTo(px, py); else fc.lineTo(px, py);
+    }
+    fc.closePath();
+    fc.stroke();
+  }
+}
+
+// Edge rails
+fc.strokeStyle = '#8B5E3C';
+fc.lineWidth = 8;
+fc.strokeRect(bx, by, bw, bh);
+
+// "BUZZ BALL" header
+fc.fillStyle = '#FFD700';
+fc.font = 'bold 26px Courier New';
+fc.textAlign = 'center';
+fc.fillText('BUZZ BALL', bx + bw/2, by + 28);
+
+// Grattan bee mascot (simple icon)
+fc.font = '18px serif';
+fc.fillText('🐝', bx + bw/2 - 70, by + 30);
+fc.fillText('🐝', bx + bw/2 + 60, by + 30);
+fc.font = 'bold 9px Courier New';
+fc.fillStyle = '#b89a3c';
+fc.fillText('GRATTAN ELEMENTARY', bx + bw/2, by + 42);
+
+// ── Hex peg field ──
+function drawHexPeg(x, y, isGold) {
+  const r = 8;
+  fc.fillStyle = isGold ? '#FFD700' : '#333';
+  fc.beginPath();
+  for (let i = 0; i < 6; i++) {
+    const a = Math.PI / 3 * i - Math.PI / 6;
+    const px = x + r * Math.cos(a);
+    const py = y + r * Math.sin(a);
+    if (i === 0) fc.moveTo(px, py); else fc.lineTo(px, py);
+  }
+  fc.closePath();
+  fc.fill();
+  // highlight
+  if (isGold) {
+    fc.fillStyle = 'rgba(255,255,255,0.25)';
+    fc.beginPath();
+    fc.arc(x - 2, y - 2, 3, 0, Math.PI * 2);
+    fc.fill();
+  }
+}
+
+// Bumper positions (in board-relative coords)
+const bumpers = [
+  { x: bx + 130, y: by + 310 },  // left-center
+  { x: bx + 270, y: by + 310 },  // right-center
+  { x: bx + 200, y: by + 220 },  // center-high
+];
+
+function isNearBumper(px, py) {
+  for (const b of bumpers) {
+    const dx = px - b.x, dy = py - b.y;
+    if (Math.sqrt(dx*dx + dy*dy) < 40) return true;
+  }
+  return false;
+}
+
+// Draw hex grid pegs
+const pegStartX = bx + 50;
+const pegStartY = by + 100;
+const pegSpaceX = 35;
+const pegSpaceY = 30;
+let pegIdx = 0;
+for (let row = 0; row < 14; row++) {
+  const offset = row % 2 === 1 ? pegSpaceX / 2 : 0;
+  const cols = row % 2 === 0 ? 10 : 9;
+  for (let col = 0; col < cols; col++) {
+    const px = pegStartX + offset + col * pegSpaceX;
+    const py = pegStartY + row * pegSpaceY;
+    if (py > by + bh - 90) continue; // leave room for buckets
+    if (py < by + 55) continue; // header zone
+    if (isNearBumper(px, py)) continue; // bumper clearance
+    drawHexPeg(px, py, pegIdx % 3 !== 0);
+    pegIdx++;
+  }
+}
+
+// ── Bee Bumpers ──
+function drawBeeBumper(x, y, label) {
+  const r = 28;
+  // Clearance zone (dashed)
+  fc.strokeStyle = 'rgba(255,215,0,0.3)';
+  fc.lineWidth = 1;
+  fc.setLineDash([4, 4]);
+  fc.beginPath();
+  fc.arc(x, y, r + 10, 0, Math.PI * 2);
+  fc.stroke();
+  fc.setLineDash([]);
+
+  // Bumper hex body
+  fc.beginPath();
+  for (let i = 0; i < 6; i++) {
+    const a = Math.PI / 3 * i;
+    const px = x + r * Math.cos(a);
+    const py = y + r * Math.sin(a);
+    if (i === 0) fc.moveTo(px, py); else fc.lineTo(px, py);
+  }
+  fc.closePath();
+
+  // Yellow/black stripe fill
+  fc.fillStyle = '#FFD700';
+  fc.fill();
+  fc.strokeStyle = '#222';
+  fc.lineWidth = 3;
+  fc.stroke();
+
+  // Stripes
+  fc.strokeStyle = '#222';
+  fc.lineWidth = 5;
+  fc.beginPath();
+  fc.moveTo(x - r + 6, y - 6);
+  fc.lineTo(x + r - 6, y - 6);
+  fc.stroke();
+  fc.beginPath();
+  fc.moveTo(x - r + 8, y + 8);
+  fc.lineTo(x + r - 8, y + 8);
+  fc.stroke();
+
+  // Spring symbol in center
+  fc.fillStyle = '#111';
+  fc.font = 'bold 8px Courier New';
+  fc.textAlign = 'center';
+  fc.fillText('BEE', x, y + 2);
+  fc.fillText('BUMP', x, y + 11);
+
+  // "SPRING" label
+  fc.fillStyle = '#FFD700';
+  fc.font = '7px Courier New';
+  fc.fillText(label, x, y - r - 14);
+  fc.fillText('⚡ SPRING', x, y - r - 5);
+}
+
+drawBeeBumper(bumpers[0].x, bumpers[0].y, 'BUMPER 1');
+drawBeeBumper(bumpers[1].x, bumpers[1].y, 'BUMPER 2');
+drawBeeBumper(bumpers[2].x, bumpers[2].y, 'BUMPER 3');
+
+// ── Scoring Buckets ──
+const bucketY = by + bh - 65;
+const bucketData = [
+  { label: '50', color: '#9ACD32', w: 52, name: 'POLLEN' },
+  { label: '100', color: '#DAA520', w: 48, name: 'HONEY' },
+  { label: '200', color: '#9B59B6', w: 42, name: 'ROYAL' },
+  { label: '500', color: '#FFD700', w: 32, name: 'QUEEN' },
+  { label: '200', color: '#9B59B6', w: 42, name: 'ROYAL' },
+  { label: '100', color: '#DAA520', w: 48, name: 'HONEY' },
+  { label: '50', color: '#9ACD32', w: 52, name: 'POLLEN' },
+];
+
+let bucketX = bx + 22;
+for (const b of bucketData) {
+  // Hex bucket shape
+  const bCx = bucketX + b.w / 2;
+  const bCy = bucketY + 20;
+  const bR = b.w / 2;
+
+  fc.fillStyle = b.color;
+  fc.globalAlpha = 0.7;
+  fc.beginPath();
+  for (let i = 0; i < 6; i++) {
+    const a = Math.PI / 3 * i - Math.PI / 6;
+    const px = bCx + bR * Math.cos(a);
+    const py = bCy + bR * 0.7 * Math.sin(a);
+    if (i === 0) fc.moveTo(px, py); else fc.lineTo(px, py);
+  }
+  fc.closePath();
+  fc.fill();
+  fc.globalAlpha = 1;
+
+  fc.strokeStyle = b.color;
+  fc.lineWidth = 2;
+  fc.stroke();
+
+  // Labels
+  fc.fillStyle = '#fff';
+  fc.font = 'bold 11px Courier New';
+  fc.textAlign = 'center';
+  fc.fillText(b.label, bCx, bCy + 3);
+
+  fc.fillStyle = b.color;
+  fc.font = '7px Courier New';
+  fc.fillText(b.name, bCx, bCy + 14);
+
+  bucketX += b.w + 4;
+}
+
+// Crown on Queen's Cell
+fc.fillStyle = '#FFD700';
+fc.font = '14px serif';
+fc.textAlign = 'center';
+fc.fillText('👑', bx + bw/2, bucketY - 2);
+
+// Brass bell above queen
+fc.fillStyle = '#CD7F32';
+fc.beginPath();
+fc.moveTo(bx + bw/2 - 8, bucketY - 18);
+fc.lineTo(bx + bw/2 + 8, bucketY - 18);
+fc.lineTo(bx + bw/2 + 5, bucketY - 30);
+fc.lineTo(bx + bw/2 - 5, bucketY - 30);
+fc.closePath();
+fc.fill();
+fc.fillStyle = '#CD7F32';
+fc.beginPath();
+fc.arc(bx + bw/2, bucketY - 30, 4, 0, Math.PI * 2);
+fc.fill();
+fc.fillStyle = '#CD7F32';
+fc.font = '7px Courier New';
+fc.textAlign = 'center';
+fc.fillText('BELL 🔔', bx + bw/2, bucketY - 34);
+
+// ── Launchers ──
+function drawLauncher(x, playerLabel) {
+  // Launch tube
+  fc.fillStyle = '#888';
+  fc.save();
+  fc.translate(x, by + bh - 10);
+  fc.rotate(-0.26); // ~75° from horizontal
+  fc.fillRect(-6, -80, 12, 80);
+  fc.restore();
+
+  // Plunger knob
+  fc.fillStyle = '#c0c0c0';
+  fc.beginPath();
+  fc.arc(x, by + bh + 2, 10, 0, Math.PI * 2);
+  fc.fill();
+  fc.strokeStyle = '#888';
+  fc.lineWidth = 2;
+  fc.stroke();
+
+  // Spring inside plunger
+  fc.strokeStyle = '#999';
+  fc.lineWidth = 1.5;
+  for (let i = 0; i < 4; i++) {
+    fc.beginPath();
+    fc.moveTo(x - 5, by + bh + 16 + i * 6);
+    fc.lineTo(x + 5, by + bh + 19 + i * 6);
+    fc.stroke();
+  }
+
+  // Magazine hopper
+  fc.fillStyle = '#555';
+  fc.fillRect(x - 14, by + bh - 100, 28, 30);
+  fc.strokeStyle = '#777';
+  fc.lineWidth = 1;
+  fc.strokeRect(x - 14, by + bh - 100, 28, 30);
+
+  // Balls in magazine
+  for (let i = 0; i < 3; i++) {
+    fc.fillStyle = '#e8e84a';
+    fc.globalAlpha = 0.8;
+    fc.beginPath();
+    fc.arc(x, by + bh - 90 + i * 10, 5, 0, Math.PI * 2);
+    fc.fill();
+    fc.globalAlpha = 1;
+  }
+
+  // Labels
+  fc.fillStyle = '#c0c0c0';
+  fc.font = '8px Courier New';
+  fc.textAlign = 'center';
+  fc.fillText('MAGAZINE', x, by + bh - 104);
+  fc.fillText('PLUNGER', x, by + bh + 50);
+  fc.fillStyle = '#FFD700';
+  fc.font = 'bold 11px Courier New';
+  fc.fillText(playerLabel, x, by + bh + 64);
+}
+
+drawLauncher(bx + 50, 'P1');
+drawLauncher(bx + bw - 50, 'P2');
+
+// ── Balls in play (showing trajectories) ──
+// Ball 1: rising from launcher
+fc.fillStyle = '#e8e84a';
+fc.globalAlpha = 0.9;
+fc.beginPath();
+fc.arc(bx + 80, by + 160, 9, 0, Math.PI * 2);
+fc.fill();
+// whiffle holes
+fc.fillStyle = 'rgba(0,0,0,0.3)';
+fc.beginPath(); fc.arc(bx + 77, by + 158, 2.5, 0, Math.PI * 2); fc.fill();
+fc.beginPath(); fc.arc(bx + 83, by + 163, 2.5, 0, Math.PI * 2); fc.fill();
+fc.globalAlpha = 1;
+
+// rising trajectory (dashed)
+fc.strokeStyle = 'rgba(232,232,74,0.4)';
+fc.lineWidth = 1.5;
+fc.setLineDash([3, 5]);
+fc.beginPath();
+fc.moveTo(bx + 65, by + bh - 70);
+fc.quadraticCurveTo(bx + 60, by + 300, bx + 80, by + 160);
+fc.stroke();
+fc.setLineDash([]);
+
+// Ball 2: bouncing mid-field after bumper hit
+fc.fillStyle = '#e8e84a';
+fc.globalAlpha = 0.9;
+fc.beginPath();
+fc.arc(bx + 310, by + 340, 9, 0, Math.PI * 2);
+fc.fill();
+fc.fillStyle = 'rgba(0,0,0,0.3)';
+fc.beginPath(); fc.arc(bx + 307, by + 338, 2.5, 0, Math.PI * 2); fc.fill();
+fc.beginPath(); fc.arc(bx + 313, by + 343, 2.5, 0, Math.PI * 2); fc.fill();
+fc.globalAlpha = 1;
+
+// bumper ricochet trajectory
+fc.strokeStyle = 'rgba(255,100,100,0.5)';
+fc.lineWidth = 1.5;
+fc.setLineDash([3, 5]);
+fc.beginPath();
+fc.moveTo(bumpers[1].x, bumpers[1].y);
+fc.lineTo(bx + 310, by + 340);
+fc.stroke();
+fc.fillStyle = 'rgba(255,100,100,0.6)';
+fc.font = '7px Courier New';
+fc.textAlign = 'left';
+fc.fillText('RICOCHET!', bx + 318, by + 335);
+fc.setLineDash([]);
+
+// ── Dimension lines ──
+// Width
+fc.strokeStyle = '#888';
+fc.lineWidth = 1;
+fc.beginPath();
+fc.moveTo(bx, by - 10);
+fc.lineTo(bx + bw, by - 10);
+fc.stroke();
+fc.beginPath(); fc.moveTo(bx, by - 14); fc.lineTo(bx, by - 6); fc.stroke();
+fc.beginPath(); fc.moveTo(bx + bw, by - 14); fc.lineTo(bx + bw, by - 6); fc.stroke();
+fc.fillStyle = '#888';
+fc.font = '10px Courier New';
+fc.textAlign = 'center';
+fc.fillText('48" (4 ft)', bx + bw/2, by - 16);
+
+// Height
+fc.beginPath();
+fc.moveTo(bx + bw + 14, by);
+fc.lineTo(bx + bw + 14, by + bh);
+fc.stroke();
+fc.beginPath(); fc.moveTo(bx + bw + 10, by); fc.lineTo(bx + bw + 18, by); fc.stroke();
+fc.beginPath(); fc.moveTo(bx + bw + 10, by + bh); fc.lineTo(bx + bw + 18, by + bh); fc.stroke();
+fc.save();
+fc.translate(bx + bw + 26, by + bh/2);
+fc.rotate(-Math.PI/2);
+fc.fillText('72" (6 ft)', 0, 0);
+fc.restore();
+
+// Acrylic overlay hint
+fc.strokeStyle = 'rgba(255, 215, 0, 0.2)';
+fc.lineWidth = 2;
+fc.setLineDash([10, 5]);
+fc.strokeRect(bx + 2, by + 2, bw - 4, bh - 4);
+fc.setLineDash([]);
+fc.fillStyle = 'rgba(255,215,0,0.35)';
+fc.font = '8px Courier New';
+fc.textAlign = 'right';
+fc.fillText('CLEAR ACRYLIC FRONT', bx + bw - 8, by + 16);
+
+// Hand crank callout (right side)
+fc.fillStyle = '#8B4513';
+fc.font = '9px Courier New';
+fc.textAlign = 'left';
+fc.fillText('HAND CRANK →', bx + bw + 4, bumpers[1].y);
+fc.fillText('(drives bumpers)', bx + bw + 4, bumpers[1].y + 12);
+// crank handle
+fc.strokeStyle = '#8B4513';
+fc.lineWidth = 3;
+fc.beginPath();
+fc.moveTo(bx + bw, bumpers[1].y - 5);
+fc.lineTo(bx + bw + 20, bumpers[1].y - 5);
+fc.lineTo(bx + bw + 20, bumpers[1].y + 5);
+fc.stroke();
+fc.fillStyle = '#8B4513';
+fc.beginPath();
+fc.arc(bx + bw + 20, bumpers[1].y + 5, 5, 0, Math.PI * 2);
+fc.fill();
+
+
+// ══════════════════════════════════
+// SIDE VIEW
+// ══════════════════════════════════
+const sc = document.getElementById('side').getContext('2d');
+const SW = 240, SH = 680;
+
+// Ground line
+sc.strokeStyle = '#555';
+sc.lineWidth = 1;
+sc.beginPath();
+sc.moveTo(20, 600);
+sc.lineTo(220, 600);
+sc.stroke();
+
+// Back panel (tilted ~20°)
+const tilt = 20 * Math.PI / 180;
+const boardBase = { x: 90, y: 598 };
+const boardTopP = {
+  x: boardBase.x - Math.sin(tilt) * 520,
+  y: boardBase.y - Math.cos(tilt) * 520
+};
+
+// Back panel
+sc.strokeStyle = '#8B5E3C';
+sc.lineWidth = 6;
+sc.beginPath();
+sc.moveTo(boardBase.x, boardBase.y);
+sc.lineTo(boardTopP.x, boardTopP.y);
+sc.stroke();
+
+// Label
+sc.fillStyle = '#8B5E3C';
+sc.font = '9px Courier New';
+sc.save();
+sc.translate(boardBase.x - 14, boardBase.y - 150);
+sc.rotate(-tilt);
+sc.fillText('PLYWOOD', 0, 0);
+sc.restore();
+
+// Acrylic front (5" gap)
+const gap = 28;
+const acBase = {
+  x: boardBase.x + gap * Math.cos(tilt),
+  y: boardBase.y - gap * Math.sin(tilt)
+};
+const acTop = {
+  x: boardTopP.x + gap * Math.cos(tilt),
+  y: boardTopP.y - gap * Math.sin(tilt)
+};
+
+sc.strokeStyle = 'rgba(255, 215, 0, 0.4)';
+sc.lineWidth = 3;
+sc.beginPath();
+sc.moveTo(acBase.x, acBase.y);
+sc.lineTo(acTop.x, acTop.y);
+sc.stroke();
+
+sc.fillStyle = 'rgba(255,215,0,0.35)';
+sc.font = '8px Courier New';
+sc.save();
+sc.translate(acBase.x + 14, acBase.y - 120);
+sc.rotate(-tilt);
+sc.fillText('ACRYLIC', 0, 0);
+sc.restore();
+
+// Gap dimension
+const gMidY = (boardBase.y + boardTopP.y) / 2 + 60;
+const gMidX1 = boardBase.x + (boardTopP.x - boardBase.x) * 0.55;
+const gMidX2 = gMidX1 + gap * Math.cos(tilt);
+
+sc.strokeStyle = '#888';
+sc.lineWidth = 1;
+sc.beginPath();
+sc.moveTo(gMidX1, gMidY);
+sc.lineTo(gMidX2, gMidY);
+sc.stroke();
+sc.beginPath(); sc.moveTo(gMidX1, gMidY - 4); sc.lineTo(gMidX1, gMidY + 4); sc.stroke();
+sc.beginPath(); sc.moveTo(gMidX2, gMidY - 4); sc.lineTo(gMidX2, gMidY + 4); sc.stroke();
+sc.fillStyle = '#888';
+sc.font = '9px Courier New';
+sc.textAlign = 'center';
+sc.fillText('5"', (gMidX1 + gMidX2) / 2, gMidY - 7);
+
+// Pegs (side view — dots between panels)
+sc.fillStyle = '#FFD700';
+for (let i = 0; i < 8; i++) {
+  const t = (i + 1) / 10;
+  const px = boardBase.x + (boardTopP.x - boardBase.x) * t + gap * Math.cos(tilt) / 2;
+  const py = boardBase.y + (boardTopP.y - boardBase.y) * t;
+  sc.beginPath();
+  sc.arc(px, py, 3, 0, Math.PI * 2);
+  sc.fill();
+}
+
+// Bee bumper (side view — shows spring mechanism)
+const bumperSideY = boardBase.y + (boardTopP.y - boardBase.y) * 0.45;
+const bumperSideX = boardBase.x + (boardTopP.x - boardBase.x) * 0.45;
+
+// Pushrod behind board
+sc.strokeStyle = '#888';
+sc.lineWidth = 3;
+const pushrodStartX = bumperSideX - 20;
+const pushrodStartY = bumperSideY + 7;
+sc.beginPath();
+sc.moveTo(pushrodStartX, pushrodStartY);
+sc.lineTo(bumperSideX + gap * Math.cos(tilt) * 0.3, bumperSideY - gap * Math.sin(tilt) * 0.3);
+sc.stroke();
+
+// Spring coils
+sc.strokeStyle = '#DAA520';
+sc.lineWidth = 1.5;
+for (let i = 0; i < 3; i++) {
+  sc.beginPath();
+  const sx = pushrodStartX - 6 - i * 5;
+  const sy = pushrodStartY + 2 + i * 2;
+  sc.moveTo(sx, sy - 4);
+  sc.lineTo(sx + 4, sy + 4);
+  sc.stroke();
+}
+
+// Bumper face (inside gap)
+const bFaceX = bumperSideX + gap * Math.cos(tilt) * 0.3;
+const bFaceY = bumperSideY - gap * Math.sin(tilt) * 0.3;
+sc.fillStyle = '#FFD700';
+sc.fillRect(bFaceX - 2, bFaceY - 8, 5, 16);
+sc.strokeStyle = '#222';
+sc.lineWidth = 1;
+sc.strokeRect(bFaceX - 2, bFaceY - 8, 5, 16);
+
+// Labels
+sc.fillStyle = '#DAA520';
+sc.font = '7px Courier New';
+sc.textAlign = 'left';
+sc.fillText('BUMPER', bFaceX + 8, bFaceY - 4);
+sc.fillText('SPRING', pushrodStartX - 26, pushrodStartY - 2);
+
+// Cam behind board
+const camX = pushrodStartX - 30;
+const camY = pushrodStartY + 5;
+sc.fillStyle = '#8B4513';
+sc.beginPath();
+sc.arc(camX, camY, 10, 0, Math.PI * 2);
+sc.fill();
+sc.fillStyle = '#1a1a0e';
+sc.beginPath();
+sc.arc(camX, camY, 3, 0, Math.PI * 2);
+sc.fill();
+// cam lobe
+sc.fillStyle = '#8B4513';
+sc.beginPath();
+sc.ellipse(camX + 8, camY - 6, 6, 4, -0.5, 0, Math.PI * 2);
+sc.fill();
+
+sc.fillStyle = '#8B4513';
+sc.font = '7px Courier New';
+sc.textAlign = 'center';
+sc.fillText('CAM', camX, camY + 20);
+sc.fillText('AXLE', camX, camY + 28);
+
+// A-frame support legs
+sc.strokeStyle = '#666';
+sc.lineWidth = 5;
+const legAttachT = 0.4;
+const legTopX2 = boardBase.x + (boardTopP.x - boardBase.x) * legAttachT;
+const legTopY2 = boardBase.y + (boardTopP.y - boardBase.y) * legAttachT;
+const legEndX = boardBase.x + 45;
+const legEndY = 598;
+
+sc.beginPath();
+sc.moveTo(legTopX2, legTopY2);
+sc.lineTo(legEndX, legEndY);
+sc.stroke();
+
+// Hinge
+sc.fillStyle = '#e94560';
+sc.beginPath();
+sc.arc(legTopX2, legTopY2, 4, 0, Math.PI * 2);
+sc.fill();
+sc.fillStyle = '#888';
+sc.font = '7px Courier New';
+sc.textAlign = 'left';
+sc.fillText('HINGE', legTopX2 + 8, legTopY2 - 4);
+
+// Cross brace
+sc.strokeStyle = '#555';
+sc.lineWidth = 2;
+const braceT = 0.7;
+const braceLX = legTopX2 + (legEndX - legTopX2) * braceT;
+const braceLY = legTopY2 + (legEndY - legTopY2) * braceT;
+const braceBX = boardBase.x + (boardTopP.x - boardBase.x) * (1 - braceT * 0.5);
+const braceBY = boardBase.y + (boardTopP.y - boardBase.y) * (1 - braceT * 0.5);
+sc.beginPath();
+sc.moveTo(braceLX, braceLY);
+sc.lineTo(braceBX, braceBY + 4);
+sc.stroke();
+sc.fillStyle = '#666';
+sc.font = '7px Courier New';
+sc.textAlign = 'center';
+sc.fillText('BRACE', (braceLX + braceBX) / 2, braceLY - 6);
+
+// Rubber feet
+sc.fillStyle = '#e94560';
+sc.fillRect(legEndX - 5, legEndY - 2, 10, 5);
+sc.fillRect(boardBase.x - 5, boardBase.y - 2, 10, 5);
+
+// Wing nut callout
+sc.fillStyle = '#FFD700';
+sc.font = '7px Courier New';
+sc.textAlign = 'center';
+sc.fillText('WING NUT', (legTopX2 + legEndX) / 2 + 5, (legTopY2 + legEndY) / 2 - 8);
+sc.fillText('(NO TOOLS)', (legTopX2 + legEndX) / 2 + 5, (legTopY2 + legEndY) / 2);
+
+// Angle arc
+sc.strokeStyle = '#FFD700';
+sc.lineWidth = 1.5;
+sc.beginPath();
+sc.arc(boardBase.x, boardBase.y, 55, -Math.PI / 2, -Math.PI / 2 + tilt, false);
+sc.stroke();
+sc.fillStyle = '#FFD700';
+sc.font = '10px Courier New';
+sc.textAlign = 'left';
+sc.fillText('~20°', boardBase.x + 15, boardBase.y - 52);
+
+// Ball in play (side view)
+const ballSideX = boardBase.x + (boardTopP.x - boardBase.x) * 0.35 + gap * Math.cos(tilt) * 0.5;
+const ballSideY = boardBase.y + (boardTopP.y - boardBase.y) * 0.35;
+sc.fillStyle = '#e8e84a';
+sc.globalAlpha = 0.9;
+sc.beginPath();
+sc.arc(ballSideX, ballSideY, 7, 0, Math.PI * 2);
+sc.fill();
+sc.globalAlpha = 1;
+
+// Launch tube at bottom (side view)
+sc.fillStyle = '#888';
+sc.save();
+sc.translate(acBase.x - 5, acBase.y - 15);
+sc.rotate(-tilt - 0.3);
+sc.fillRect(-4, -50, 8, 50);
+sc.restore();
+
+sc.fillStyle = '#c0c0c0';
+sc.font = '7px Courier New';
+sc.textAlign = 'center';
+sc.fillText('LAUNCH', acBase.x + 10, acBase.y + 15);
+sc.fillText('TUBE', acBase.x + 10, acBase.y + 23);
+
+// Scoring bucket (side view, at base between panels)
+sc.fillStyle = '#DAA520';
+sc.globalAlpha = 0.7;
+const buckSideX = boardBase.x + gap * Math.cos(tilt) * 0.5;
+const buckSideY = boardBase.y - 20;
+sc.fillRect(buckSideX - 10, buckSideY, 20, 18);
+sc.globalAlpha = 1;
+sc.strokeStyle = '#DAA520';
+sc.lineWidth = 1;
+sc.strokeRect(buckSideX - 10, buckSideY, 20, 18);
+sc.fillStyle = '#DAA520';
+sc.font = '7px Courier New';
+sc.textAlign = 'center';
+sc.fillText('BUCKET', buckSideX, buckSideY - 4);
+
+// Ball return chute behind board
+sc.strokeStyle = '#555';
+sc.lineWidth = 2;
+sc.setLineDash([4, 4]);
+sc.beginPath();
+sc.moveTo(boardBase.x - 5, buckSideY + 10);
+sc.lineTo(boardBase.x - 20, buckSideY + 25);
+sc.lineTo(boardBase.x - 20, boardBase.y - 5);
+sc.stroke();
+sc.setLineDash([]);
+sc.fillStyle = '#555';
+sc.font = '7px Courier New';
+sc.textAlign = 'right';
+sc.fillText('BALL', boardBase.x - 22, buckSideY + 30);
+sc.fillText('RETURN', boardBase.x - 22, buckSideY + 38);
+
+// Labels
+sc.fillStyle = '#888';
+sc.font = '10px Courier New';
+sc.textAlign = 'center';
+sc.fillText('SIDE PROFILE', 120, 635);
+sc.fillText('(tilted ~20° from vertical)', 120, 649);
+sc.fillText('All mechanical — no power!', 120, 665);
+
+// Volunteer with crank callout
+sc.fillStyle = '#b89a3c';
+sc.font = '8px Courier New';
+sc.textAlign = 'left';
+sc.fillText('"THE BEEKEEPER"', camX - 25, camY + 42);
+sc.fillText('cranks bumpers', camX - 20, camY + 52);
+
+// Height dimension on far right
+sc.strokeStyle = '#888';
+sc.lineWidth = 1;
+sc.beginPath();
+sc.moveTo(SW - 15, boardTopP.y - gap * Math.sin(tilt));
+sc.lineTo(SW - 15, 600);
+sc.stroke();
+sc.beginPath(); sc.moveTo(SW - 19, boardTopP.y - gap * Math.sin(tilt)); sc.lineTo(SW - 11, boardTopP.y - gap * Math.sin(tilt)); sc.stroke();
+sc.beginPath(); sc.moveTo(SW - 19, 600); sc.lineTo(SW - 11, 600); sc.stroke();
+sc.save();
+sc.translate(SW - 6, 400);
+sc.rotate(-Math.PI/2);
+sc.fillStyle = '#888';
+sc.font = '9px Courier New';
+sc.textAlign = 'center';
+sc.fillText('~80" peak', 0, 0);
+sc.restore();
+</script>
+
+</body>
+</html>
