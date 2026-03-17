@@ -49,3 +49,9 @@
 5. **Smell and mist** — Show the physical delivery system (nozzles, spray lines) with dashed spray-pattern lines radiating outward. The viewer infers the sensation from the hardware
 6. **Sensory system callouts** — When a game has multiple subsystems (fog, light, sound, mist, candy), label each one clearly in the side cross-section where spatial relationships between hidden components matter most
 7. **Stagger dense labels vertically** — When multiple scoring buckets or elements are tightly packed, alternate label Y positions (even items above, odd items below) to prevent overlap
+
+### Multi-phase gameplay diagrams:
+- When a game has distinct phases (setup/build → action → scoring), use HTML-based gameplay sequence strips rather than canvas-drawn ones — HTML `flexbox` with styled divs renders more reliably than canvas text for complex layouts with arrows and labels
+- For games where players modify the board (placing deflectors, ramps, etc.), show BOTH the player-placed elements AND the resulting ball trajectories in the front view. The "before/after" of player agency is the key story
+- Inset detail views (zoomed cross-sections of specific mechanisms) work well in the side view canvas when the main view can't show small components clearly — e.g., magnetic attachment, hinge mechanisms, wedge geometry
+- Zone sidebar annotations (colored bands on the edge of the board) effectively segment vertical games into functional regions (hopper zone, play zone, scoring zone) without cluttering the main diagram
