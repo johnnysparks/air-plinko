@@ -1,0 +1,813 @@
+<!-- screenshot: 900x1600 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stomp Rockets Plinko — Concept Diagram</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0d0d1a; color: #e0e0e0; font-family: 'Courier New', monospace; padding: 20px; }
+  h1 { text-align: center; color: #ff6ec7; margin-bottom: 4px; font-size: 28px; letter-spacing: 4px; text-shadow: 0 0 10px #ff6ec7; }
+  .subtitle { text-align: center; color: #888; margin-bottom: 30px; font-size: 14px; }
+  .views { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; }
+  .view { background: #111128; border: 1px solid #333; border-radius: 8px; padding: 20px; }
+  .view h2 { color: #ff6ec7; margin-bottom: 16px; font-size: 16px; text-align: center; }
+  canvas { display: block; }
+  .legend { margin-top: 30px; max-width: 860px; margin-left: auto; margin-right: auto; }
+  .legend h3 { color: #ff6ec7; margin-bottom: 10px; }
+  .legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; }
+  .legend-item { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; font-size: 13px; }
+  .legend-swatch { width: 16px; height: 16px; border-radius: 3px; flex-shrink: 0; }
+  .specs { margin-top: 30px; max-width: 860px; margin-left: auto; margin-right: auto; background: #111128; border: 1px solid #333; border-radius: 8px; padding: 20px; }
+  .specs h3 { color: #ff6ec7; margin-bottom: 10px; }
+  .specs table { width: 100%; font-size: 13px; }
+  .specs td { padding: 3px 8px; }
+  .specs td:first-child { color: #888; }
+</style>
+</head>
+<body>
+
+<h1>STOMP ROCKETS PLINKO</h1>
+<p class="subtitle">stomp pads × launch tubes × neon plinko board × scoring buckets — carnival booth concept</p>
+
+<div class="views">
+  <div class="view">
+    <h2>FRONT VIEW</h2>
+    <canvas id="front" width="520" height="580"></canvas>
+  </div>
+  <div class="view">
+    <h2>SIDE CROSS-SECTION</h2>
+    <canvas id="side" width="300" height="580"></canvas>
+  </div>
+</div>
+
+<div class="legend">
+  <h3>LEGEND</h3>
+  <div class="legend-grid">
+    <div class="legend-item"><div class="legend-swatch" style="background:#1a1a2e"></div> Plywood back panel (matte black + neon stripes)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:rgba(135,206,250,0.3); border:1px solid #87CEFA"></div> Clear acrylic front panel</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#ff6ec7"></div> Neon pink pegs</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#39ff14"></div> Neon green pegs</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#ffff00"></div> Neon yellow pegs</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#00ffff"></div> Neon cyan pegs</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#FFD700"></div> Scoring buckets (point values labeled)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#ff4444"></div> GUTTER zones (0 pts)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#e94560"></div> Player 1 stomp pad + launch tube (red)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#4da6ff"></div> Player 2 stomp pad + launch tube (blue)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#9b59b6"></div> Ball magazine (clear tube)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#FFE44D"></div> Whiffle balls</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#666"></div> 2×4 support frame + legs</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:rgba(255,255,255,0.2)"></div> Air hose (stomp pad to launch tube)</div>
+  </div>
+</div>
+
+<div class="specs">
+  <h3>KEY SPECS</h3>
+  <table>
+    <tr><td>Board</td><td>48"W × 72"H × 4" deep, ¾" plywood + ¼" acrylic</td></tr>
+    <tr><td>Tilt</td><td>~25° from vertical, peak at 84"</td></tr>
+    <tr><td>Pegs</td><td>~60 mushroom-cap 3D-printed, 4 neon colors</td></tr>
+    <tr><td>Stomp pads</td><td>18"×18" platform, heavy-duty air bladder</td></tr>
+    <tr><td>Launch tubes</td><td>1.5" PVC at 60° angle, pneumatic burst</td></tr>
+    <tr><td>Ball magazine</td><td>4" clear PVC, gravity-fed, 10 balls each</td></tr>
+    <tr><td>Scoring</td><td>50 / 100 / 200 / 500 / GUTTER (0)</td></tr>
+    <tr><td>Round time</td><td>45 seconds, 10 balls per player</td></tr>
+    <tr><td>Est. cost</td><td>~$400–500</td></tr>
+  </table>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// FRONT VIEW
+// ══════════════════════════════════════════
+const fc = document.getElementById('front').getContext('2d');
+const FW = 520, FH = 580;
+
+// Ground line
+fc.strokeStyle = '#333';
+fc.lineWidth = 1;
+fc.beginPath();
+fc.moveTo(20, 520);
+fc.lineTo(500, 520);
+fc.stroke();
+
+// ── Support Frame (legs) ──
+fc.strokeStyle = '#666';
+fc.lineWidth = 5;
+// Left legs
+fc.beginPath(); fc.moveTo(85, 80); fc.lineTo(70, 520); fc.stroke();
+fc.beginPath(); fc.moveTo(115, 80); fc.lineTo(100, 520); fc.stroke();
+// Right legs
+fc.beginPath(); fc.moveTo(405, 80); fc.lineTo(420, 520); fc.stroke();
+fc.beginPath(); fc.moveTo(435, 80); fc.lineTo(450, 520); fc.stroke();
+// Cross brace
+fc.lineWidth = 4;
+fc.beginPath(); fc.moveTo(82, 310); fc.lineTo(432, 310); fc.stroke();
+
+// Rubber feet
+fc.fillStyle = '#e94560';
+[66, 96, 416, 446].forEach(x => fc.fillRect(x, 518, 12, 5));
+
+// ── Plinko Board ──
+const bx = 90, by = 60, bw = 340, bh = 400;
+
+// Board back panel
+fc.fillStyle = '#1a1a2e';
+fc.fillRect(bx, by, bw, bh);
+
+// Neon racing stripes (vertical)
+fc.globalAlpha = 0.15;
+fc.fillStyle = '#ff6ec7';
+fc.fillRect(bx + bw*0.2, by, 3, bh);
+fc.fillStyle = '#39ff14';
+fc.fillRect(bx + bw*0.4, by, 3, bh);
+fc.fillStyle = '#ffff00';
+fc.fillRect(bx + bw*0.6, by, 3, bh);
+fc.fillStyle = '#00ffff';
+fc.fillRect(bx + bw*0.8, by, 3, bh);
+fc.globalAlpha = 1;
+
+// Board border (edge rails)
+fc.strokeStyle = '#555';
+fc.lineWidth = 4;
+fc.strokeRect(bx, by, bw, bh);
+
+// ── Peg Grid ──
+const pegColors = ['#ff6ec7', '#39ff14', '#ffff00', '#00ffff'];
+const pegRows = 10;
+const pegCols = 7;
+const pegSpacingX = bw / (pegCols + 1);
+const pegSpacingY = (bh - 80) / (pegRows + 1);
+let pegIdx = 0;
+
+for (let row = 0; row < pegRows; row++) {
+  const offset = (row % 2 === 0) ? 0 : pegSpacingX / 2;
+  const cols = (row % 2 === 0) ? pegCols : pegCols - 1;
+  for (let col = 0; col < cols; col++) {
+    const px = bx + pegSpacingX + col * pegSpacingX + offset;
+    const py = by + 40 + row * pegSpacingY;
+    const color = pegColors[pegIdx % 4];
+    pegIdx++;
+
+    // Mushroom cap peg
+    fc.fillStyle = color;
+    fc.globalAlpha = 0.85;
+    fc.beginPath();
+    fc.arc(px, py, 7, 0, Math.PI * 2);
+    fc.fill();
+    // Stem
+    fc.fillRect(px - 2, py, 4, 5);
+    // Highlight
+    fc.fillStyle = 'rgba(255,255,255,0.3)';
+    fc.beginPath();
+    fc.arc(px - 2, py - 2, 2.5, 0, Math.PI * 2);
+    fc.fill();
+    fc.globalAlpha = 1;
+  }
+}
+
+// ── Scoring Buckets ──
+const bucketY = by + bh - 2;
+const bucketH = 30;
+const buckets = [
+  { label: '0', w: 18, color: '#ff4444', name: 'GUTTER' },
+  { label: '50', w: 46, color: '#FFD700', name: '' },
+  { label: '100', w: 40, color: '#FFD700', name: '' },
+  { label: '200', w: 34, color: '#FFD700', name: '' },
+  { label: '500', w: 24, color: '#ff6ec7', name: 'JACKPOT' },
+  { label: '200', w: 34, color: '#FFD700', name: '' },
+  { label: '100', w: 40, color: '#FFD700', name: '' },
+  { label: '50', w: 46, color: '#FFD700', name: '' },
+  { label: '0', w: 18, color: '#ff4444', name: 'GUTTER' },
+];
+
+// Calculate total bucket width and distribute
+const totalBucketW = buckets.reduce((s, b) => s + b.w, 0);
+const bucketGap = (bw - totalBucketW) / (buckets.length + 1);
+let bucketX = bx + bucketGap;
+
+buckets.forEach(b => {
+  // Bucket slot
+  fc.fillStyle = b.color;
+  fc.globalAlpha = 0.6;
+  fc.fillRect(bucketX, bucketY, b.w, bucketH);
+  fc.globalAlpha = 1;
+  fc.strokeStyle = b.color;
+  fc.lineWidth = 1.5;
+  fc.strokeRect(bucketX, bucketY, b.w, bucketH);
+
+  // Label
+  fc.fillStyle = '#fff';
+  fc.font = 'bold 10px Courier New';
+  fc.textAlign = 'center';
+  fc.fillText(b.label, bucketX + b.w/2, bucketY + 14);
+
+  if (b.name) {
+    fc.font = '7px Courier New';
+    fc.fillStyle = b.color;
+    fc.fillText(b.name, bucketX + b.w/2, bucketY + 24);
+  }
+
+  bucketX += b.w + bucketGap;
+});
+
+// ── Launch Tubes (×2) ──
+// Player 1 (left, red)
+fc.strokeStyle = '#e94560';
+fc.lineWidth = 3;
+fc.beginPath();
+fc.moveTo(bx + 30, by + bh - 10);
+fc.lineTo(bx + 10, by + bh + 50);
+fc.stroke();
+// Tube opening indicator
+fc.fillStyle = '#e94560';
+fc.beginPath();
+fc.arc(bx + 30, by + bh - 10, 5, 0, Math.PI * 2);
+fc.fill();
+
+// Player 2 (right, blue)
+fc.strokeStyle = '#4da6ff';
+fc.lineWidth = 3;
+fc.beginPath();
+fc.moveTo(bx + bw - 30, by + bh - 10);
+fc.lineTo(bx + bw - 10, by + bh + 50);
+fc.stroke();
+fc.fillStyle = '#4da6ff';
+fc.beginPath();
+fc.arc(bx + bw - 30, by + bh - 10, 5, 0, Math.PI * 2);
+fc.fill();
+
+// ── Ball Magazines (×2) ──
+function drawMagazine(x, y, color) {
+  // Clear tube
+  fc.strokeStyle = '#9b59b6';
+  fc.lineWidth = 2;
+  fc.globalAlpha = 0.7;
+  fc.beginPath();
+  fc.moveTo(x - 8, y);
+  fc.lineTo(x - 8, y - 80);
+  fc.lineTo(x + 8, y - 80);
+  fc.lineTo(x + 8, y);
+  fc.stroke();
+  fc.globalAlpha = 1;
+
+  // Balls stacked inside
+  for (let i = 0; i < 6; i++) {
+    fc.fillStyle = '#FFE44D';
+    fc.globalAlpha = 0.8;
+    fc.beginPath();
+    fc.arc(x, y - 6 - i * 12, 5, 0, Math.PI * 2);
+    fc.fill();
+    fc.globalAlpha = 1;
+  }
+
+  // Label
+  fc.fillStyle = '#9b59b6';
+  fc.font = '7px Courier New';
+  fc.textAlign = 'center';
+  fc.fillText('MAGAZINE', x, y - 86);
+  fc.fillText('(10 BALLS)', x, y - 78);
+}
+
+drawMagazine(bx + 15, by + bh - 15, '#e94560');
+drawMagazine(bx + bw - 15, by + bh - 15, '#4da6ff');
+
+// ── Stomp Pads on Ground ──
+function drawStompPad(cx, y, color, label) {
+  // Platform
+  fc.fillStyle = '#2a2a2a';
+  fc.fillRect(cx - 35, y - 6, 70, 12);
+  fc.strokeStyle = color;
+  fc.lineWidth = 2;
+  fc.strokeRect(cx - 35, y - 6, 70, 12);
+
+  // Bladder (inflated dome shape)
+  fc.fillStyle = color;
+  fc.globalAlpha = 0.5;
+  fc.beginPath();
+  fc.ellipse(cx, y - 8, 28, 14, 0, Math.PI, 0);
+  fc.fill();
+  fc.globalAlpha = 1;
+  fc.strokeStyle = color;
+  fc.lineWidth = 2;
+  fc.beginPath();
+  fc.ellipse(cx, y - 8, 28, 14, 0, Math.PI, 0);
+  fc.stroke();
+
+  // Label
+  fc.fillStyle = color;
+  fc.font = 'bold 10px Courier New';
+  fc.textAlign = 'center';
+  fc.fillText(label, cx, y + 22);
+
+  // STOMP arrow
+  fc.fillStyle = '#fff';
+  fc.font = 'bold 12px Courier New';
+  fc.fillText('⬇ STOMP', cx, y - 28);
+}
+
+drawStompPad(bx + 60, 500, '#e94560', 'P1 (RED)');
+drawStompPad(bx + bw - 60, 500, '#4da6ff', 'P2 (BLUE)');
+
+// ── Air Hoses (stomp pad to launch tube) ──
+fc.strokeStyle = 'rgba(255,255,255,0.25)';
+fc.lineWidth = 3;
+fc.setLineDash([6, 4]);
+// P1 hose
+fc.beginPath();
+fc.moveTo(bx + 60, 494);
+fc.quadraticCurveTo(bx + 30, 480, bx + 10, by + bh + 50);
+fc.stroke();
+// P2 hose
+fc.beginPath();
+fc.moveTo(bx + bw - 60, 494);
+fc.quadraticCurveTo(bx + bw - 30, 480, bx + bw - 10, by + bh + 50);
+fc.stroke();
+fc.setLineDash([]);
+
+// ── Ball launch trajectory (example) ──
+fc.strokeStyle = '#FFE44D';
+fc.lineWidth = 1.5;
+fc.setLineDash([4, 3]);
+fc.globalAlpha = 0.6;
+// Ball shooting upward from P1 launch tube
+fc.beginPath();
+fc.moveTo(bx + 30, by + bh - 15);
+fc.quadraticCurveTo(bx + 60, by + bh/2, bx + 80, by + 80);
+fc.stroke();
+// Arrowhead
+fc.setLineDash([]);
+fc.fillStyle = '#FFE44D';
+fc.beginPath();
+fc.moveTo(bx + 80, by + 80);
+fc.lineTo(bx + 74, by + 90);
+fc.lineTo(bx + 86, by + 90);
+fc.closePath();
+fc.fill();
+fc.font = 'italic 8px Courier New';
+fc.textAlign = 'left';
+fc.fillText('MONSTER STOMP', bx + 90, by + 85);
+fc.fillText('→ TOP ZONE!', bx + 90, by + 95);
+fc.globalAlpha = 1;
+
+// A weaker trajectory
+fc.strokeStyle = '#FFE44D';
+fc.lineWidth = 1;
+fc.setLineDash([3, 3]);
+fc.globalAlpha = 0.35;
+fc.beginPath();
+fc.moveTo(bx + 30, by + bh - 15);
+fc.quadraticCurveTo(bx + 50, by + bh - 60, bx + 65, by + bh - 100);
+fc.stroke();
+fc.setLineDash([]);
+fc.font = 'italic 7px Courier New';
+fc.fillText('weak stomp', bx + 70, by + bh - 90);
+fc.globalAlpha = 1;
+
+// ── Height Zones labeled ──
+fc.fillStyle = 'rgba(255,110,199,0.2)';
+fc.fillRect(bx + bw + 8, by, 30, bh * 0.3);
+fc.fillStyle = 'rgba(255,215,0,0.15)';
+fc.fillRect(bx + bw + 8, by + bh * 0.3, 30, bh * 0.35);
+fc.fillStyle = 'rgba(100,255,100,0.1)';
+fc.fillRect(bx + bw + 8, by + bh * 0.65, 30, bh * 0.35);
+
+fc.font = '8px Courier New';
+fc.textAlign = 'center';
+fc.fillStyle = '#ff6ec7';
+fc.fillText('TOP', bx + bw + 23, by + bh * 0.15);
+fc.fillStyle = '#FFD700';
+fc.fillText('MID', bx + bw + 23, by + bh * 0.47);
+fc.fillStyle = '#39ff14';
+fc.fillText('LOW', bx + bw + 23, by + bh * 0.82);
+
+// ── Dimensions ──
+fc.fillStyle = '#555';
+fc.font = '10px Courier New';
+fc.textAlign = 'center';
+// Width
+fc.fillText('48"', bx + bw/2, by - 16);
+fc.strokeStyle = '#555';
+fc.lineWidth = 1;
+fc.beginPath(); fc.moveTo(bx, by - 10); fc.lineTo(bx + bw, by - 10); fc.stroke();
+fc.beginPath(); fc.moveTo(bx, by - 14); fc.lineTo(bx, by - 6); fc.stroke();
+fc.beginPath(); fc.moveTo(bx + bw, by - 14); fc.lineTo(bx + bw, by - 6); fc.stroke();
+
+// Height
+fc.save();
+fc.translate(bx - 20, by + bh/2);
+fc.rotate(-Math.PI/2);
+fc.fillText('72"', 0, 0);
+fc.restore();
+fc.strokeStyle = '#555';
+fc.beginPath(); fc.moveTo(bx - 12, by); fc.lineTo(bx - 12, by + bh); fc.stroke();
+fc.beginPath(); fc.moveTo(bx - 16, by); fc.lineTo(bx - 8, by); fc.stroke();
+fc.beginPath(); fc.moveTo(bx - 16, by + bh); fc.lineTo(bx - 8, by + bh); fc.stroke();
+
+// Total height to ground
+fc.fillStyle = '#444';
+fc.font = '9px Courier New';
+fc.textAlign = 'left';
+fc.fillText('84" peak', bx + bw + 45, by + 10);
+fc.fillText('24" bottom', bx + bw + 45, by + bh);
+
+// ── Acrylic lid (dashed overlay) ──
+fc.strokeStyle = 'rgba(135, 206, 250, 0.3)';
+fc.lineWidth = 2;
+fc.setLineDash([8, 4]);
+fc.strokeRect(bx + 3, by + 3, bw - 6, bh - 6);
+fc.setLineDash([]);
+fc.fillStyle = 'rgba(135,206,250,0.4)';
+fc.font = '8px Courier New';
+fc.textAlign = 'right';
+fc.fillText('ACRYLIC FRONT', bx + bw - 8, by + 14);
+
+// ── Piano Hinge indicator at top ──
+fc.strokeStyle = '#FFD700';
+fc.lineWidth = 2;
+fc.setLineDash([3, 3]);
+fc.beginPath();
+fc.moveTo(bx + 20, by);
+fc.lineTo(bx + bw - 20, by);
+fc.stroke();
+fc.setLineDash([]);
+fc.fillStyle = '#FFD700';
+fc.font = '7px Courier New';
+fc.textAlign = 'center';
+fc.fillText('PIANO HINGE (lid opens up)', bx + bw/2, by - 4);
+
+// Title at bottom
+fc.fillStyle = '#555';
+fc.font = '10px Courier New';
+fc.textAlign = 'center';
+fc.fillText('FRONT VIEW — PLAYER PERSPECTIVE', FW/2, 555);
+
+
+// ══════════════════════════════════════════
+// SIDE CROSS-SECTION
+// ══════════════════════════════════════════
+const sc = document.getElementById('side').getContext('2d');
+const SW = 300, SH = 580;
+
+// Ground line
+sc.strokeStyle = '#333';
+sc.lineWidth = 1;
+sc.beginPath();
+sc.moveTo(20, 520);
+sc.lineTo(280, 520);
+sc.stroke();
+
+// ── Board (tilted ~25° from vertical) ──
+// Board is a thick slab tilted: top leans back, bottom is forward
+// In side view, board appears as a parallelogram
+const boardBottom = 460;  // bottom of board y position
+const boardTop = 80;      // top of board y position
+const boardFrontBottom = 140; // x of board front at bottom
+const boardBackBottom = 155;  // x of board back at bottom (4" gap shown larger for visibility)
+const boardFrontTop = 100;   // x of board front at top (tilted back)
+const boardBackTop = 115;    // x of board back at top
+
+// Back panel (plywood)
+sc.fillStyle = '#1a1a2e';
+sc.beginPath();
+sc.moveTo(boardBackTop, boardTop);
+sc.lineTo(boardBackBottom, boardBottom);
+sc.lineTo(boardBackBottom + 4, boardBottom);
+sc.lineTo(boardBackTop + 4, boardTop);
+sc.closePath();
+sc.fill();
+sc.strokeStyle = '#555';
+sc.lineWidth = 1;
+sc.stroke();
+
+// Playing field gap (between panels)
+sc.fillStyle = '#0a0a15';
+sc.beginPath();
+sc.moveTo(boardFrontTop, boardTop);
+sc.lineTo(boardFrontBottom, boardBottom);
+sc.lineTo(boardBackBottom, boardBottom);
+sc.lineTo(boardBackTop, boardTop);
+sc.closePath();
+sc.fill();
+
+// Front panel (acrylic)
+sc.strokeStyle = 'rgba(135, 206, 250, 0.5)';
+sc.lineWidth = 3;
+sc.beginPath();
+sc.moveTo(boardFrontTop, boardTop);
+sc.lineTo(boardFrontBottom, boardBottom);
+sc.stroke();
+
+// Pegs inside (side view — small dots along the board)
+for (let i = 0; i < 8; i++) {
+  const t = (i + 1) / 9;
+  const py = boardTop + (boardBottom - boardTop) * t;
+  const px = boardFrontTop + (boardFrontBottom - boardFrontTop) * t + 15;
+  sc.fillStyle = pegColors[i % 4];
+  sc.globalAlpha = 0.7;
+  sc.beginPath();
+  sc.arc(px, py, 4, 0, Math.PI * 2);
+  sc.fill();
+  sc.globalAlpha = 1;
+}
+
+// Scoring bucket at bottom (side view)
+sc.fillStyle = '#FFD700';
+sc.globalAlpha = 0.6;
+sc.fillRect(boardFrontBottom - 5, boardBottom, 30, 12);
+sc.globalAlpha = 1;
+sc.strokeStyle = '#FFD700';
+sc.lineWidth = 1;
+sc.strokeRect(boardFrontBottom - 5, boardBottom, 30, 12);
+sc.fillStyle = '#FFD700';
+sc.font = '7px Courier New';
+sc.textAlign = 'left';
+sc.fillText('BUCKETS', boardFrontBottom + 28, boardBottom + 9);
+
+// Rear collection chute
+sc.fillStyle = '#333';
+sc.beginPath();
+sc.moveTo(boardBackBottom + 4, boardBottom + 5);
+sc.lineTo(boardBackBottom + 30, boardBottom + 20);
+sc.lineTo(boardBackBottom + 30, boardBottom + 28);
+sc.lineTo(boardBackBottom + 4, boardBottom + 13);
+sc.closePath();
+sc.fill();
+sc.strokeStyle = '#555';
+sc.lineWidth = 1;
+sc.stroke();
+sc.fillStyle = '#888';
+sc.font = '6px Courier New';
+sc.textAlign = 'left';
+sc.fillText('COLLECTION', boardBackBottom + 32, boardBottom + 20);
+sc.fillText('CHUTE', boardBackBottom + 32, boardBottom + 28);
+
+// ── Support Legs (side view) ──
+sc.strokeStyle = '#666';
+sc.lineWidth = 5;
+// Front leg (angled forward to ground)
+sc.beginPath();
+sc.moveTo(boardFrontBottom, boardBottom);
+sc.lineTo(boardFrontBottom + 40, 520);
+sc.stroke();
+// Rear leg (more vertical)
+sc.beginPath();
+sc.moveTo(boardBackTop + 4, boardTop + 20);
+sc.lineTo(boardBackTop + 30, 520);
+sc.stroke();
+// Cross brace
+sc.lineWidth = 3;
+sc.beginPath();
+sc.moveTo(boardFrontBottom + 20, 490);
+sc.lineTo(boardBackTop + 20, 400);
+sc.stroke();
+
+// Rubber feet
+sc.fillStyle = '#e94560';
+sc.fillRect(boardFrontBottom + 36, 518, 12, 5);
+sc.fillRect(boardBackTop + 26, 518, 12, 5);
+
+// Leg labels
+sc.fillStyle = '#666';
+sc.font = '7px Courier New';
+sc.textAlign = 'center';
+sc.fillText('FRONT', boardFrontBottom + 42, 535);
+sc.fillText('LEG', boardFrontBottom + 42, 543);
+sc.fillText('REAR', boardBackTop + 32, 535);
+sc.fillText('LEG', boardBackTop + 32, 543);
+
+// ── Stomp Pad (side view, on ground in front) ──
+const padCX = 60;
+const padY = 510;
+
+// Platform
+sc.fillStyle = '#2a2a2a';
+sc.fillRect(padCX - 30, padY, 60, 10);
+sc.strokeStyle = '#e94560';
+sc.lineWidth = 2;
+sc.strokeRect(padCX - 30, padY, 60, 10);
+
+// Bladder
+sc.fillStyle = '#e94560';
+sc.globalAlpha = 0.5;
+sc.beginPath();
+sc.ellipse(padCX, padY, 24, 14, 0, Math.PI, 0);
+sc.fill();
+sc.globalAlpha = 1;
+sc.strokeStyle = '#e94560';
+sc.lineWidth = 2;
+sc.beginPath();
+sc.ellipse(padCX, padY, 24, 14, 0, Math.PI, 0);
+sc.stroke();
+
+// Stomp pad label
+sc.fillStyle = '#e94560';
+sc.font = 'bold 8px Courier New';
+sc.textAlign = 'center';
+sc.fillText('STOMP PAD', padCX, padY + 22);
+
+// Foot icon stomping
+sc.fillStyle = '#fff';
+sc.font = '16px Courier New';
+sc.textAlign = 'center';
+sc.fillText('🦶', padCX, padY - 18);
+sc.font = 'bold 8px Courier New';
+sc.fillText('STOMP!', padCX, padY - 28);
+
+// ── Air Hose from pad to launch tube ──
+sc.strokeStyle = 'rgba(255,255,255,0.3)';
+sc.lineWidth = 3;
+sc.setLineDash([5, 3]);
+sc.beginPath();
+sc.moveTo(padCX + 25, padY - 5);
+sc.quadraticCurveTo(padCX + 60, padY - 30, boardFrontBottom - 5, boardBottom + 20);
+sc.stroke();
+sc.setLineDash([]);
+
+// Air hose label
+sc.fillStyle = 'rgba(255,255,255,0.4)';
+sc.font = '7px Courier New';
+sc.textAlign = 'center';
+sc.fillText('AIR HOSE', padCX + 50, padY - 20);
+sc.fillText('(1" vinyl tube)', padCX + 50, padY - 12);
+
+// ── Launch Tube (side view, at bottom of board) ──
+sc.strokeStyle = '#e94560';
+sc.lineWidth = 3;
+sc.beginPath();
+sc.moveTo(boardFrontBottom - 3, boardBottom + 15);
+sc.lineTo(boardFrontBottom + 10, boardBottom - 30);
+sc.stroke();
+// Tube label
+sc.fillStyle = '#e94560';
+sc.font = '7px Courier New';
+sc.textAlign = 'left';
+sc.fillText('LAUNCH', boardFrontBottom - 30, boardBottom + 30);
+sc.fillText('TUBE (60°)', boardFrontBottom - 30, boardBottom + 38);
+
+// ── Ball Magazine (side view, tall tube) ──
+sc.strokeStyle = '#9b59b6';
+sc.lineWidth = 2;
+sc.globalAlpha = 0.6;
+sc.beginPath();
+sc.moveTo(boardFrontBottom + 3, boardBottom - 30);
+sc.lineTo(boardFrontBottom - 2, boardBottom - 100);
+sc.moveTo(boardFrontBottom + 13, boardBottom - 30);
+sc.lineTo(boardFrontBottom + 8, boardBottom - 100);
+sc.stroke();
+sc.globalAlpha = 1;
+
+// Balls in magazine
+for (let i = 0; i < 4; i++) {
+  const t = (i + 1) / 5;
+  sc.fillStyle = '#FFE44D';
+  sc.globalAlpha = 0.7;
+  sc.beginPath();
+  sc.arc(boardFrontBottom + 6, boardBottom - 35 - i * 14, 4, 0, Math.PI * 2);
+  sc.fill();
+  sc.globalAlpha = 1;
+}
+
+sc.fillStyle = '#9b59b6';
+sc.font = '7px Courier New';
+sc.textAlign = 'left';
+sc.fillText('BALL', boardFrontBottom + 16, boardBottom - 70);
+sc.fillText('MAGAZINE', boardFrontBottom + 16, boardBottom - 62);
+
+// ── Ball trajectory (side view, ball going UP into board) ──
+sc.strokeStyle = '#FFE44D';
+sc.lineWidth = 1.5;
+sc.setLineDash([4, 3]);
+sc.globalAlpha = 0.6;
+sc.beginPath();
+sc.moveTo(boardFrontBottom + 8, boardBottom - 25);
+sc.quadraticCurveTo(boardFrontTop + 20, boardTop + 200, boardFrontTop + 15, boardTop + 50);
+sc.stroke();
+sc.setLineDash([]);
+// Arrowhead
+sc.fillStyle = '#FFE44D';
+sc.beginPath();
+sc.moveTo(boardFrontTop + 15, boardTop + 50);
+sc.lineTo(boardFrontTop + 10, boardTop + 62);
+sc.lineTo(boardFrontTop + 20, boardTop + 62);
+sc.closePath();
+sc.fill();
+sc.font = 'italic 7px Courier New';
+sc.textAlign = 'left';
+sc.fillText('BALL LAUNCHES', boardFrontTop + 25, boardTop + 50);
+sc.fillText('UPWARD!', boardFrontTop + 25, boardTop + 58);
+sc.globalAlpha = 1;
+
+// ── Ball cascading down (dotted path back down) ──
+sc.strokeStyle = '#FFE44D';
+sc.lineWidth = 1;
+sc.setLineDash([2, 3]);
+sc.globalAlpha = 0.3;
+sc.beginPath();
+sc.moveTo(boardFrontTop + 15, boardTop + 50);
+// Zigzag down (bouncing off pegs)
+const zigPoints = [
+  [boardBackTop + 5, boardTop + 100],
+  [boardFrontTop + 18, boardTop + 150],
+  [boardBackTop + 2, boardTop + 220],
+  [boardFrontTop + 22, boardTop + 280],
+  [boardBackBottom - 5, boardTop + 340],
+  [boardFrontBottom + 10, boardBottom - 5],
+];
+zigPoints.forEach(p => sc.lineTo(p[0], p[1]));
+sc.stroke();
+sc.setLineDash([]);
+sc.globalAlpha = 1;
+
+// ── Dimension labels ──
+// Gap dimension
+sc.strokeStyle = '#888';
+sc.lineWidth = 1;
+sc.beginPath();
+sc.moveTo(boardFrontTop - 5, boardTop - 15);
+sc.lineTo(boardBackTop + 8, boardTop - 15);
+sc.stroke();
+sc.beginPath(); sc.moveTo(boardFrontTop, boardTop - 19); sc.lineTo(boardFrontTop, boardTop - 11); sc.stroke();
+sc.beginPath(); sc.moveTo(boardBackTop + 4, boardTop - 19); sc.lineTo(boardBackTop + 4, boardTop - 11); sc.stroke();
+sc.fillStyle = '#888';
+sc.font = '8px Courier New';
+sc.textAlign = 'center';
+sc.fillText('4"', (boardFrontTop + boardBackTop + 4) / 2, boardTop - 20);
+
+// Board height
+sc.fillStyle = '#555';
+sc.font = '9px Courier New';
+sc.save();
+sc.translate(boardBackTop + 30, (boardTop + boardBottom) / 2);
+sc.rotate(-Math.PI/2);
+sc.textAlign = 'center';
+sc.fillText('72" BOARD', 0, 0);
+sc.restore();
+
+// Tilt angle indicator
+sc.strokeStyle = '#ff6ec7';
+sc.lineWidth = 1;
+sc.globalAlpha = 0.5;
+// Vertical reference line
+sc.setLineDash([3, 3]);
+sc.beginPath();
+sc.moveTo(boardBackTop + 4, boardTop);
+sc.lineTo(boardBackTop + 4, boardTop + 60);
+sc.stroke();
+sc.setLineDash([]);
+// Angle arc
+sc.beginPath();
+sc.arc(boardBackTop + 4, boardTop, 30, Math.PI/2, Math.PI/2 + 0.44);
+sc.stroke();
+sc.globalAlpha = 1;
+sc.fillStyle = '#ff6ec7';
+sc.font = '8px Courier New';
+sc.textAlign = 'left';
+sc.fillText('25°', boardBackTop + 10, boardTop + 38);
+
+// Return tube label (behind board)
+sc.fillStyle = '#888';
+sc.font = '7px Courier New';
+sc.textAlign = 'center';
+sc.fillText('RETURN TUBE', boardBackBottom + 40, boardBottom - 10);
+sc.fillText('(3" PVC)', boardBackBottom + 40, boardBottom - 2);
+// Arrow showing return path
+sc.strokeStyle = '#888';
+sc.lineWidth = 1;
+sc.setLineDash([3, 3]);
+sc.beginPath();
+sc.moveTo(boardBackBottom + 30, boardBottom + 28);
+sc.lineTo(boardBackBottom + 40, boardBottom - 15);
+sc.stroke();
+sc.setLineDash([]);
+// Arrowhead
+sc.fillStyle = '#888';
+sc.beginPath();
+sc.moveTo(boardBackBottom + 40, boardBottom - 15);
+sc.lineTo(boardBackBottom + 36, boardBottom - 8);
+sc.lineTo(boardBackBottom + 44, boardBottom - 8);
+sc.closePath();
+sc.fill();
+
+// Section label
+sc.fillStyle = '#555';
+sc.font = '10px Courier New';
+sc.textAlign = 'center';
+sc.fillText('SIDE CROSS-SECTION', SW/2, 555);
+
+// Board labels
+sc.fillStyle = 'rgba(135,206,250,0.4)';
+sc.font = '7px Courier New';
+sc.textAlign = 'left';
+sc.fillText('ACRYLIC', boardFrontTop - 42, boardTop + 40);
+sc.fillText('FRONT', boardFrontTop - 42, boardTop + 48);
+
+sc.fillStyle = '#555';
+sc.fillText('PLYWOOD', boardBackTop + 10, boardTop + 40);
+sc.fillText('BACK', boardBackTop + 10, boardTop + 48);
+
+</script>
+
+</body>
+</html>

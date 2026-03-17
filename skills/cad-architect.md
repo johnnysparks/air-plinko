@@ -22,3 +22,6 @@
 - Canvas text at < 6px becomes unreadable in screenshots
 - Overlapping elements in the center get cluttered fast — space out the most important elements first, fill gaps with secondary items
 - Don't forget to show how the player interacts — hands, positions, sight lines help communicate ergonomics
+- When scoring buckets/zones are tightly packed horizontally, their labels can overlap. Use smaller font or vertically stagger labels for narrow adjacent elements
+- For vertical games (tall boards), choose FRONT + SIDE views rather than TOP-DOWN + SIDE. The front view is the player's perspective and communicates the most gameplay information
+- Show multiple trajectories (weak vs strong) to communicate variable mechanics — use different opacities to distinguish primary vs secondary examples
