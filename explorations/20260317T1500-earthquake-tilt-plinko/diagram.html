@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>EARTHQUAKE! — Cooperative Tilt Plinko</title>
+<!-- screenshot: 1200x1800 -->
+<style>
+  body { margin: 0; padding: 0; background: #0a0e1a; overflow: hidden; }
+  canvas { display: block; }
+</style>
+</head>
+<body>
+<canvas id="c" width="1200" height="1800"></canvas>
+<script>
+const c = document.getElementById('c');
+const ctx = c.getContext('2d');
+
+// Colors
+const BG = '#0a0e1a';
+const DARK_PANEL = '#1a1a2e';
+const PLYWOOD = '#8B6914';
+const PLYWOOD_DARK = '#6B4F0A';
+const ACRYLIC = 'rgba(135,206,250,0.25)';
+const ACRYLIC_EDGE = 'rgba(135,206,250,0.6)';
+const STEEL = '#708090';
+const STEEL_LIGHT = '#8fa4b8';
+const RUBBER = '#2d2d2d';
+const PEG_COLORS = ['#ff1493', '#39ff14', '#ffff00', '#00e5ff'];
+const NEON_PINK = '#ff1493';
+const NEON_GREEN = '#39ff14';
+const NEON_YELLOW = '#ffff00';
+const NEON_CYAN = '#00e5ff';
+const GOLD = '#ffd700';
+const RED = '#ff4444';
+const WHITE = '#ffffff';
+const DIM_WHITE = 'rgba(255,255,255,0.5)';
+const ORANGE = '#ff8c00';
+
+// ===================== TITLE =====================
+ctx.fillStyle = BG;
+ctx.fillRect(0, 0, 1200, 1800);
+
+ctx.font = 'bold 48px monospace';
+ctx.fillStyle = NEON_YELLOW;
+ctx.textAlign = 'center';
+ctx.fillText('EARTHQUAKE!', 600, 50);
+ctx.font = '18px monospace';
+ctx.fillStyle = DIM_WHITE;
+ctx.fillText('Cooperative Tilt Plinko — Two Views', 600, 78);
+
+// ===================== FRONT VIEW =====================
+const FV_X = 80;   // left margin
+const FV_Y = 110;  // top
+const FV_W = 500;  // board width in px
+const FV_H = 650;  // board height in px
+
+ctx.font = 'bold 22px monospace';
+ctx.fillStyle = WHITE;
+ctx.textAlign = 'center';
+ctx.fillText('FRONT VIEW (Player Perspective)', FV_X + FV_W/2, FV_Y - 10);
+
+// Support frame uprights
+ctx.fillStyle = PLYWOOD_DARK;
+ctx.fillRect(FV_X - 25, FV_Y + 100, 20, FV_H + 100);  // left upright
+ctx.fillRect(FV_X + FV_W + 5, FV_Y + 100, 20, FV_H + 100);  // right upright
+
+// Cross brace top
+ctx.fillStyle = PLYWOOD_DARK;
+ctx.fillRect(FV_X - 25, FV_Y + 100, FV_W + 50, 15);
+
+// The Plinko Board (back panel)
+ctx.fillStyle = '#111122';
+ctx.fillRect(FV_X, FV_Y, FV_W, FV_H);
+ctx.strokeStyle = PLYWOOD;
+ctx.lineWidth = 4;
+ctx.strokeRect(FV_X, FV_Y, FV_W, FV_H);
+
+// Edge rails
+ctx.fillStyle = PLYWOOD;
+ctx.fillRect(FV_X, FV_Y, 8, FV_H);           // left rail
+ctx.fillRect(FV_X + FV_W - 8, FV_Y, 8, FV_H); // right rail
+ctx.fillRect(FV_X, FV_Y, FV_W, 8);            // top rail
+ctx.fillRect(FV_X, FV_Y + FV_H - 8, FV_W, 8); // bottom rail
+
+// Acrylic overlay (transparent)
+ctx.fillStyle = ACRYLIC;
+ctx.fillRect(FV_X + 2, FV_Y + 2, FV_W - 4, FV_H - 4);
+ctx.strokeStyle = ACRYLIC_EDGE;
+ctx.lineWidth = 1;
+ctx.strokeRect(FV_X + 2, FV_Y + 2, FV_W - 4, FV_H - 4);
+
+// Peg grid — offset rows, 10 cols × 11 rows
+const pegStartX = FV_X + 30;
+const pegEndX = FV_X + FV_W - 30;
+const pegStartY = FV_Y + 55;
+const pegEndY = FV_Y + FV_H - 85;
+const pegCols = 10;
+const pegRows = 11;
+const pegSpacingX = (pegEndX - pegStartX) / (pegCols - 1);
+const pegSpacingY = (pegEndY - pegStartY) / (pegRows - 1);
+
+for (let row = 0; row < pegRows; row++) {
+  const offset = (row % 2 === 0) ? 0 : pegSpacingX / 2;
+  const cols = (row % 2 === 0) ? pegCols : pegCols - 1;
+  for (let col = 0; col < cols; col++) {
+    const px = pegStartX + col * pegSpacingX + offset;
+    const py = pegStartY + row * pegSpacingY;
+    const color = PEG_COLORS[(row * pegCols + col) % 4];
+
+    // Peg shaft
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(px, py, 5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Mushroom cap
+    ctx.beginPath();
+    ctx.arc(px, py, 8, 0, Math.PI * 2);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  }
+}
+
+// Scoring zones at bottom
+const slotY = FV_Y + FV_H - 75;
+const slotH = 65;
+const totalSlotW = FV_W - 16; // inside edge rails
+const slotStartX = FV_X + 8;
+
+// Slot widths proportional: gutters 3", 25s 5", 50s 5", 100s 5", jackpot 3" = 41 total
+const slotWidths = [3, 5, 5, 5, 3, 5, 5, 5, 3]; // in inches
+const totalInches = slotWidths.reduce((a,b) => a+b, 0);
+const pxPerInch = totalSlotW / totalInches;
+const slotLabels = ['×0', '25', '50', '100', '★500★', '100', '50', '25', '×0'];
+const slotColors = [RED, NEON_CYAN, NEON_GREEN, NEON_YELLOW, GOLD, NEON_YELLOW, NEON_GREEN, NEON_CYAN, RED];
+
+let sx = slotStartX;
+for (let i = 0; i < 9; i++) {
+  const sw = slotWidths[i] * pxPerInch;
+
+  // Slot background
+  if (i === 0 || i === 8) {
+    ctx.fillStyle = 'rgba(255,0,0,0.15)';
+  } else if (i === 4) {
+    ctx.fillStyle = 'rgba(255,215,0,0.2)';
+  } else {
+    ctx.fillStyle = 'rgba(255,255,255,0.05)';
+  }
+  ctx.fillRect(sx, slotY, sw, slotH);
+
+  // Divider lines
+  ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(sx, slotY);
+  ctx.lineTo(sx, slotY + slotH);
+  ctx.stroke();
+
+  // Label
+  ctx.font = (i === 4) ? 'bold 11px monospace' : 'bold 10px monospace';
+  ctx.fillStyle = slotColors[i];
+  ctx.textAlign = 'center';
+  ctx.fillText(slotLabels[i], sx + sw/2, slotY + slotH/2 + 4);
+
+  sx += sw;
+}
+// Final divider
+ctx.beginPath();
+ctx.moveTo(sx, slotY);
+ctx.lineTo(sx, slotY + slotH);
+ctx.stroke();
+
+// Jackpot LED glow effect
+const jackpotX = slotStartX + slotWidths.slice(0,4).reduce((a,b)=>a+b,0) * pxPerInch;
+const jackpotW = slotWidths[4] * pxPerInch;
+const grd = ctx.createRadialGradient(jackpotX + jackpotW/2, slotY + slotH/2, 2, jackpotX + jackpotW/2, slotY + slotH/2, 40);
+grd.addColorStop(0, 'rgba(255,215,0,0.3)');
+grd.addColorStop(1, 'rgba(255,215,0,0)');
+ctx.fillStyle = grd;
+ctx.fillRect(jackpotX - 10, slotY - 10, jackpotW + 20, slotH + 20);
+
+// Ball hopper at top center
+const hopperW = 90;
+const hopperH = 55;
+const hopperX = FV_X + FV_W/2 - hopperW/2;
+const hopperY = FV_Y - 60;
+ctx.fillStyle = PLYWOOD;
+ctx.fillRect(hopperX, hopperY, hopperW, hopperH);
+ctx.strokeStyle = PLYWOOD_DARK;
+ctx.lineWidth = 2;
+ctx.strokeRect(hopperX, hopperY, hopperW, hopperH);
+
+// Balls in hopper
+for (let i = 0; i < 6; i++) {
+  const bx = hopperX + 15 + (i % 3) * 22;
+  const by = hopperY + 15 + Math.floor(i / 3) * 18;
+  ctx.beginPath();
+  ctx.arc(bx, by, 7, 0, Math.PI * 2);
+  ctx.fillStyle = (i === 2) ? GOLD : WHITE;
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+}
+
+// Label hopper
+ctx.font = '10px monospace';
+ctx.fillStyle = DIM_WHITE;
+ctx.textAlign = 'center';
+ctx.fillText('BALL HOPPER', hopperX + hopperW/2, hopperY - 5);
+ctx.fillText('(20 balls)', hopperX + hopperW/2, hopperY + hopperH + 12);
+
+// Hand crank on hopper side
+ctx.strokeStyle = STEEL;
+ctx.lineWidth = 3;
+ctx.beginPath();
+ctx.moveTo(hopperX + hopperW, hopperY + hopperH/2);
+ctx.lineTo(hopperX + hopperW + 20, hopperY + hopperH/2);
+ctx.lineTo(hopperX + hopperW + 20, hopperY + hopperH/2 - 15);
+ctx.stroke();
+ctx.beginPath();
+ctx.arc(hopperX + hopperW + 20, hopperY + hopperH/2 - 15, 4, 0, Math.PI*2);
+ctx.fillStyle = STEEL;
+ctx.fill();
+ctx.font = '9px monospace';
+ctx.fillStyle = DIM_WHITE;
+ctx.fillText('CRANK', hopperX + hopperW + 20, hopperY + hopperH/2 + 15);
+
+// Ball drop trajectory (dashed)
+ctx.setLineDash([4, 4]);
+ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+ctx.lineWidth = 1;
+ctx.beginPath();
+ctx.moveTo(FV_X + FV_W/2, hopperY + hopperH);
+ctx.lineTo(FV_X + FV_W/2, FV_Y + 30);
+ctx.stroke();
+ctx.setLineDash([]);
+
+// Ball in play — cascading trajectory
+ctx.setLineDash([3, 3]);
+ctx.strokeStyle = 'rgba(255,215,0,0.5)';
+ctx.lineWidth = 1.5;
+ctx.beginPath();
+ctx.moveTo(FV_X + FV_W/2, FV_Y + 60);
+ctx.lineTo(FV_X + FV_W/2 - 25, FV_Y + 120);
+ctx.lineTo(FV_X + FV_W/2 + 10, FV_Y + 180);
+ctx.lineTo(FV_X + FV_W/2 - 40, FV_Y + 250);
+ctx.lineTo(FV_X + FV_W/2 - 15, FV_Y + 320);
+ctx.lineTo(FV_X + FV_W/2 + 30, FV_Y + 400);
+ctx.lineTo(FV_X + FV_W/2 + 5, FV_Y + 480);
+ctx.lineTo(FV_X + FV_W/2 - 20, FV_Y + FV_H - 80);
+ctx.stroke();
+ctx.setLineDash([]);
+
+// Ball at cascade point
+ctx.beginPath();
+ctx.arc(FV_X + FV_W/2 - 20, FV_Y + FV_H - 80, 8, 0, Math.PI * 2);
+ctx.fillStyle = GOLD;
+ctx.fill();
+ctx.strokeStyle = 'rgba(255,215,0,0.6)';
+ctx.lineWidth = 2;
+ctx.stroke();
+
+// Pivot point indicators on sides
+const pivotY_front = FV_Y + FV_H * 0.47; // ~30" up from bottom at scale
+ctx.fillStyle = STEEL_LIGHT;
+ctx.beginPath();
+ctx.arc(FV_X - 10, pivotY_front, 8, 0, Math.PI * 2);
+ctx.fill();
+ctx.beginPath();
+ctx.arc(FV_X + FV_W + 10, pivotY_front, 8, 0, Math.PI * 2);
+ctx.fill();
+ctx.font = '9px monospace';
+ctx.fillStyle = STEEL_LIGHT;
+ctx.textAlign = 'left';
+ctx.fillText('PIVOT', FV_X + FV_W + 22, pivotY_front + 3);
+
+// Linkage rods (from board bottom to rocker below)
+const boardBottomY = FV_Y + FV_H;
+const rockerY = boardBottomY + 130;
+
+ctx.strokeStyle = STEEL;
+ctx.lineWidth = 3;
+// Left linkage
+ctx.beginPath();
+ctx.moveTo(FV_X + 30, boardBottomY);
+ctx.lineTo(FV_X - 40, rockerY - 20);
+ctx.stroke();
+// Right linkage
+ctx.beginPath();
+ctx.moveTo(FV_X + FV_W - 30, boardBottomY);
+ctx.lineTo(FV_X + FV_W + 40, rockerY - 20);
+ctx.stroke();
+
+// Heim joints
+[{x: FV_X+30, y: boardBottomY}, {x: FV_X-40, y: rockerY-20},
+ {x: FV_X+FV_W-30, y: boardBottomY}, {x: FV_X+FV_W+40, y: rockerY-20}].forEach(p => {
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, 5, 0, Math.PI*2);
+  ctx.fillStyle = STEEL_LIGHT;
+  ctx.fill();
+});
+
+// Rocker beam
+ctx.fillStyle = PLYWOOD;
+ctx.fillRect(FV_X - 80, rockerY - 12, FV_W + 160, 24);
+
+// Fulcrum triangle
+ctx.fillStyle = STEEL;
+ctx.beginPath();
+ctx.moveTo(FV_X + FV_W/2, rockerY + 12);
+ctx.lineTo(FV_X + FV_W/2 - 15, rockerY + 40);
+ctx.lineTo(FV_X + FV_W/2 + 15, rockerY + 40);
+ctx.closePath();
+ctx.fill();
+
+// Base platform
+ctx.fillStyle = PLYWOOD_DARK;
+ctx.fillRect(FV_X - 80, rockerY + 38, FV_W + 160, 18);
+
+// Footplates
+const fpW = 100;
+const fpH = 16;
+// Left footplate
+ctx.fillStyle = RUBBER;
+ctx.fillRect(FV_X - 80, rockerY - 30, fpW, fpH);
+ctx.strokeStyle = NEON_GREEN;
+ctx.lineWidth = 2;
+ctx.strokeRect(FV_X - 80, rockerY - 30, fpW, fpH);
+// Right footplate
+ctx.fillStyle = RUBBER;
+ctx.fillRect(FV_X + FV_W + 80 - fpW, rockerY - 30, fpW, fpH);
+ctx.strokeStyle = NEON_GREEN;
+ctx.lineWidth = 2;
+ctx.strokeRect(FV_X + FV_W + 80 - fpW, rockerY - 30, fpW, fpH);
+
+// Footplate labels
+ctx.font = '10px monospace';
+ctx.fillStyle = NEON_GREEN;
+ctx.textAlign = 'center';
+ctx.fillText('PLAYER 1', FV_X - 30, rockerY - 40);
+ctx.fillText('STAND HERE', FV_X - 30, rockerY + 75);
+ctx.fillText('PLAYER 2', FV_X + FV_W + 30, rockerY - 40);
+ctx.fillText('STAND HERE', FV_X + FV_W + 30, rockerY + 75);
+
+// Player stick figures
+function drawPlayer(cx, baseY, label) {
+  ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+  ctx.lineWidth = 2;
+  // Head
+  ctx.beginPath();
+  ctx.arc(cx, baseY - 70, 10, 0, Math.PI * 2);
+  ctx.stroke();
+  // Body
+  ctx.beginPath();
+  ctx.moveTo(cx, baseY - 60);
+  ctx.lineTo(cx, baseY - 25);
+  ctx.stroke();
+  // Arms
+  ctx.beginPath();
+  ctx.moveTo(cx - 15, baseY - 48);
+  ctx.lineTo(cx, baseY - 42);
+  ctx.lineTo(cx + 15, baseY - 48);
+  ctx.stroke();
+  // Legs
+  ctx.beginPath();
+  ctx.moveTo(cx, baseY - 25);
+  ctx.lineTo(cx - 12, baseY);
+  ctx.moveTo(cx, baseY - 25);
+  ctx.lineTo(cx + 12, baseY);
+  ctx.stroke();
+}
+
+drawPlayer(FV_X - 30, rockerY - 30);
+drawPlayer(FV_X + FV_W + 30, rockerY - 30);
+
+// Dimension lines — Front view
+ctx.strokeStyle = DIM_WHITE;
+ctx.fillStyle = DIM_WHITE;
+ctx.lineWidth = 1;
+ctx.font = '11px monospace';
+
+// Board width dimension
+const dimY_top = FV_Y - 75;
+ctx.beginPath();
+ctx.moveTo(FV_X, dimY_top);
+ctx.lineTo(FV_X + FV_W, dimY_top);
+ctx.stroke();
+ctx.beginPath(); ctx.moveTo(FV_X, dimY_top - 5); ctx.lineTo(FV_X, dimY_top + 5); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(FV_X + FV_W, dimY_top - 5); ctx.lineTo(FV_X + FV_W, dimY_top + 5); ctx.stroke();
+ctx.textAlign = 'center';
+ctx.fillText('48" (4 ft)', FV_X + FV_W/2, dimY_top - 8);
+
+// Board height dimension
+const dimX_right = FV_X + FV_W + 55;
+ctx.beginPath();
+ctx.moveTo(dimX_right, FV_Y);
+ctx.lineTo(dimX_right, FV_Y + FV_H);
+ctx.stroke();
+ctx.beginPath(); ctx.moveTo(dimX_right - 5, FV_Y); ctx.lineTo(dimX_right + 5, FV_Y); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(dimX_right - 5, FV_Y + FV_H); ctx.lineTo(dimX_right + 5, FV_Y + FV_H); ctx.stroke();
+ctx.save();
+ctx.translate(dimX_right + 15, FV_Y + FV_H/2);
+ctx.rotate(-Math.PI/2);
+ctx.textAlign = 'center';
+ctx.fillText('60" (5 ft)', 0, 0);
+ctx.restore();
+
+// Platform width dimension
+const dimY_bottom = rockerY + 65;
+ctx.beginPath();
+ctx.moveTo(FV_X - 80, dimY_bottom);
+ctx.lineTo(FV_X + FV_W + 80, dimY_bottom);
+ctx.stroke();
+ctx.beginPath(); ctx.moveTo(FV_X - 80, dimY_bottom - 5); ctx.lineTo(FV_X - 80, dimY_bottom + 5); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(FV_X + FV_W + 80, dimY_bottom - 5); ctx.lineTo(FV_X + FV_W + 80, dimY_bottom + 5); ctx.stroke();
+ctx.textAlign = 'center';
+ctx.fillText('72" (6 ft) platform', FV_X + FV_W/2, dimY_bottom + 15);
+
+// Tilt arrows
+ctx.strokeStyle = ORANGE;
+ctx.lineWidth = 2;
+ctx.fillStyle = ORANGE;
+// Left arrow
+ctx.beginPath();
+ctx.moveTo(FV_X + FV_W/2 - 20, FV_Y + FV_H/2);
+ctx.lineTo(FV_X + 40, FV_Y + FV_H/2);
+ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(FV_X + 40, FV_Y + FV_H/2);
+ctx.lineTo(FV_X + 52, FV_Y + FV_H/2 - 6);
+ctx.lineTo(FV_X + 52, FV_Y + FV_H/2 + 6);
+ctx.closePath();
+ctx.fill();
+// Right arrow
+ctx.beginPath();
+ctx.moveTo(FV_X + FV_W/2 + 20, FV_Y + FV_H/2);
+ctx.lineTo(FV_X + FV_W - 40, FV_Y + FV_H/2);
+ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(FV_X + FV_W - 40, FV_Y + FV_H/2);
+ctx.lineTo(FV_X + FV_W - 52, FV_Y + FV_H/2 - 6);
+ctx.lineTo(FV_X + FV_W - 52, FV_Y + FV_H/2 + 6);
+ctx.closePath();
+ctx.fill();
+
+ctx.font = '11px monospace';
+ctx.fillStyle = ORANGE;
+ctx.textAlign = 'center';
+ctx.fillText('← TILT ±8° →', FV_X + FV_W/2, FV_Y + FV_H/2 - 12);
+
+// ===================== SIDE VIEW =====================
+const SV_X = 720;
+const SV_Y = 110;
+const SV_W = 350;
+const SV_H = 650;
+
+ctx.font = 'bold 22px monospace';
+ctx.fillStyle = WHITE;
+ctx.textAlign = 'center';
+ctx.fillText('SIDE CROSS-SECTION', SV_X + SV_W/2, SV_Y - 10);
+
+// Rear stabilizer leg
+ctx.fillStyle = PLYWOOD_DARK;
+ctx.save();
+ctx.translate(SV_X + SV_W - 40, SV_Y + 120);
+ctx.rotate(0.35); // angled back
+ctx.fillRect(0, 0, 12, SV_H - 20);
+ctx.restore();
+
+// Support frame upright (side view — thin)
+ctx.fillStyle = PLYWOOD_DARK;
+ctx.fillRect(SV_X + 140, SV_Y + 100, 18, SV_H + 100);
+
+// The board (side view — shows depth/gap)
+const boardSideX = SV_X + 100;
+const boardSideY = SV_Y + 10;
+const boardSideW = 60; // represents the 4" depth
+const boardSideH = SV_H;
+
+// Back panel (plywood)
+ctx.fillStyle = PLYWOOD;
+ctx.fillRect(boardSideX + boardSideW - 6, boardSideY, 6, boardSideH);
+
+// Front panel (acrylic)
+ctx.fillStyle = ACRYLIC;
+ctx.fillRect(boardSideX, boardSideY, 4, boardSideH);
+ctx.strokeStyle = ACRYLIC_EDGE;
+ctx.lineWidth = 2;
+ctx.beginPath();
+ctx.moveTo(boardSideX + 2, boardSideY);
+ctx.lineTo(boardSideX + 2, boardSideY + boardSideH);
+ctx.stroke();
+
+// Gap between (playing field)
+ctx.fillStyle = 'rgba(20,20,50,0.8)';
+ctx.fillRect(boardSideX + 4, boardSideY, boardSideW - 10, boardSideH);
+
+// Pegs protruding from back panel (side view)
+for (let i = 0; i < 11; i++) {
+  const py = boardSideY + 55 + i * (boardSideH - 120) / 10;
+  const color = PEG_COLORS[i % 4];
+  ctx.fillStyle = color;
+  ctx.fillRect(boardSideX + boardSideW - 8, py - 2, boardSideW - 14, 4);
+  // Mushroom cap
+  ctx.beginPath();
+  ctx.arc(boardSideX + 6, py, 5, 0, Math.PI * 2);
+  ctx.fillStyle = color;
+  ctx.fill();
+}
+
+// Depth dimension
+ctx.strokeStyle = DIM_WHITE;
+ctx.fillStyle = DIM_WHITE;
+ctx.lineWidth = 1;
+ctx.font = '11px monospace';
+const depthDimY = boardSideY - 15;
+ctx.beginPath();
+ctx.moveTo(boardSideX, depthDimY);
+ctx.lineTo(boardSideX + boardSideW, depthDimY);
+ctx.stroke();
+ctx.beginPath(); ctx.moveTo(boardSideX, depthDimY - 5); ctx.lineTo(boardSideX, depthDimY + 5); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(boardSideX + boardSideW, depthDimY - 5); ctx.lineTo(boardSideX + boardSideW, depthDimY + 5); ctx.stroke();
+ctx.textAlign = 'center';
+ctx.fillText('4" gap', boardSideX + boardSideW/2, depthDimY - 8);
+
+// Labels for panels
+ctx.font = '9px monospace';
+ctx.fillStyle = ACRYLIC_EDGE;
+ctx.save();
+ctx.translate(boardSideX - 10, boardSideY + boardSideH/2);
+ctx.rotate(-Math.PI/2);
+ctx.textAlign = 'center';
+ctx.fillText('ACRYLIC FRONT', 0, 0);
+ctx.restore();
+
+ctx.fillStyle = PLYWOOD;
+ctx.save();
+ctx.translate(boardSideX + boardSideW + 14, boardSideY + boardSideH/2);
+ctx.rotate(-Math.PI/2);
+ctx.textAlign = 'center';
+ctx.fillText('PLYWOOD BACK', 0, 0);
+ctx.restore();
+
+// Pivot axle (side view — circle)
+const pivotSideY = boardSideY + boardSideH * 0.47;
+ctx.fillStyle = STEEL;
+ctx.beginPath();
+ctx.arc(boardSideX + boardSideW/2 + 25, pivotSideY, 10, 0, Math.PI * 2);
+ctx.fill();
+ctx.strokeStyle = STEEL_LIGHT;
+ctx.lineWidth = 2;
+ctx.stroke();
+
+// Pillow block bearing
+ctx.fillStyle = STEEL_LIGHT;
+ctx.fillRect(SV_X + 134, pivotSideY - 18, 30, 36);
+ctx.strokeStyle = STEEL;
+ctx.lineWidth = 1;
+ctx.strokeRect(SV_X + 134, pivotSideY - 18, 30, 36);
+ctx.font = '8px monospace';
+ctx.fillStyle = WHITE;
+ctx.textAlign = 'center';
+ctx.fillText('PILLOW', SV_X + 149, pivotSideY - 3);
+ctx.fillText('BLOCK', SV_X + 149, pivotSideY + 7);
+
+// Label pivot
+ctx.font = '10px monospace';
+ctx.fillStyle = STEEL_LIGHT;
+ctx.textAlign = 'left';
+ctx.fillText('1" STEEL', SV_X + 170, pivotSideY - 5);
+ctx.fillText('AXLE', SV_X + 170, pivotSideY + 8);
+
+// Linkage rod (side view)
+const rodTopY = boardSideY + boardSideH;
+const rodBotY = rodTopY + 130;
+ctx.strokeStyle = STEEL;
+ctx.lineWidth = 3;
+ctx.beginPath();
+ctx.moveTo(boardSideX + boardSideW/2, rodTopY);
+ctx.lineTo(boardSideX + boardSideW/2 - 20, rodBotY - 20);
+ctx.stroke();
+
+// Heim joints
+ctx.beginPath();
+ctx.arc(boardSideX + boardSideW/2, rodTopY, 5, 0, Math.PI*2);
+ctx.fillStyle = STEEL_LIGHT;
+ctx.fill();
+ctx.beginPath();
+ctx.arc(boardSideX + boardSideW/2 - 20, rodBotY - 20, 5, 0, Math.PI*2);
+ctx.fillStyle = STEEL_LIGHT;
+ctx.fill();
+
+ctx.font = '9px monospace';
+ctx.fillStyle = STEEL_LIGHT;
+ctx.textAlign = 'left';
+ctx.fillText('LINKAGE ROD', boardSideX + boardSideW/2 + 10, rodTopY + 60);
+ctx.fillText('(½" THREADED)', boardSideX + boardSideW/2 + 10, rodTopY + 72);
+
+// Rocker beam (side view)
+ctx.fillStyle = PLYWOOD;
+ctx.fillRect(boardSideX - 40, rodBotY - 12, 140, 24);
+
+// Fulcrum (side view)
+ctx.fillStyle = STEEL;
+ctx.beginPath();
+ctx.moveTo(boardSideX + 30, rodBotY + 12);
+ctx.lineTo(boardSideX + 20, rodBotY + 40);
+ctx.lineTo(boardSideX + 40, rodBotY + 40);
+ctx.closePath();
+ctx.fill();
+
+// Base platform (side view)
+ctx.fillStyle = PLYWOOD_DARK;
+ctx.fillRect(boardSideX - 50, rodBotY + 38, 200, 18);
+
+// Footplate (side view — shows depth)
+ctx.fillStyle = RUBBER;
+ctx.fillRect(boardSideX - 40, rodBotY - 28, 60, 12);
+ctx.strokeStyle = NEON_GREEN;
+ctx.lineWidth = 2;
+ctx.strokeRect(boardSideX - 40, rodBotY - 28, 60, 12);
+
+// Player (side view)
+const playerSideX = boardSideX - 10;
+const playerSideBaseY = rodBotY - 28;
+ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+ctx.lineWidth = 2;
+ctx.beginPath();
+ctx.arc(playerSideX, playerSideBaseY - 70, 10, 0, Math.PI * 2);
+ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(playerSideX, playerSideBaseY - 60);
+ctx.lineTo(playerSideX, playerSideBaseY - 25);
+ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(playerSideX - 15, playerSideBaseY - 48);
+ctx.lineTo(playerSideX, playerSideBaseY - 42);
+ctx.lineTo(playerSideX + 15, playerSideBaseY - 48);
+ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(playerSideX, playerSideBaseY - 25);
+ctx.lineTo(playerSideX - 12, playerSideBaseY);
+ctx.moveTo(playerSideX, playerSideBaseY - 25);
+ctx.lineTo(playerSideX + 12, playerSideBaseY);
+ctx.stroke();
+
+// Height dimension for side view
+const svDimX = SV_X + SV_W - 20;
+ctx.strokeStyle = DIM_WHITE;
+ctx.fillStyle = DIM_WHITE;
+ctx.lineWidth = 1;
+ctx.beginPath();
+ctx.moveTo(svDimX, boardSideY);
+ctx.lineTo(svDimX, rodBotY + 56);
+ctx.stroke();
+ctx.beginPath(); ctx.moveTo(svDimX - 5, boardSideY); ctx.lineTo(svDimX + 5, boardSideY); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(svDimX - 5, rodBotY + 56); ctx.lineTo(svDimX + 5, rodBotY + 56); ctx.stroke();
+ctx.save();
+ctx.translate(svDimX + 15, (boardSideY + rodBotY + 56) / 2);
+ctx.rotate(-Math.PI/2);
+ctx.font = '11px monospace';
+ctx.textAlign = 'center';
+ctx.fillText('78" total height', 0, 0);
+ctx.restore();
+
+// Tilt arc indicator
+ctx.strokeStyle = ORANGE;
+ctx.lineWidth = 2;
+ctx.setLineDash([4,3]);
+// Show tilted board position (ghosted)
+ctx.save();
+ctx.translate(boardSideX + boardSideW/2 + 25, pivotSideY);
+ctx.rotate(0.14); // ~8 degrees
+ctx.strokeStyle = 'rgba(255,140,0,0.3)';
+ctx.lineWidth = 2;
+ctx.strokeRect(-boardSideW/2 - 25, -pivotSideY + boardSideY, boardSideW, boardSideH);
+ctx.restore();
+ctx.setLineDash([]);
+
+// Tilt label
+ctx.font = '10px monospace';
+ctx.fillStyle = ORANGE;
+ctx.textAlign = 'left';
+ctx.fillText('±8° TILT', SV_X + 190, pivotSideY - 30);
+
+// Hopper (side view)
+ctx.fillStyle = PLYWOOD;
+ctx.fillRect(boardSideX + 10, boardSideY - 60, 40, 55);
+ctx.strokeStyle = PLYWOOD_DARK;
+ctx.lineWidth = 1;
+ctx.strokeRect(boardSideX + 10, boardSideY - 60, 40, 55);
+// Ball in hopper
+ctx.beginPath();
+ctx.arc(boardSideX + 30, boardSideY - 30, 7, 0, Math.PI*2);
+ctx.fillStyle = WHITE;
+ctx.fill();
+
+// Collection bin behind board
+ctx.fillStyle = 'rgba(100,100,100,0.3)';
+ctx.fillRect(boardSideX + boardSideW + 15, boardSideY + boardSideH - 80, 50, 80);
+ctx.strokeStyle = DIM_WHITE;
+ctx.lineWidth = 1;
+ctx.strokeRect(boardSideX + boardSideW + 15, boardSideY + boardSideH - 80, 50, 80);
+ctx.font = '8px monospace';
+ctx.fillStyle = DIM_WHITE;
+ctx.textAlign = 'center';
+ctx.fillText('BALL', boardSideX + boardSideW + 40, boardSideY + boardSideH - 45);
+ctx.fillText('COLLECTION', boardSideX + boardSideW + 40, boardSideY + boardSideH - 35);
+ctx.fillText('BIN', boardSideX + boardSideW + 40, boardSideY + boardSideH - 25);
+
+// ===================== SCORING ZONE DETAIL =====================
+const SZ_Y = 930;
+ctx.font = 'bold 22px monospace';
+ctx.fillStyle = WHITE;
+ctx.textAlign = 'center';
+ctx.fillText('SCORING ZONES — Bottom of Board', 600, SZ_Y);
+
+// Draw large scoring zone diagram
+const szStartX = 80;
+const szEndX = 1120;
+const szW = szEndX - szStartX;
+const szH = 100;
+const szTop = SZ_Y + 20;
+
+const szSlotWidths = [3, 5, 5, 5, 3, 5, 5, 5, 3];
+const szTotalInches = szSlotWidths.reduce((a,b) => a+b, 0);
+const szPxPerInch = szW / szTotalInches;
+const szLabels = ['GUTTER\n×0', '25\npts', '50\npts', '100\npts', '★ 500 ★\nJACKPOT', '100\npts', '50\npts', '25\npts', 'GUTTER\n×0'];
+const szColors = [RED, NEON_CYAN, NEON_GREEN, NEON_YELLOW, GOLD, NEON_YELLOW, NEON_GREEN, NEON_CYAN, RED];
+const szBgColors = ['rgba(255,0,0,0.15)', 'rgba(0,229,255,0.1)', 'rgba(57,255,20,0.1)', 'rgba(255,255,0,0.1)', 'rgba(255,215,0,0.2)', 'rgba(255,255,0,0.1)', 'rgba(57,255,20,0.1)', 'rgba(0,229,255,0.1)', 'rgba(255,0,0,0.15)'];
+
+let szx = szStartX;
+for (let i = 0; i < 9; i++) {
+  const sw = szSlotWidths[i] * szPxPerInch;
+
+  ctx.fillStyle = szBgColors[i];
+  ctx.fillRect(szx, szTop, sw, szH);
+
+  ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(szx, szTop);
+  ctx.lineTo(szx, szTop + szH);
+  ctx.stroke();
+
+  const lines = szLabels[i].split('\n');
+  ctx.font = (i === 4) ? 'bold 18px monospace' : 'bold 16px monospace';
+  ctx.fillStyle = szColors[i];
+  ctx.textAlign = 'center';
+  ctx.fillText(lines[0], szx + sw/2, szTop + szH/2 - 5);
+  ctx.font = '12px monospace';
+  ctx.fillText(lines[1], szx + sw/2, szTop + szH/2 + 15);
+
+  szx += sw;
+}
+// Final border
+ctx.beginPath();
+ctx.moveTo(szx, szTop);
+ctx.lineTo(szx, szTop + szH);
+ctx.stroke();
+// Border around whole thing
+ctx.strokeStyle = PLYWOOD;
+ctx.lineWidth = 3;
+ctx.strokeRect(szStartX, szTop, szW, szH);
+
+// Jackpot glow
+const jkStart = szStartX + szSlotWidths.slice(0,4).reduce((a,b)=>a+b,0) * szPxPerInch;
+const jkW = szSlotWidths[4] * szPxPerInch;
+const jkGrd = ctx.createRadialGradient(jkStart + jkW/2, szTop + szH/2, 5, jkStart + jkW/2, szTop + szH/2, jkW);
+jkGrd.addColorStop(0, 'rgba(255,215,0,0.3)');
+jkGrd.addColorStop(1, 'rgba(255,215,0,0)');
+ctx.fillStyle = jkGrd;
+ctx.fillRect(jkStart - 20, szTop - 10, jkW + 40, szH + 20);
+
+// Difficulty arrows
+ctx.font = '11px monospace';
+ctx.fillStyle = DIM_WHITE;
+ctx.textAlign = 'center';
+ctx.fillText('← EASIER                    HARDER → ★ ← HARDER                    EASIER →', 600, szTop + szH + 25);
+
+// ===================== COOPERATIVE MECHANICS DIAGRAM =====================
+const CM_Y = 1110;
+ctx.font = 'bold 22px monospace';
+ctx.fillStyle = WHITE;
+ctx.textAlign = 'center';
+ctx.fillText('COOPERATIVE TILT MECHANICS', 600, CM_Y);
+
+// Three states: Left tilt, Level, Right tilt
+const stateW = 300;
+const stateH = 200;
+const stateY = CM_Y + 20;
+const states = [
+  { x: 60, label: 'LEFT TILT', desc: 'Player 1 shifts weight →\nBalls cascade LEFT', angle: -0.14, highlight: 'left' },
+  { x: 420, label: 'LEVEL (JACKPOT!)', desc: 'Both players balanced →\nBalls fall CENTER', angle: 0, highlight: 'center' },
+  { x: 780, label: 'RIGHT TILT', desc: 'Player 2 shifts weight →\nBalls cascade RIGHT', angle: 0.14, highlight: 'right' }
+];
+
+states.forEach(state => {
+  // Mini board
+  const bw = 160;
+  const bh = 140;
+  const bcx = state.x + stateW/2;
+  const bcy = stateY + stateH/2 - 10;
+
+  ctx.save();
+  ctx.translate(bcx, bcy);
+  ctx.rotate(state.angle);
+
+  // Board body
+  ctx.fillStyle = '#111122';
+  ctx.fillRect(-bw/2, -bh/2, bw, bh);
+  ctx.strokeStyle = PLYWOOD;
+  ctx.lineWidth = 2;
+  ctx.strokeRect(-bw/2, -bh/2, bw, bh);
+
+  // Mini pegs
+  for (let r = 0; r < 5; r++) {
+    const off = (r % 2 === 0) ? 0 : 12;
+    for (let cc = 0; cc < 5; cc++) {
+      const px = -bw/2 + 20 + cc * 30 + off;
+      const py = -bh/2 + 25 + r * 22;
+      ctx.beginPath();
+      ctx.arc(px, py, 3, 0, Math.PI*2);
+      ctx.fillStyle = PEG_COLORS[(r+cc) % 4];
+      ctx.fill();
+    }
+  }
+
+  // Ball trajectory
+  ctx.setLineDash([3,3]);
+  ctx.strokeStyle = GOLD;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  if (state.highlight === 'left') {
+    ctx.moveTo(0, -bh/2 + 5);
+    ctx.lineTo(-20, -bh/2 + 40);
+    ctx.lineTo(-35, -bh/2 + 75);
+    ctx.lineTo(-50, -bh/2 + 110);
+    ctx.lineTo(-55, bh/2 - 5);
+  } else if (state.highlight === 'center') {
+    ctx.moveTo(0, -bh/2 + 5);
+    ctx.lineTo(-8, -bh/2 + 40);
+    ctx.lineTo(5, -bh/2 + 75);
+    ctx.lineTo(-3, -bh/2 + 110);
+    ctx.lineTo(0, bh/2 - 5);
+  } else {
+    ctx.moveTo(0, -bh/2 + 5);
+    ctx.lineTo(20, -bh/2 + 40);
+    ctx.lineTo(35, -bh/2 + 75);
+    ctx.lineTo(50, -bh/2 + 110);
+    ctx.lineTo(55, bh/2 - 5);
+  }
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Ball
+  const ballX = state.highlight === 'left' ? -55 : state.highlight === 'right' ? 55 : 0;
+  ctx.beginPath();
+  ctx.arc(ballX, bh/2 - 5, 6, 0, Math.PI*2);
+  ctx.fillStyle = GOLD;
+  ctx.fill();
+
+  ctx.restore();
+
+  // Pivot dot
+  ctx.beginPath();
+  ctx.arc(bcx, bcy, 4, 0, Math.PI*2);
+  ctx.fillStyle = STEEL_LIGHT;
+  ctx.fill();
+
+  // Label
+  ctx.font = 'bold 14px monospace';
+  ctx.fillStyle = (state.highlight === 'center') ? GOLD : ORANGE;
+  ctx.textAlign = 'center';
+  ctx.fillText(state.label, bcx, stateY - 5);
+
+  // Description
+  ctx.font = '11px monospace';
+  ctx.fillStyle = DIM_WHITE;
+  const descLines = state.desc.split('\n');
+  descLines.forEach((line, li) => {
+    ctx.fillText(line, bcx, stateY + stateH + 10 + li * 15);
+  });
+});
+
+// ===================== KEY SPECS TABLE =====================
+const KS_Y = 1380;
+ctx.font = 'bold 22px monospace';
+ctx.fillStyle = WHITE;
+ctx.textAlign = 'center';
+ctx.fillText('KEY SPECIFICATIONS', 600, KS_Y);
+
+const specs = [
+  ['Board Size', '48"W × 60"H × 4" deep'],
+  ['Total Footprint', '72"W × 36"D × 78"H'],
+  ['Tilt Range', '±8° from vertical'],
+  ['Pegs', '~110 neon dowels, offset grid'],
+  ['Scoring', '9 slots: 0/25/50/100/500/100/50/25/0'],
+  ['Balls per Round', '20 (incl. 4 gold combo balls)'],
+  ['Round Duration', '60 seconds'],
+  ['Players', '2 (cooperative only)'],
+  ['Est. Cost', '$550–600'],
+  ['Build Time', '2 weekends (4 days)'],
+  ['Setup Time', '~30 min, no tools needed'],
+];
+
+const tableX = 160;
+const tableW = 880;
+const rowH = 28;
+const tableY = KS_Y + 15;
+
+specs.forEach((row, i) => {
+  const ry = tableY + i * rowH;
+  ctx.fillStyle = (i % 2 === 0) ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0)';
+  ctx.fillRect(tableX, ry, tableW, rowH);
+
+  ctx.font = 'bold 13px monospace';
+  ctx.fillStyle = NEON_CYAN;
+  ctx.textAlign = 'right';
+  ctx.fillText(row[0], tableX + 200, ry + 19);
+
+  ctx.font = '13px monospace';
+  ctx.fillStyle = WHITE;
+  ctx.textAlign = 'left';
+  ctx.fillText(row[1], tableX + 220, ry + 19);
+});
+
+// ===================== LEGEND =====================
+const LG_Y = 1710;
+ctx.font = 'bold 18px monospace';
+ctx.fillStyle = WHITE;
+ctx.textAlign = 'center';
+ctx.fillText('LEGEND', 600, LG_Y);
+
+const legendItems = [
+  { color: PLYWOOD, label: 'Plywood / Lumber' },
+  { color: ACRYLIC_EDGE, label: 'Clear Acrylic' },
+  { color: STEEL_LIGHT, label: 'Steel Hardware' },
+  { color: RUBBER, label: 'Rubber Matting', stroke: NEON_GREEN },
+  { color: NEON_PINK, label: 'Neon Pegs' },
+  { color: GOLD, label: 'Gold Ball / Jackpot' },
+  { color: ORANGE, label: 'Tilt Direction' },
+  { color: RED, label: 'Gutter (0 pts)' },
+];
+
+const lgStartX = 100;
+const lgSpacing = 135;
+const lgY = LG_Y + 20;
+
+legendItems.forEach((item, i) => {
+  const lx = lgStartX + (i % 4) * (lgSpacing * 2 + 40);
+  const ly = lgY + Math.floor(i / 4) * 30;
+
+  ctx.fillStyle = item.color;
+  ctx.fillRect(lx, ly, 16, 16);
+  if (item.stroke) {
+    ctx.strokeStyle = item.stroke;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(lx, ly, 16, 16);
+  }
+
+  ctx.font = '11px monospace';
+  ctx.fillStyle = 'rgba(255,255,255,0.8)';
+  ctx.textAlign = 'left';
+  ctx.fillText(item.label, lx + 22, ly + 13);
+});
+
+</script>
+</body>
+</html>
