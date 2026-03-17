@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>WRECK-O-RAMA — Wrecking Ball Carnival Game</title>
+<!-- screenshot: 1200x1400 -->
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background: #0a0e1a;
+    overflow: hidden;
+  }
+  canvas {
+    display: block;
+  }
+</style>
+</head>
+<body>
+<canvas id="c" width="1200" height="1400"></canvas>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+
+// Colors
+const BG = '#0a0e1a';
+const GRID = '#151a2e';
+const WOOD = '#c8943e';
+const WOOD_DARK = '#9a6f2a';
+const POST = '#8B6914';
+const POST_SHADE = '#6B5010';
+const STEEL = '#8899aa';
+const ROPE = '#d4c49a';
+const FOAM_BALL = '#e84040';
+const FOAM_BALL_HI = '#ff6060';
+const TURNTABLE_TOP = '#a08050';
+const TURNTABLE_SIDE = '#705830';
+const STAGE = '#604828';
+const GOLD_BLOCK = '#ffd700';
+const SILVER_BLOCK = '#c0c0c0';
+const SKULL_BLOCK = '#222222';
+const CROWN_BLOCK = '#cc2222';
+const STD_BLOCK = '#d4a055';
+const CROWN_ZONE = 'rgba(255, 215, 0, 0.3)';
+const CROWN_ZONE_BORDER = '#ffd700';
+const PLAYER_LINE = '#ff4444';
+const LABEL = '#ccd8e8';
+const DIM_LINE = '#5577aa';
+const DIM_TEXT = '#7799cc';
+const WALL_COLOR = '#556070';
+const SANDBAG = '#8a7a5a';
+
+// ============================================================
+// FRONT VIEW (Top Half — 0 to 700)
+// ============================================================
+function drawFrontView() {
+  ctx.save();
+
+  // Title
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 28px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('WRECK-O-RAMA — The Wrecking Ball Game', 600, 35);
+
+  ctx.font = 'bold 16px monospace';
+  ctx.fillStyle = '#66aaff';
+  ctx.fillText('FRONT VIEW (Player Perspective)', 600, 60);
+
+  // Ground line
+  ctx.strokeStyle = '#334455';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([8, 4]);
+  ctx.beginPath();
+  ctx.moveTo(50, 600);
+  ctx.lineTo(1150, 600);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#334455';
+  ctx.font = '11px monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('GROUND LEVEL', 55, 615);
+
+  // --- Gantry Frame ---
+  const gantryLeft = 340;
+  const gantryRight = 860;
+  const gantryTop = 90;
+  const gantryBottom = 600;
+  const postWidth = 28;
+
+  // Left upright (4x4 post)
+  ctx.fillStyle = POST;
+  ctx.fillRect(gantryLeft, gantryTop, postWidth, gantryBottom - gantryTop);
+  ctx.fillStyle = POST_SHADE;
+  ctx.fillRect(gantryLeft, gantryTop, 8, gantryBottom - gantryTop);
+
+  // Right upright
+  ctx.fillStyle = POST;
+  ctx.fillRect(gantryRight - postWidth, gantryTop, postWidth, gantryBottom - gantryTop);
+  ctx.fillStyle = POST_SHADE;
+  ctx.fillRect(gantryRight - postWidth, gantryTop, 8, gantryBottom - gantryTop);
+
+  // Horizontal beam
+  ctx.fillStyle = POST;
+  ctx.fillRect(gantryLeft - 10, gantryTop, gantryRight - gantryLeft + 20, postWidth);
+  ctx.fillStyle = POST_SHADE;
+  ctx.fillRect(gantryLeft - 10, gantryTop, gantryRight - gantryLeft + 20, 8);
+
+  // Corner brackets (steel)
+  ctx.fillStyle = STEEL;
+  // Top-left bracket
+  ctx.fillRect(gantryLeft - 4, gantryTop + postWidth, 36, 8);
+  ctx.fillRect(gantryLeft + postWidth, gantryTop - 4, 8, 36);
+  // Top-right bracket
+  ctx.fillRect(gantryRight - postWidth - 4, gantryTop + postWidth, 36, 8);
+  ctx.fillRect(gantryRight - postWidth - 8, gantryTop - 4, 8, 36);
+
+  // Diagonal braces (front pair visible)
+  ctx.strokeStyle = WOOD_DARK;
+  ctx.lineWidth = 10;
+  // Left brace
+  ctx.beginPath();
+  ctx.moveTo(gantryLeft + postWidth / 2, gantryTop + postWidth + 10);
+  ctx.lineTo(gantryLeft + postWidth / 2 + 80, gantryTop + postWidth + 120);
+  ctx.stroke();
+  // Right brace
+  ctx.beginPath();
+  ctx.moveTo(gantryRight - postWidth / 2, gantryTop + postWidth + 10);
+  ctx.lineTo(gantryRight - postWidth / 2 - 80, gantryTop + postWidth + 120);
+  ctx.stroke();
+
+  // Base feet (T-shape, extending outward)
+  ctx.fillStyle = WOOD_DARK;
+  // Left foot
+  ctx.fillRect(gantryLeft - 60, gantryBottom - 12, 150, 12);
+  // Right foot
+  ctx.fillRect(gantryRight - postWidth - 60, gantryBottom - 12, 150, 12);
+
+  // Sandbags on base feet
+  ctx.fillStyle = SANDBAG;
+  drawSandbag(gantryLeft - 45, gantryBottom - 30);
+  drawSandbag(gantryLeft + 55, gantryBottom - 30);
+  drawSandbag(gantryRight - postWidth - 45, gantryBottom - 30);
+  drawSandbag(gantryRight + 35, gantryBottom - 30);
+
+  // --- Eye bolt at center of beam ---
+  const eyeBoltX = (gantryLeft + gantryRight) / 2;
+  const eyeBoltY = gantryTop + postWidth;
+  ctx.strokeStyle = STEEL;
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(eyeBoltX, eyeBoltY + 8, 6, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.fillStyle = STEEL;
+  ctx.fillRect(eyeBoltX - 2, gantryTop + 4, 4, postWidth - 4);
+
+  // --- Rope ---
+  const ropeEndY = 380;
+  ctx.strokeStyle = ROPE;
+  ctx.lineWidth = 4;
+  ctx.setLineDash([]);
+  ctx.beginPath();
+  ctx.moveTo(eyeBoltX, eyeBoltY + 14);
+  // Rope curves slightly to the left (ball pulled back for swing)
+  ctx.quadraticCurveTo(eyeBoltX - 120, ropeEndY - 80, eyeBoltX - 180, ropeEndY);
+  ctx.stroke();
+
+  // Safety tether (paracord) — slightly longer, dashed
+  ctx.strokeStyle = '#aa9966';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([6, 4]);
+  ctx.beginPath();
+  ctx.moveTo(eyeBoltX, eyeBoltY + 14);
+  ctx.quadraticCurveTo(eyeBoltX - 125, ropeEndY - 75, eyeBoltX - 183, ropeEndY + 5);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // --- Wrecking Ball (pulled back, ready to swing) ---
+  const ballX = eyeBoltX - 180;
+  const ballY = ropeEndY;
+  // Shadow
+  ctx.fillStyle = 'rgba(200, 50, 50, 0.3)';
+  ctx.beginPath();
+  ctx.arc(ballX + 3, ballY + 3, 24, 0, Math.PI * 2);
+  ctx.fill();
+  // Ball
+  const ballGrad = ctx.createRadialGradient(ballX - 6, ballY - 6, 4, ballX, ballY, 24);
+  ballGrad.addColorStop(0, FOAM_BALL_HI);
+  ballGrad.addColorStop(1, FOAM_BALL);
+  ctx.fillStyle = ballGrad;
+  ctx.beginPath();
+  ctx.arc(ballX, ballY, 24, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#bb3030';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  // Label
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 10px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('FOAM', ballX, ballY - 2);
+  ctx.fillText('4 lbs', ballX, ballY + 10);
+
+  // --- Swing arc (ghost trajectory) ---
+  ctx.strokeStyle = 'rgba(255, 80, 80, 0.25)';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([6, 6]);
+  ctx.beginPath();
+  ctx.arc(eyeBoltX, eyeBoltY + 14, 270, 0.55 * Math.PI, 0.75 * Math.PI);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Ghost ball at impact point
+  ctx.fillStyle = 'rgba(232, 64, 64, 0.2)';
+  ctx.beginPath();
+  ctx.arc(eyeBoltX + 10, 380, 24, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(232, 64, 64, 0.3)';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([4, 4]);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Swing direction arrow
+  ctx.fillStyle = 'rgba(255, 100, 100, 0.5)';
+  ctx.font = '11px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('SWING ARC →', eyeBoltX - 80, 330);
+
+  // --- Turntable + Tower (center of gantry) ---
+  const towerCenterX = eyeBoltX + 10;
+  const towerBaseY = 580;
+
+  // Stage platform (30" square, shown as rectangle in front view)
+  ctx.fillStyle = STAGE;
+  ctx.fillRect(towerCenterX - 100, towerBaseY - 6, 200, 18);
+  ctx.strokeStyle = '#4a3820';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(towerCenterX - 100, towerBaseY - 6, 200, 18);
+
+  // Turntable disc
+  ctx.fillStyle = TURNTABLE_SIDE;
+  ctx.fillRect(towerCenterX - 75, towerBaseY - 14, 150, 10);
+  ctx.fillStyle = TURNTABLE_TOP;
+  ctx.fillRect(towerCenterX - 75, towerBaseY - 18, 150, 6);
+
+  // Lazy susan bearing (visible as a line)
+  ctx.strokeStyle = STEEL;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(towerCenterX - 40, towerBaseY - 10);
+  ctx.lineTo(towerCenterX + 40, towerBaseY - 10);
+  ctx.stroke();
+
+  // Rotation arrow
+  ctx.strokeStyle = 'rgba(100, 200, 255, 0.6)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(towerCenterX, towerBaseY - 25, 50, -0.2, 0.8);
+  ctx.stroke();
+  // Arrowhead
+  ctx.fillStyle = 'rgba(100, 200, 255, 0.6)';
+  const arrowAngle = 0.8;
+  const arrowX = towerCenterX + 50 * Math.cos(arrowAngle);
+  const arrowY = towerBaseY - 25 + 50 * Math.sin(arrowAngle);
+  ctx.beginPath();
+  ctx.moveTo(arrowX, arrowY);
+  ctx.lineTo(arrowX - 10, arrowY - 8);
+  ctx.lineTo(arrowX - 2, arrowY + 6);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(100, 200, 255, 0.7)';
+  ctx.font = '10px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('ROTATES', towerCenterX + 70, towerBaseY - 45);
+  ctx.fillText('3-5 RPM', towerCenterX + 70, towerBaseY - 33);
+
+  // --- Tower of Blocks ---
+  const blockW = 42;
+  const blockH = 12;
+  const blockGap = 1;
+  const blocksPerLayer = 3;
+  const numLayers = 9;
+  const towerStartY = towerBaseY - 22;
+
+  // Define block layout with types
+  const blockTypes = [
+    // Layer 0 (bottom): standard, GOLD, standard
+    ['std', 'gold', 'std'],
+    // Layer 1: standard, standard, standard
+    ['std', 'std', 'std'],
+    // Layer 2: skull, standard, standard
+    ['skull', 'std', 'std'],
+    // Layer 3: standard, GOLD, standard
+    ['std', 'gold', 'std'],
+    // Layer 4: standard, standard, skull
+    ['std', 'std', 'skull'],
+    // Layer 5: silver, standard, silver
+    ['silver', 'std', 'silver'],
+    // Layer 6: standard, skull, standard
+    ['std', 'skull', 'std'],
+    // Layer 7: silver, standard, silver
+    ['silver', 'std', 'silver'],
+    // Layer 8 (top): standard, standard, standard + crown on top
+    ['std', 'std', 'std'],
+  ];
+
+  for (let layer = 0; layer < numLayers; layer++) {
+    const y = towerStartY - (layer + 1) * (blockH + blockGap);
+    const rotated = layer % 2 === 1;
+
+    for (let b = 0; b < blocksPerLayer; b++) {
+      const type = blockTypes[layer][b];
+      let color;
+      switch(type) {
+        case 'gold': color = GOLD_BLOCK; break;
+        case 'silver': color = SILVER_BLOCK; break;
+        case 'skull': color = SKULL_BLOCK; break;
+        case 'crown': color = CROWN_BLOCK; break;
+        default: color = STD_BLOCK;
+      }
+
+      let x, w, h;
+      if (!rotated) {
+        // Blocks laid horizontally (front-facing)
+        w = blockW;
+        h = blockH;
+        x = towerCenterX - (blocksPerLayer * blockW) / 2 + b * (blockW + blockGap);
+      } else {
+        // Blocks rotated 90° — seen from front they appear as squares (end grain)
+        w = blockH + 6;
+        h = blockH;
+        x = towerCenterX - (blocksPerLayer * (blockH + 6)) / 2 + b * (blockH + 6 + blockGap + 10);
+      }
+
+      ctx.fillStyle = color;
+      ctx.fillRect(x, y, w, h);
+
+      // Block edge highlight
+      ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x, y, w, h);
+
+      // Skull icon on black blocks
+      if (type === 'skull') {
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '8px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('☠', x + w/2, y + h - 2);
+      }
+    }
+  }
+
+  // Crown block on top
+  const crownY = towerStartY - (numLayers + 1) * (blockH + blockGap) + 4;
+  ctx.fillStyle = CROWN_BLOCK;
+  ctx.fillRect(towerCenterX - 15, crownY, 30, blockH + 2);
+  ctx.strokeStyle = GOLD_BLOCK;
+  ctx.lineWidth = 2;
+  ctx.strokeRect(towerCenterX - 15, crownY, 30, blockH + 2);
+  // Crown symbol
+  ctx.fillStyle = GOLD_BLOCK;
+  ctx.font = 'bold 10px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('♛', towerCenterX, crownY + 10);
+
+  // Crown label
+  ctx.fillStyle = GOLD_BLOCK;
+  ctx.font = '10px monospace';
+  ctx.fillText('CROWN (500 pts)', towerCenterX, crownY - 8);
+
+  // --- Collection Walls (U-shape, behind/sides) ---
+  // Left wall
+  ctx.fillStyle = WALL_COLOR;
+  ctx.fillRect(towerCenterX - 115, towerBaseY - 130, 8, 140);
+  // Right wall
+  ctx.fillRect(towerCenterX + 107, towerBaseY - 130, 8, 140);
+  // Back wall (appears as a line behind the tower)
+  ctx.fillStyle = 'rgba(85, 96, 112, 0.5)';
+  ctx.fillRect(towerCenterX - 115, towerBaseY - 130, 230, 8);
+
+  ctx.fillStyle = LABEL;
+  ctx.font = '9px monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('COLLECTION', towerCenterX + 118, towerBaseY - 90);
+  ctx.fillText('WALL', towerCenterX + 118, towerBaseY - 78);
+
+  // --- Player Line ---
+  ctx.strokeStyle = PLAYER_LINE;
+  ctx.lineWidth = 3;
+  ctx.setLineDash([10, 6]);
+  ctx.beginPath();
+  ctx.moveTo(200, 585);
+  ctx.lineTo(gantryLeft - 10, 585);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = PLAYER_LINE;
+  ctx.font = 'bold 11px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('◄ PLAYER LINE ►', 280, 582);
+
+  // --- Crown Zone (on ground, toward player) ---
+  ctx.fillStyle = CROWN_ZONE;
+  ctx.fillRect(220, 588, 80, 10);
+  ctx.strokeStyle = CROWN_ZONE_BORDER;
+  ctx.lineWidth = 2;
+  ctx.setLineDash([4, 4]);
+  ctx.strokeRect(220, 588, 80, 10);
+  ctx.setLineDash([]);
+  ctx.fillStyle = CROWN_ZONE_BORDER;
+  ctx.font = '9px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('CROWN ZONE', 260, 586);
+  ctx.fillText('(500 pts if crown lands here)', 260, 622);
+
+  // --- Player silhouette (left side) ---
+  drawPlayerSilhouette(230, 500, 0.7);
+  ctx.fillStyle = 'rgba(150, 200, 255, 0.5)';
+  ctx.font = '11px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('PLAYER', 230, 460);
+
+  // --- Flying blocks (impact visualization) ---
+  drawFlyingBlock(towerCenterX + 130, 410, 15, STD_BLOCK, 20);
+  drawFlyingBlock(towerCenterX + 95, 350, 12, SILVER_BLOCK, -10);
+  drawFlyingBlock(towerCenterX + 150, 480, 14, STD_BLOCK, 35);
+  drawFlyingBlock(towerCenterX - 120, 370, 13, STD_BLOCK, -25);
+  drawFlyingBlock(towerCenterX + 50, 310, 11, GOLD_BLOCK, 15);
+
+  // Impact burst lines
+  ctx.strokeStyle = 'rgba(255, 200, 50, 0.3)';
+  ctx.lineWidth = 2;
+  for (let i = 0; i < 8; i++) {
+    const angle = (i / 8) * Math.PI * 2;
+    ctx.beginPath();
+    ctx.moveTo(towerCenterX + 10 + Math.cos(angle) * 80, 400 + Math.sin(angle) * 50);
+    ctx.lineTo(towerCenterX + 10 + Math.cos(angle) * 110, 400 + Math.sin(angle) * 70);
+    ctx.stroke();
+  }
+  ctx.fillStyle = 'rgba(255, 200, 50, 0.4)';
+  ctx.font = 'bold 14px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('💥 IMPACT', towerCenterX + 140, 395);
+
+  // --- Dimension Lines ---
+  // Gantry height
+  drawDimLine(1080, gantryTop, 1080, gantryBottom, '8 ft', 'right');
+  // Gantry width
+  drawDimLine(gantryLeft, 75, gantryRight, 75, '5 ft', 'top');
+  // Tower height
+  drawDimLine(towerCenterX + 85, crownY, towerCenterX + 85, towerBaseY - 18, '3-4 ft', 'right');
+  // Turntable width
+  drawDimLine(towerCenterX - 75, towerBaseY + 20, towerCenterX + 75, towerBaseY + 20, '24"', 'bottom');
+  // Rope length
+  ctx.fillStyle = DIM_TEXT;
+  ctx.font = '10px monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('rope: 6 ft', eyeBoltX - 150, 250);
+
+  // --- Block Legend ---
+  const legendX = 80;
+  const legendY = 100;
+  ctx.fillStyle = 'rgba(15, 20, 35, 0.85)';
+  ctx.fillRect(legendX - 10, legendY - 15, 170, 145);
+  ctx.strokeStyle = '#334466';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(legendX - 10, legendY - 15, 170, 145);
+
+  ctx.fillStyle = LABEL;
+  ctx.font = 'bold 12px monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('BLOCK TYPES', legendX, legendY);
+
+  const legendItems = [
+    { color: STD_BLOCK, label: 'Standard  10 pts', count: '×30' },
+    { color: SILVER_BLOCK, label: 'Silver    25 pts', count: '×8' },
+    { color: GOLD_BLOCK, label: 'Gold     100 pts', count: '×4' },
+    { color: SKULL_BLOCK, label: 'Skull    -50 pts', count: '×4' },
+    { color: CROWN_BLOCK, label: 'Crown   500 pts', count: '×1' },
+  ];
+
+  legendItems.forEach((item, i) => {
+    const y = legendY + 20 + i * 22;
+    ctx.fillStyle = item.color;
+    ctx.fillRect(legendX, y - 8, 16, 12);
+    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(legendX, y - 8, 16, 12);
+    ctx.fillStyle = LABEL;
+    ctx.font = '11px monospace';
+    ctx.fillText(item.label, legendX + 22, y + 2);
+    ctx.fillStyle = '#667788';
+    ctx.fillText(item.count, legendX + 140, y + 2);
+  });
+
+  // --- Labels ---
+  // Gantry
+  ctx.fillStyle = LABEL;
+  ctx.font = '11px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('4×4 POST', gantryLeft + 14, gantryTop + 260);
+  ctx.fillText('HORIZONTAL BEAM', eyeBoltX, gantryTop - 8);
+  ctx.fillText('(4×4 post)', eyeBoltX, gantryTop + 50);
+  ctx.fillText('EYE BOLT', eyeBoltX + 40, eyeBoltY + 6);
+  ctx.fillText('DIAGONAL', gantryLeft + 80, gantryTop + 100);
+  ctx.fillText('BRACE', gantryLeft + 80, gantryTop + 113);
+
+  // Sandbag label
+  ctx.fillStyle = '#8a8a6a';
+  ctx.font = '9px monospace';
+  ctx.fillText('SANDBAGS', gantryLeft + 5, gantryBottom - 40);
+
+  ctx.restore();
+}
+
+// ============================================================
+// SIDE VIEW (Bottom Half — 700 to 1400)
+// ============================================================
+function drawSideView() {
+  ctx.save();
+  ctx.translate(0, 700);
+
+  // Separator line
+  ctx.strokeStyle = '#334466';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(50, 0);
+  ctx.lineTo(1150, 0);
+  ctx.stroke();
+
+  // Title
+  ctx.fillStyle = '#66aaff';
+  ctx.font = 'bold 16px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('SIDE VIEW (Cross-Section)', 600, 30);
+
+  // Ground line
+  ctx.strokeStyle = '#334455';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([8, 4]);
+  ctx.beginPath();
+  ctx.moveTo(50, 580);
+  ctx.lineTo(1150, 580);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Side view positions
+  const groundY = 580;
+  const gantryX = 600; // center of gantry in side view
+  const postDepth = 24;
+  const gantryTop = 80;
+
+  // --- Side view of gantry (single post visible + beam end) ---
+  // Post (side view shows depth)
+  ctx.fillStyle = POST;
+  ctx.fillRect(gantryX - postDepth/2, gantryTop, postDepth, groundY - gantryTop);
+  ctx.fillStyle = POST_SHADE;
+  ctx.fillRect(gantryX - postDepth/2, gantryTop, 7, groundY - gantryTop);
+
+  // Beam (shown as cross-section)
+  ctx.fillStyle = POST;
+  ctx.fillRect(gantryX - postDepth/2 - 5, gantryTop, postDepth + 10, 24);
+  ctx.fillStyle = POST_SHADE;
+  ctx.fillRect(gantryX - postDepth/2 - 5, gantryTop, postDepth + 10, 7);
+
+  // Front diagonal brace
+  ctx.strokeStyle = WOOD_DARK;
+  ctx.lineWidth = 8;
+  ctx.beginPath();
+  ctx.moveTo(gantryX, gantryTop + 28);
+  ctx.lineTo(gantryX + 80, gantryTop + 130);
+  ctx.stroke();
+
+  // Rear diagonal brace
+  ctx.beginPath();
+  ctx.moveTo(gantryX, gantryTop + 28);
+  ctx.lineTo(gantryX - 80, gantryTop + 130);
+  ctx.stroke();
+
+  // Base foot (side view — extends front/back)
+  ctx.fillStyle = WOOD_DARK;
+  ctx.fillRect(gantryX - 80, groundY - 10, 160, 10);
+
+  // Sandbags
+  ctx.fillStyle = SANDBAG;
+  drawSandbag(gantryX - 65, groundY - 26);
+  drawSandbag(gantryX + 40, groundY - 26);
+
+  // --- Eye bolt + rope ---
+  const eyeX = gantryX;
+  const eyeY = gantryTop + 24;
+  ctx.strokeStyle = STEEL;
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(eyeX, eyeY + 8, 5, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // Rope (ball pulled toward player = left in side view)
+  const ballSideX = 320;
+  const ballSideY = 360;
+  ctx.strokeStyle = ROPE;
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(eyeX, eyeY + 13);
+  ctx.quadraticCurveTo(eyeX - 160, ballSideY - 60, ballSideX, ballSideY);
+  ctx.stroke();
+
+  // Wrecking ball (side view)
+  const bGrad = ctx.createRadialGradient(ballSideX - 5, ballSideY - 5, 3, ballSideX, ballSideY, 22);
+  bGrad.addColorStop(0, FOAM_BALL_HI);
+  bGrad.addColorStop(1, FOAM_BALL);
+  ctx.fillStyle = bGrad;
+  ctx.beginPath();
+  ctx.arc(ballSideX, ballSideY, 22, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#bb3030';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 9px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('8" DIA', ballSideX, ballSideY + 4);
+
+  // Swing arc
+  ctx.strokeStyle = 'rgba(255, 80, 80, 0.25)';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([6, 6]);
+  ctx.beginPath();
+  ctx.arc(eyeX, eyeY + 13, 270, 0.4 * Math.PI, 0.7 * Math.PI);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Arrow showing swing direction
+  ctx.fillStyle = 'rgba(255, 100, 100, 0.5)';
+  ctx.font = '11px monospace';
+  ctx.fillText('SWING →', 430, 310);
+
+  // Ghost ball at impact
+  ctx.fillStyle = 'rgba(232, 64, 64, 0.15)';
+  ctx.beginPath();
+  ctx.arc(gantryX + 30, 370, 22, 0, Math.PI * 2);
+  ctx.fill();
+
+  // --- Turntable + Tower (side view) ---
+  const towerX = gantryX + 30;
+  const towerBaseY = groundY - 10;
+
+  // Stage platform
+  ctx.fillStyle = STAGE;
+  ctx.fillRect(towerX - 55, towerBaseY - 6, 110, 16);
+
+  // Turntable discs
+  ctx.fillStyle = TURNTABLE_SIDE;
+  ctx.fillRect(towerX - 40, towerBaseY - 14, 80, 10);
+  ctx.fillStyle = TURNTABLE_TOP;
+  ctx.fillRect(towerX - 40, towerBaseY - 18, 80, 5);
+
+  // Bearing
+  ctx.strokeStyle = STEEL;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(towerX - 25, towerBaseY - 10);
+  ctx.lineTo(towerX + 25, towerBaseY - 10);
+  ctx.stroke();
+
+  // Rim
+  ctx.fillStyle = WOOD;
+  ctx.fillRect(towerX - 42, towerBaseY - 22, 4, 5);
+  ctx.fillRect(towerX + 38, towerBaseY - 22, 4, 5);
+
+  // Tower blocks (side view — simplified stack)
+  for (let i = 0; i < 9; i++) {
+    const y = towerBaseY - 22 - (i + 1) * 13;
+    const isRotated = i % 2 === 1;
+    if (isRotated) {
+      // End grain view — shows as small squares
+      ctx.fillStyle = (i === 3) ? GOLD_BLOCK : (i === 5 || i === 7) ? SILVER_BLOCK : STD_BLOCK;
+      ctx.fillRect(towerX - 25, y, 50, 12);
+    } else {
+      // Side face view
+      ctx.fillStyle = (i === 2 || i === 4) ? SKULL_BLOCK : (i === 0) ? GOLD_BLOCK : STD_BLOCK;
+      ctx.fillRect(towerX - 30, y, 60, 12);
+    }
+    ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+    ctx.lineWidth = 1;
+    const bx = isRotated ? towerX - 25 : towerX - 30;
+    const bw = isRotated ? 50 : 60;
+    ctx.strokeRect(bx, y, bw, 12);
+  }
+
+  // Crown
+  const crownSideY = towerBaseY - 22 - 10 * 13;
+  ctx.fillStyle = CROWN_BLOCK;
+  ctx.fillRect(towerX - 12, crownSideY, 24, 12);
+  ctx.strokeStyle = GOLD_BLOCK;
+  ctx.lineWidth = 2;
+  ctx.strokeRect(towerX - 12, crownSideY, 24, 12);
+  ctx.fillStyle = GOLD_BLOCK;
+  ctx.font = '9px monospace';
+  ctx.fillText('♛', towerX, crownSideY + 10);
+
+  // Collection walls (side view — back wall + side wall profile)
+  ctx.fillStyle = WALL_COLOR;
+  // Back wall
+  ctx.fillRect(towerX + 60, towerBaseY - 130, 8, 125);
+  ctx.fillStyle = LABEL;
+  ctx.font = '9px monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('BACK WALL', towerX + 72, towerBaseY - 80);
+
+  // --- Player silhouette (side view) ---
+  drawPlayerSilhouette(200, 490, 0.6);
+  ctx.fillStyle = 'rgba(150, 200, 255, 0.5)';
+  ctx.font = '11px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('PLAYER', 200, 450);
+
+  // Player line
+  ctx.strokeStyle = PLAYER_LINE;
+  ctx.lineWidth = 3;
+  ctx.setLineDash([10, 6]);
+  ctx.beginPath();
+  ctx.moveTo(270, groundY - 1);
+  ctx.lineTo(270, groundY - 20);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = PLAYER_LINE;
+  ctx.font = '9px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('PLAYER', 270, groundY - 24);
+  ctx.fillText('LINE', 270, groundY - 14);
+
+  // Crown Zone on ground
+  ctx.fillStyle = CROWN_ZONE;
+  ctx.fillRect(310, groundY - 6, 60, 8);
+  ctx.strokeStyle = CROWN_ZONE_BORDER;
+  ctx.lineWidth = 1;
+  ctx.setLineDash([3, 3]);
+  ctx.strokeRect(310, groundY - 6, 60, 8);
+  ctx.setLineDash([]);
+  ctx.fillStyle = CROWN_ZONE_BORDER;
+  ctx.font = '8px monospace';
+  ctx.fillText('CROWN', 340, groundY - 10);
+  ctx.fillText('ZONE', 340, groundY + 14);
+
+  // --- Dimension Lines ---
+  // Overall depth/footprint
+  drawDimLine(150, groundY + 30, towerX + 75, groundY + 30, '6 ft play area', 'bottom');
+  // Gantry height
+  drawDimLine(gantryX + 50, gantryTop, gantryX + 50, groundY, '8 ft', 'right');
+  // Player to tower distance
+  drawDimLine(270, groundY + 50, towerX, groundY + 50, '4 ft (swing reach)', 'bottom');
+
+  // --- Key Specs Box ---
+  const specX = 850;
+  const specY = 60;
+  ctx.fillStyle = 'rgba(15, 20, 35, 0.9)';
+  ctx.fillRect(specX, specY, 280, 260);
+  ctx.strokeStyle = '#334466';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(specX, specY, 280, 260);
+
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 14px monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('KEY SPECS', specX + 15, specY + 22);
+
+  ctx.fillStyle = LABEL;
+  ctx.font = '11px monospace';
+  const specs = [
+    'Play area:     6 ft × 6 ft',
+    'Gantry height: 8 ft',
+    'Gantry width:  5 ft (between posts)',
+    'Turntable:     24" dia, lazy susan',
+    'Tower:         40-50 blocks, 9 layers',
+    'Wrecking ball:  8" foam, 4 lbs',
+    'Rope length:   6 ft nylon',
+    'Block size:    6" × 3" × 1.5"',
+    'Total blocks:  47 (30+8+4+4+1)',
+    'Est. cost:     $290-330',
+    'Build time:    2 weekends',
+    'Throughput:    ~30 sec/player',
+    'Reset time:    ~90 sec',
+  ];
+  specs.forEach((s, i) => {
+    ctx.fillText(s, specX + 15, specY + 45 + i * 17);
+  });
+
+  // --- Materials callout ---
+  const matX = 850;
+  const matY = 345;
+  ctx.fillStyle = 'rgba(15, 20, 35, 0.9)';
+  ctx.fillRect(matX, matY, 280, 180);
+  ctx.strokeStyle = '#334466';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(matX, matY, 280, 180);
+
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 14px monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText('MATERIALS', matX + 15, matY + 22);
+
+  ctx.fillStyle = LABEL;
+  ctx.font = '11px monospace';
+  const materials = [
+    '• 4×4 posts (3) — gantry frame',
+    '• 2×4 lumber (4) — braces + feet',
+    '• ¾" plywood — turntable + stage',
+    '• 1×4 pine (4) — tower blocks',
+    '• Lazy susan bearing (12")',
+    '• Eye bolt + nylon rope',
+    '• Foam ball + canvas bag',
+    '• Spray paint (gold/silver/black)',
+    '• Carriage bolts + wing nuts',
+  ];
+  materials.forEach((m, i) => {
+    ctx.fillText(m, matX + 15, matY + 45 + i * 16);
+  });
+
+  // --- Gameplay sequence at bottom ---
+  const seqY = 620;
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 13px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('GAMEPLAY SEQUENCE', 450, seqY);
+
+  const steps = [
+    { x: 130, label: '1. STACK', desc: 'Build tower\non turntable' },
+    { x: 310, label: '2. SPIN', desc: 'Operator spins\nthe turntable' },
+    { x: 490, label: '3. SWING', desc: 'Player gets\nONE swing' },
+    { x: 670, label: '4. SMASH', desc: 'Tower goes\nBOOM 💥' },
+    { x: 850, label: '5. SCORE', desc: 'Count blocks\noff platform' },
+  ];
+
+  steps.forEach((step, i) => {
+    // Circle
+    ctx.fillStyle = (i === 3) ? '#ff4444' : '#2255aa';
+    ctx.beginPath();
+    ctx.arc(step.x, seqY + 35, 20, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 11px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(step.label, step.x, seqY + 39);
+
+    ctx.fillStyle = LABEL;
+    ctx.font = '10px monospace';
+    const lines = step.desc.split('\n');
+    lines.forEach((line, j) => {
+      ctx.fillText(line, step.x, seqY + 62 + j * 13);
+    });
+
+    // Arrow to next
+    if (i < steps.length - 1) {
+      ctx.strokeStyle = '#445566';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(step.x + 25, seqY + 35);
+      ctx.lineTo(steps[i+1].x - 25, seqY + 35);
+      ctx.stroke();
+      // Arrowhead
+      ctx.fillStyle = '#445566';
+      ctx.beginPath();
+      ctx.moveTo(steps[i+1].x - 25, seqY + 35);
+      ctx.lineTo(steps[i+1].x - 33, seqY + 31);
+      ctx.lineTo(steps[i+1].x - 33, seqY + 39);
+      ctx.fill();
+    }
+  });
+
+  ctx.restore();
+}
+
+// ============================================================
+// Helper Functions
+// ============================================================
+
+function drawSandbag(x, y) {
+  ctx.beginPath();
+  ctx.moveTo(x, y + 14);
+  ctx.quadraticCurveTo(x + 15, y - 2, x + 30, y + 14);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function drawPlayerSilhouette(x, y, scale) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = 'rgba(100, 150, 220, 0.3)';
+  // Head
+  ctx.beginPath();
+  ctx.arc(0, -60, 18, 0, Math.PI * 2);
+  ctx.fill();
+  // Body
+  ctx.fillRect(-12, -42, 24, 55);
+  // Legs
+  ctx.fillRect(-14, 13, 10, 45);
+  ctx.fillRect(4, 13, 10, 45);
+  // Arms reaching forward (toward the ball)
+  ctx.beginPath();
+  ctx.moveTo(12, -35);
+  ctx.lineTo(50, -20);
+  ctx.lineTo(48, -10);
+  ctx.lineTo(10, -25);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawFlyingBlock(x, y, size, color, rotation) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rotation * Math.PI / 180);
+  ctx.fillStyle = color;
+  ctx.globalAlpha = 0.6;
+  ctx.fillRect(-size, -size/3, size * 2, size * 0.7);
+  ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(-size, -size/3, size * 2, size * 0.7);
+  ctx.globalAlpha = 1.0;
+  ctx.restore();
+}
+
+function drawDimLine(x1, y1, x2, y2, label, side) {
+  ctx.strokeStyle = DIM_LINE;
+  ctx.lineWidth = 1;
+  ctx.setLineDash([3, 3]);
+
+  if (side === 'right' || side === 'left') {
+    // Vertical dimension
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    // Serifs
+    ctx.beginPath();
+    ctx.moveTo(x1 - 5, y1);
+    ctx.lineTo(x1 + 5, y1);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x2 - 5, y2);
+    ctx.lineTo(x2 + 5, y2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // Label
+    ctx.fillStyle = DIM_TEXT;
+    ctx.font = '10px monospace';
+    ctx.textAlign = side === 'right' ? 'left' : 'right';
+    const lx = side === 'right' ? x1 + 8 : x1 - 8;
+    ctx.fillText(label, lx, (y1 + y2) / 2 + 4);
+  } else {
+    // Horizontal dimension
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    // Serifs
+    ctx.beginPath();
+    ctx.moveTo(x1, y1 - 5);
+    ctx.lineTo(x1, y1 + 5);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x2, y2 - 5);
+    ctx.lineTo(x2, y2 + 5);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // Label
+    ctx.fillStyle = DIM_TEXT;
+    ctx.font = '10px monospace';
+    ctx.textAlign = 'center';
+    const ly = side === 'top' ? y1 - 6 : y1 + 14;
+    ctx.fillText(label, (x1 + x2) / 2, ly);
+  }
+}
+
+// ============================================================
+// Render
+// ============================================================
+drawFrontView();
+drawSideView();
+</script>
+</body>
+</html>

@@ -35,6 +35,11 @@
 - When a game has a distinctive aesthetic (craft supplies, neon, rustic), lean into it in the diagram styling — background colors, border styles, font choices should reinforce the theme
 - Callout boxes for non-structural features (e.g. take-home kits, prize info) can be added as styled HTML sections below the canvas — keeps the diagram clean while communicating the full experience
 - Stick figures in side cross-sections effectively communicate player height and interaction posture — worth the 10 lines of code
+- For games with projectile/swing mechanics, show the object in its "ready" position AND a ghost at the impact point — the two positions connected by a trajectory arc communicate the full action in a single frame
+- Flying/scattering objects (debris, blocks) at partial opacity with slight rotation angles convey impact energy and chaos without animation
+- A "gameplay sequence" strip at the bottom (numbered circles with short labels connected by arrows) is an effective way to communicate game flow in a static diagram — especially for non-obvious games
+- Radial gradient fills on spheres/balls create convincing 3D depth on a 2D canvas — place the highlight offset from center toward the "light source"
+- For freestanding structures (gantry, frame), showing sandbags/anchoring in the diagram communicates stability and safety — reviewers immediately understand "this won't tip over"
 
 ### Rendering intangible/atmospheric elements:
 1. **Fog and mist zones** — Use gradient fills (opaque at source → transparent at edges) rather than solid fills. Add subtle curved stroke "swirl" hints to suggest movement
