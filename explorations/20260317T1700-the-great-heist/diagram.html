@@ -1,0 +1,815 @@
+<!-- screenshot: 900x1900 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Great Heist — Concept Diagram</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0a1e; color: #e0e0e0; font-family: 'Courier New', monospace; padding: 20px; }
+  h1 { text-align: center; color: #FFD700; margin-bottom: 4px; font-size: 28px; letter-spacing: 4px; text-shadow: 0 0 12px rgba(255,215,0,0.4); }
+  .subtitle { text-align: center; color: #6688aa; margin-bottom: 30px; font-size: 14px; }
+  .views { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; }
+  .view { background: #0d0d28; border: 1px solid #2a2a55; border-radius: 8px; padding: 20px; }
+  .view h2 { color: #FFD700; margin-bottom: 16px; font-size: 16px; text-align: center; }
+  canvas { display: block; }
+  .legend { margin-top: 30px; max-width: 860px; margin-left: auto; margin-right: auto; }
+  .legend h3 { color: #FFD700; margin-bottom: 10px; }
+  .legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; }
+  .legend-item { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; font-size: 13px; }
+  .legend-swatch { width: 16px; height: 16px; border-radius: 3px; flex-shrink: 0; }
+  .specs { margin-top: 30px; max-width: 860px; margin-left: auto; margin-right: auto; background: #0d0d28; border: 1px solid #2a2a55; border-radius: 8px; padding: 20px; }
+  .specs h3 { color: #FFD700; margin-bottom: 10px; }
+  .specs table { width: 100%; font-size: 13px; }
+  .specs td { padding: 3px 8px; }
+  .specs td:first-child { color: #6688aa; }
+</style>
+</head>
+<body>
+
+<h1>THE GREAT HEIST</h1>
+<p class="subtitle">giant tilting labyrinth × bank vault maze × dual hand cranks — pure skill dexterity game</p>
+
+<div class="views">
+  <div class="view">
+    <h2>TOP-DOWN VIEW (Maze Layout — Player Perspective)</h2>
+    <canvas id="maze" width="520" height="420"></canvas>
+  </div>
+  <div class="view">
+    <h2>SIDE CROSS-SECTION (Gimbal & Crank Mechanism)</h2>
+    <canvas id="side" width="300" height="420"></canvas>
+  </div>
+</div>
+
+<div class="legend">
+  <h3>LEGEND</h3>
+  <div class="legend-grid">
+    <div class="legend-item"><div class="legend-swatch" style="background:#1a1a3a"></div> Maze surface (dark navy plywood)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#445577"></div> Maze walls (¼" plywood strips, 1.5" tall)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#ff3333"></div> Trap holes (1.5" dia.) — ALARM triggers</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#FFD700"></div> VAULT (goal) — gold pocket at center</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#44ff44"></div> ENTRANCE — ball start position</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#c0c0c0"></div> Steel ball bearing (1" diameter)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:rgba(68,255,68,0.3); border:1px dashed #44ff44"></div> Easy Street path (wide, 2 traps)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:rgba(255,165,0,0.3); border:1px dashed #ffa500"></div> Side Hustle path (medium, 4 traps)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:rgba(255,51,51,0.3); border:1px dashed #ff3333"></div> Air Duct path (narrow, 6 traps)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#8B6914"></div> Frame (2×4 lumber) &amp; gimbal mechanism</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#4488cc"></div> Hand cranks (player controls)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#cc4444"></div> Bicycle bell alarms (under trap holes)</div>
+  </div>
+</div>
+
+<div class="specs">
+  <h3>KEY SPECS</h3>
+  <table>
+    <tr><td>Maze surface</td><td>48"W × 36"D, ¼" birch plywood + glued wall strips</td></tr>
+    <tr><td>Table height</td><td>30" (waist height for kids)</td></tr>
+    <tr><td>Tilt range</td><td>±5° on both axes (rubber bumper limiters)</td></tr>
+    <tr><td>Trap holes</td><td>8 total (1.5" dia.), bicycle bell alarm under each</td></tr>
+    <tr><td>Three paths</td><td>Easy Street (2 traps) → Side Hustle (4 traps) → Air Duct (6 traps)</td></tr>
+    <tr><td>Ball</td><td>1" steel ball bearing</td></tr>
+    <tr><td>Timer</td><td>60-second sand timer</td></tr>
+    <tr><td>Controls</td><td>2 hand cranks — left (L/R tilt), right (fwd/back tilt)</td></tr>
+    <tr><td>Total footprint</td><td>56"W × 44"D × 36"H</td></tr>
+    <tr><td>Est. cost</td><td>~$200–240</td></tr>
+    <tr><td>Build time</td><td>2 weekends</td></tr>
+  </table>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// TOP-DOWN VIEW — Maze Layout
+// ══════════════════════════════════════════
+const mc = document.getElementById('maze').getContext('2d');
+const MW = 520, MH = 420;
+
+// Blueprint grid background
+mc.fillStyle = '#0d0d28';
+mc.fillRect(0, 0, MW, MH);
+
+// Maze surface area
+const mx = 30, my = 30, mw = 460, mh = 340;
+
+// Blueprint grid lines (subtle)
+mc.strokeStyle = 'rgba(40,60,100,0.15)';
+mc.lineWidth = 0.5;
+for (let gx = mx; gx <= mx + mw; gx += 20) {
+  mc.beginPath(); mc.moveTo(gx, my); mc.lineTo(gx, my + mh); mc.stroke();
+}
+for (let gy = my; gy <= my + mh; gy += 20) {
+  mc.beginPath(); mc.moveTo(mx, gy); mc.lineTo(mx + mw, gy); mc.stroke();
+}
+
+// Surface fill
+mc.fillStyle = '#111133';
+mc.fillRect(mx, my, mw, mh);
+
+// Surface border (frame edge)
+mc.strokeStyle = '#8B6914';
+mc.lineWidth = 5;
+mc.strokeRect(mx, my, mw, mh);
+
+// ── Maze Wall Drawing Helper ──
+function wall(x1, y1, x2, y2) {
+  mc.strokeStyle = '#556688';
+  mc.lineWidth = 4;
+  mc.beginPath();
+  mc.moveTo(mx + x1, my + y1);
+  mc.lineTo(mx + x2, my + y2);
+  mc.stroke();
+  // Wall top highlight
+  mc.strokeStyle = 'rgba(150,180,220,0.3)';
+  mc.lineWidth = 1;
+  mc.beginPath();
+  mc.moveTo(mx + x1, my + y1 - 1);
+  mc.lineTo(mx + x2, my + y2 - 1);
+  mc.stroke();
+}
+
+// ── MAZE WALLS ──
+// Outer border walls (inside the frame)
+wall(0, 0, 460, 0);     // top
+wall(0, 340, 460, 340);  // bottom
+wall(0, 0, 0, 340);      // left
+wall(460, 0, 460, 340);  // right
+
+// ENTRANCE gap (front-left, break in bottom wall)
+mc.fillStyle = '#44ff44';
+mc.globalAlpha = 0.4;
+mc.fillRect(mx + 5, my + mh - 4, 40, 8);
+mc.globalAlpha = 1;
+mc.fillStyle = '#44ff44';
+mc.font = 'bold 9px Courier New';
+mc.textAlign = 'center';
+mc.fillText('ENTRANCE', mx + 25, my + mh + 16);
+
+// ── Interior maze walls (creating 3 paths) ──
+
+// === LOBBY AREA (bottom-left) ===
+wall(50, 280, 50, 340);    // left lobby wall
+wall(50, 280, 170, 280);   // lobby top wall
+wall(170, 250, 170, 340);  // lobby right wall (with gap for corridors)
+
+// Room label
+mc.fillStyle = 'rgba(100,150,200,0.3)';
+mc.font = '8px Courier New';
+mc.textAlign = 'center';
+mc.fillText('LOBBY', mx + 110, my + 310);
+
+// === EASY STREET (wide path — bottom route, sweeping right) ===
+wall(170, 310, 350, 310);  // bottom corridor wall
+wall(170, 250, 280, 250);  // upper corridor wall (creates wide path between 250-310)
+wall(350, 250, 350, 310);  // right turn wall
+wall(280, 190, 350, 190);  // corridor above
+wall(350, 190, 350, 250);  // connects to vertical
+wall(280, 190, 280, 250);  // inner wall
+
+// Room label
+mc.fillStyle = 'rgba(100,150,200,0.3)';
+mc.font = '7px Courier New';
+mc.textAlign = 'center';
+mc.fillText('BREAK ROOM', mx + 230, my + 290);
+
+// === SECURITY OFFICE (center area around vault) ===
+wall(200, 120, 200, 190);  // left of security
+wall(280, 120, 280, 190);  // right of security
+wall(200, 120, 280, 120);  // top of security
+// Gap at bottom-center for vault approach
+
+// === SIDE HUSTLE (medium path — middle route) ===
+wall(50, 280, 50, 200);    // left wall continuing up
+wall(50, 200, 130, 200);   // horizontal wall
+wall(130, 140, 130, 250);  // vertical wall creating corridor
+wall(50, 140, 130, 140);   // top of corridor section
+wall(130, 140, 200, 140);  // connects to security office area
+
+// Room labels
+mc.fillStyle = 'rgba(100,150,200,0.3)';
+mc.font = '7px Courier New';
+mc.fillText('HALLWAY', mx + 90, my + 240);
+mc.fillText('SECURITY', mx + 240, my + 150);
+
+// === AIR DUCT (hard path — top route, narrow) ===
+wall(50, 140, 50, 60);     // left wall up to top
+wall(50, 60, 160, 60);     // top horizontal
+wall(160, 60, 160, 100);   // down
+wall(160, 100, 260, 100);  // across
+wall(260, 60, 260, 100);   // connects
+wall(160, 60, 260, 60);    // narrow top corridor
+wall(260, 60, 380, 60);    // extends right
+wall(380, 60, 380, 120);   // down to security approach
+wall(320, 100, 380, 100);  // creates narrow approach
+
+// Room labels
+mc.fillStyle = 'rgba(100,150,200,0.25)';
+mc.font = '7px Courier New';
+mc.fillText('AIR DUCT', mx + 210, my + 80);
+mc.fillText('SERVER', mx + 350, my + 85);
+mc.fillText('ROOM', mx + 350, my + 95);
+
+// === Right side walls ===
+wall(380, 120, 380, 250);  // right side vertical
+wall(350, 250, 460, 250);  // bottom right section
+wall(380, 190, 460, 190);  // creates rooms on right
+wall(420, 250, 420, 310);  // right bottom area
+wall(420, 310, 460, 310);  // bottom right corner
+
+mc.fillStyle = 'rgba(100,150,200,0.25)';
+mc.font = '7px Courier New';
+mc.fillText('STORAGE', mx + 420, my + 220);
+
+// ── VAULT (center, goal) ──
+const vx = mx + 220, vy = my + 160;
+mc.fillStyle = 'rgba(255,215,0,0.25)';
+mc.fillRect(vx - 18, vy - 18, 36, 36);
+mc.strokeStyle = '#FFD700';
+mc.lineWidth = 2.5;
+mc.strokeRect(vx - 18, vy - 18, 36, 36);
+
+// Vault door detail
+mc.beginPath();
+mc.arc(vx, vy, 12, 0, Math.PI * 2);
+mc.strokeStyle = '#FFD700';
+mc.lineWidth = 1.5;
+mc.stroke();
+// Vault handle
+mc.beginPath();
+mc.moveTo(vx - 8, vy);
+mc.lineTo(vx + 8, vy);
+mc.stroke();
+mc.beginPath();
+mc.moveTo(vx, vy - 8);
+mc.lineTo(vx, vy + 8);
+mc.stroke();
+
+mc.fillStyle = '#FFD700';
+mc.font = 'bold 10px Courier New';
+mc.textAlign = 'center';
+mc.fillText('VAULT', vx, vy + 28);
+
+// Glow around vault
+mc.shadowColor = '#FFD700';
+mc.shadowBlur = 15;
+mc.beginPath();
+mc.arc(vx, vy, 2, 0, Math.PI * 2);
+mc.fillStyle = '#FFD700';
+mc.fill();
+mc.shadowBlur = 0;
+
+// ── TRAP HOLES ──
+function drawTrap(tx, ty, label) {
+  // Red alarm circle
+  mc.fillStyle = '#ff3333';
+  mc.globalAlpha = 0.3;
+  mc.beginPath();
+  mc.arc(mx + tx, my + ty, 10, 0, Math.PI * 2);
+  mc.fill();
+  mc.globalAlpha = 1;
+
+  // Hole
+  mc.fillStyle = '#220000';
+  mc.beginPath();
+  mc.arc(mx + tx, my + ty, 6, 0, Math.PI * 2);
+  mc.fill();
+
+  // Red ring
+  mc.strokeStyle = '#ff3333';
+  mc.lineWidth = 2;
+  mc.beginPath();
+  mc.arc(mx + tx, my + ty, 8, 0, Math.PI * 2);
+  mc.stroke();
+
+  // Label
+  if (label) {
+    mc.fillStyle = '#ff6666';
+    mc.font = '6px Courier New';
+    mc.textAlign = 'center';
+    mc.fillText(label, mx + tx, my + ty - 12);
+  }
+}
+
+// Easy Street traps (2)
+drawTrap(250, 295, 'ALARM');
+drawTrap(330, 260, 'ALARM');
+
+// Side Hustle traps (additional 2, total 4 on this path)
+drawTrap(90, 230, 'ALARM');
+drawTrap(90, 165, 'ALARM');
+
+// Air Duct traps (additional 2, total 6 through this path)
+drawTrap(110, 80, 'ALARM');
+drawTrap(310, 75, 'ALARM');
+
+// Shared traps (accessible from multiple paths)
+drawTrap(165, 170, 'ALARM');
+drawTrap(340, 150, 'ALARM');
+
+// ── BALL (at entrance, ready to go) ──
+mc.fillStyle = '#c0c0c0';
+mc.shadowColor = '#ffffff';
+mc.shadowBlur = 5;
+mc.beginPath();
+mc.arc(mx + 25, my + mh - 20, 6, 0, Math.PI * 2);
+mc.fill();
+// Highlight
+mc.fillStyle = 'rgba(255,255,255,0.4)';
+mc.beginPath();
+mc.arc(mx + 23, my + mh - 22, 2.5, 0, Math.PI * 2);
+mc.fill();
+mc.shadowBlur = 0;
+
+mc.fillStyle = '#c0c0c0';
+mc.font = '7px Courier New';
+mc.textAlign = 'left';
+mc.fillText('BALL START', mx + 38, my + mh - 16);
+
+// ── Path indicators (dashed lines showing routes) ──
+// Easy Street path
+mc.strokeStyle = '#44ff44';
+mc.lineWidth = 1.5;
+mc.setLineDash([4, 4]);
+mc.globalAlpha = 0.35;
+mc.beginPath();
+mc.moveTo(mx + 25, my + mh - 20);
+mc.lineTo(mx + 110, my + 300);
+mc.lineTo(mx + 220, my + 290);
+mc.lineTo(mx + 310, my + 280);
+mc.lineTo(mx + 320, my + 230);
+mc.lineTo(mx + 260, my + 200);
+mc.lineTo(mx + 240, my + 175);
+mc.stroke();
+mc.setLineDash([]);
+mc.globalAlpha = 1;
+
+mc.fillStyle = '#44ff44';
+mc.globalAlpha = 0.5;
+mc.font = 'italic 7px Courier New';
+mc.textAlign = 'left';
+mc.fillText('EASY STREET', mx + 200, my + 305);
+mc.fillText('(~45 sec)', mx + 200, my + 315);
+mc.globalAlpha = 1;
+
+// Side Hustle path
+mc.strokeStyle = '#ffa500';
+mc.lineWidth = 1.5;
+mc.setLineDash([4, 4]);
+mc.globalAlpha = 0.35;
+mc.beginPath();
+mc.moveTo(mx + 25, my + mh - 20);
+mc.lineTo(mx + 30, my + 260);
+mc.lineTo(mx + 80, my + 220);
+mc.lineTo(mx + 80, my + 170);
+mc.lineTo(mx + 150, my + 155);
+mc.lineTo(mx + 220, my + 170);
+mc.stroke();
+mc.setLineDash([]);
+mc.globalAlpha = 1;
+
+mc.fillStyle = '#ffa500';
+mc.globalAlpha = 0.5;
+mc.font = 'italic 7px Courier New';
+mc.textAlign = 'left';
+mc.fillText('SIDE HUSTLE (~30s)', mx + 5, my + 188);
+mc.globalAlpha = 1;
+
+// Air Duct path
+mc.strokeStyle = '#ff3333';
+mc.lineWidth = 1.5;
+mc.setLineDash([4, 4]);
+mc.globalAlpha = 0.35;
+mc.beginPath();
+mc.moveTo(mx + 25, my + mh - 20);
+mc.lineTo(mx + 30, my + 180);
+mc.lineTo(mx + 30, my + 100);
+mc.lineTo(mx + 100, my + 75);
+mc.lineTo(mx + 210, my + 75);
+mc.lineTo(mx + 340, my + 80);
+mc.lineTo(mx + 350, my + 140);
+mc.lineTo(mx + 280, my + 155);
+mc.lineTo(mx + 240, my + 165);
+mc.stroke();
+mc.setLineDash([]);
+mc.globalAlpha = 1;
+
+mc.fillStyle = '#ff3333';
+mc.globalAlpha = 0.5;
+mc.font = 'italic 7px Courier New';
+mc.textAlign = 'center';
+mc.fillText('AIR DUCT (~20s)', mx + 210, my + 50);
+mc.globalAlpha = 1;
+
+// ── Dimensions ──
+mc.fillStyle = '#6688aa';
+mc.font = '10px Courier New';
+mc.textAlign = 'center';
+// Width
+mc.fillText('48"', mx + mw/2, my - 10);
+mc.strokeStyle = '#6688aa';
+mc.lineWidth = 1;
+mc.beginPath(); mc.moveTo(mx, my - 6); mc.lineTo(mx + mw, my - 6); mc.stroke();
+mc.beginPath(); mc.moveTo(mx, my - 10); mc.lineTo(mx, my - 2); mc.stroke();
+mc.beginPath(); mc.moveTo(mx + mw, my - 10); mc.lineTo(mx + mw, my - 2); mc.stroke();
+
+// Height
+mc.save();
+mc.translate(mx - 16, my + mh/2);
+mc.rotate(-Math.PI/2);
+mc.fillText('36"', 0, 0);
+mc.restore();
+mc.beginPath(); mc.moveTo(mx - 8, my); mc.lineTo(mx - 8, my + mh); mc.stroke();
+mc.beginPath(); mc.moveTo(mx - 12, my); mc.lineTo(mx - 4, my); mc.stroke();
+mc.beginPath(); mc.moveTo(mx - 12, my + mh); mc.lineTo(mx - 4, my + mh); mc.stroke();
+
+// ── Crank indicators at bottom ──
+mc.fillStyle = '#4488cc';
+mc.font = 'bold 9px Courier New';
+mc.textAlign = 'center';
+// Left crank
+mc.fillText('⟲ L CRANK', mx + mw * 0.25, my + mh + 28);
+mc.font = '7px Courier New';
+mc.fillText('(← LEFT / RIGHT →)', mx + mw * 0.25, my + mh + 40);
+// Right crank
+mc.font = 'bold 9px Courier New';
+mc.fillText('⟲ R CRANK', mx + mw * 0.75, my + mh + 28);
+mc.font = '7px Courier New';
+mc.fillText('(↑ FWD / BACK ↓)', mx + mw * 0.75, my + mh + 40);
+
+// Crank icons
+mc.strokeStyle = '#4488cc';
+mc.lineWidth = 3;
+[mx + mw * 0.25, mx + mw * 0.75].forEach(cx => {
+  mc.beginPath();
+  mc.arc(cx, my + mh + 15, 6, 0, Math.PI * 1.5);
+  mc.stroke();
+  // Handle
+  mc.beginPath();
+  mc.moveTo(cx + 6, my + mh + 15);
+  mc.lineTo(cx + 12, my + mh + 15);
+  mc.stroke();
+});
+
+// ── Title ──
+mc.fillStyle = '#6688aa';
+mc.font = '10px Courier New';
+mc.textAlign = 'center';
+mc.fillText('TOP-DOWN — MAZE LAYOUT (BLUEPRINT VIEW)', MW/2, MH - 5);
+
+
+// ══════════════════════════════════════════
+// SIDE CROSS-SECTION — Gimbal & Mechanism
+// ══════════════════════════════════════════
+const sc = document.getElementById('side').getContext('2d');
+const SW = 300, SH = 420;
+
+sc.fillStyle = '#0a0a1e';
+sc.fillRect(0, 0, SW, SH);
+
+// Ground line
+sc.strokeStyle = '#222';
+sc.lineWidth = 1;
+sc.beginPath(); sc.moveTo(10, 370); sc.lineTo(290, 370); sc.stroke();
+
+// ── Frame legs ──
+const legY = 370, legH = 180;
+const frameL = 30, frameR = 270;
+
+sc.fillStyle = '#8B6914';
+sc.fillRect(frameL, legY - legH, 14, legH);       // left leg
+sc.fillRect(frameR - 14, legY - legH, 14, legH);   // right leg
+// Cross brace
+sc.fillRect(frameL + 14, legY - legH/2, frameR - frameL - 28, 10);
+
+// Rubber feet
+sc.fillStyle = '#333';
+sc.fillRect(frameL - 2, legY - 3, 18, 6);
+sc.fillRect(frameR - 16, legY - 3, 18, 6);
+
+// ── Top rails ──
+sc.fillStyle = '#8B6914';
+sc.fillRect(frameL, legY - legH - 10, frameR - frameL, 14);
+
+// Front rail (doubled — where cranks mount)
+sc.fillRect(frameL, legY - legH - 24, 30, 28);
+sc.fillStyle = '#9B7924';
+sc.fillRect(frameL, legY - legH - 24, 14, 28);
+
+// ── Gimbal mechanism (exaggerated for visibility) ──
+const gimbalY = legY - legH - 40;
+const surfaceY = gimbalY - 8;
+const surfaceW = frameR - frameL - 20;
+const surfaceX = frameL + 10;
+
+// Secondary axis (front-back tilt) — the rod the inner frame pivots on
+sc.fillStyle = '#888';
+sc.fillRect(surfaceX + surfaceW/2 - 3, gimbalY - 5, 6, 14);
+// Bearing blocks
+sc.fillStyle = '#555';
+sc.fillRect(surfaceX + surfaceW/2 - 8, gimbalY + 4, 16, 8);
+
+// Primary axis (left-right tilt) — shown as circle at center of surface
+sc.fillStyle = '#aaa';
+sc.beginPath();
+sc.arc(surfaceX + surfaceW/2, surfaceY, 4, 0, Math.PI * 2);
+sc.fill();
+
+// ── Maze surface (slightly tilted to show gimbal action) ──
+sc.save();
+sc.translate(surfaceX + surfaceW/2, surfaceY);
+sc.rotate(-0.06); // slight tilt to show it can move
+
+// Surface panel
+sc.fillStyle = '#111133';
+sc.fillRect(-surfaceW/2, -6, surfaceW, 6);
+// Top surface (maze visible)
+sc.fillStyle = '#1a1a3a';
+sc.fillRect(-surfaceW/2, -6, surfaceW, 3);
+
+// Wall strips on top
+sc.fillStyle = '#556688';
+const wallPositions = [-90, -60, -30, 0, 30, 60, 90];
+wallPositions.forEach(wx => {
+  sc.fillRect(wx - 1.5, -14, 3, 8);
+});
+
+// Trap hole (one visible in cross-section)
+sc.fillStyle = '#ff3333';
+sc.globalAlpha = 0.5;
+sc.fillRect(40, -6, 8, 6);
+sc.globalAlpha = 1;
+
+// Ball on surface
+sc.fillStyle = '#c0c0c0';
+sc.shadowColor = '#fff';
+sc.shadowBlur = 4;
+sc.beginPath();
+sc.arc(-40, -12, 5, 0, Math.PI * 2);
+sc.fill();
+sc.shadowBlur = 0;
+// Highlight
+sc.fillStyle = 'rgba(255,255,255,0.4)';
+sc.beginPath();
+sc.arc(-42, -14, 2, 0, Math.PI * 2);
+sc.fill();
+
+// Ball label
+sc.fillStyle = '#c0c0c0';
+sc.font = '7px Courier New';
+sc.textAlign = 'center';
+sc.fillText('BALL', -40, -22);
+
+// Ghost position (tilted other way — reduced opacity)
+sc.restore();
+
+// Ghost surface at opposite tilt
+sc.save();
+sc.translate(surfaceX + surfaceW/2, surfaceY);
+sc.rotate(0.06);
+sc.strokeStyle = 'rgba(100,100,200,0.15)';
+sc.lineWidth = 1;
+sc.setLineDash([3, 3]);
+sc.strokeRect(-surfaceW/2, -6, surfaceW, 6);
+sc.setLineDash([]);
+sc.restore();
+
+// Tilt arc indicator
+sc.strokeStyle = 'rgba(68,136,204,0.4)';
+sc.lineWidth = 1;
+sc.beginPath();
+sc.arc(surfaceX + surfaceW/2, surfaceY, surfaceW/2 + 10, -Math.PI - 0.1, -Math.PI + 0.1);
+sc.stroke();
+sc.fillStyle = 'rgba(68,136,204,0.4)';
+sc.font = '7px Courier New';
+sc.textAlign = 'center';
+sc.fillText('±5° TILT', surfaceX + surfaceW/2, surfaceY - surfaceW/2 - 15);
+
+// Double arrow for tilt
+sc.strokeStyle = 'rgba(68,136,204,0.5)';
+sc.lineWidth = 1.5;
+sc.beginPath();
+sc.moveTo(surfaceX + 15, surfaceY - 20);
+sc.lineTo(surfaceX + surfaceW - 15, surfaceY - 20);
+sc.stroke();
+// Arrowheads
+sc.fillStyle = 'rgba(68,136,204,0.5)';
+sc.beginPath();
+sc.moveTo(surfaceX + 15, surfaceY - 20);
+sc.lineTo(surfaceX + 22, surfaceY - 24);
+sc.lineTo(surfaceX + 22, surfaceY - 16);
+sc.closePath();
+sc.fill();
+sc.beginPath();
+sc.moveTo(surfaceX + surfaceW - 15, surfaceY - 20);
+sc.lineTo(surfaceX + surfaceW - 22, surfaceY - 24);
+sc.lineTo(surfaceX + surfaceW - 22, surfaceY - 16);
+sc.closePath();
+sc.fill();
+
+// ── Bicycle bell under trap hole ──
+const bellX = surfaceX + surfaceW/2 + 40, bellY = surfaceY + 20;
+// Flap
+sc.fillStyle = '#cc4444';
+sc.globalAlpha = 0.7;
+sc.fillRect(bellX - 5, surfaceY + 2, 10, 3);
+// Hinge dot
+sc.fillStyle = '#888';
+sc.beginPath();
+sc.arc(bellX - 5, surfaceY + 3, 2, 0, Math.PI * 2);
+sc.fill();
+sc.globalAlpha = 1;
+
+// Bell
+sc.fillStyle = '#cc4444';
+sc.beginPath();
+sc.arc(bellX, bellY + 8, 7, 0, Math.PI * 2);
+sc.fill();
+sc.strokeStyle = '#ee6666';
+sc.lineWidth = 1;
+sc.stroke();
+// Bell ringer
+sc.fillStyle = '#ffaa00';
+sc.beginPath();
+sc.arc(bellX, bellY + 4, 2, 0, Math.PI * 2);
+sc.fill();
+
+// Bell label
+sc.fillStyle = '#cc4444';
+sc.font = '7px Courier New';
+sc.textAlign = 'left';
+sc.fillText('BICYCLE', bellX + 12, bellY + 6);
+sc.fillText('BELL', bellX + 12, bellY + 14);
+sc.fillText('(ALARM!)', bellX + 12, bellY + 22);
+
+// Drop path arrow
+sc.strokeStyle = '#ff3333';
+sc.lineWidth = 1;
+sc.setLineDash([2, 2]);
+sc.globalAlpha = 0.5;
+sc.beginPath();
+sc.moveTo(bellX, surfaceY + 6);
+sc.lineTo(bellX, bellY);
+sc.stroke();
+sc.setLineDash([]);
+sc.globalAlpha = 1;
+
+// ── Ball recovery tray ──
+const trayY = bellY + 28;
+sc.fillStyle = '#444';
+sc.fillRect(surfaceX + 10, trayY, surfaceW - 20, 4);
+// Slope indicator
+sc.fillStyle = 'rgba(100,100,100,0.3)';
+sc.beginPath();
+sc.moveTo(surfaceX + 10, trayY);
+sc.lineTo(surfaceX + surfaceW - 10, trayY);
+sc.lineTo(surfaceX + 10, trayY + 4);
+sc.closePath();
+sc.fill();
+
+sc.fillStyle = '#666';
+sc.font = '7px Courier New';
+sc.textAlign = 'center';
+sc.fillText('RECOVERY TRAY (sloped → front)', surfaceX + surfaceW/2, trayY + 14);
+
+// ── Hand Crank (left side, detailed) ──
+const crankX = frameL + 10, crankY = legY - legH - 10;
+
+// Crank shaft going through frame
+sc.fillStyle = '#4488cc';
+sc.fillRect(crankX - 20, crankY - 3, 35, 6);
+
+// Crank handle
+sc.fillRect(crankX - 22, crankY - 10, 6, 20);
+sc.fillStyle = '#5599dd';
+sc.beginPath();
+sc.arc(crankX - 19, crankY - 10, 5, 0, Math.PI * 2);
+sc.fill();
+
+// Crank rotation arc
+sc.strokeStyle = 'rgba(68,136,204,0.4)';
+sc.lineWidth = 1;
+sc.setLineDash([2, 2]);
+sc.beginPath();
+sc.arc(crankX - 2, crankY, 18, -Math.PI * 0.75, -Math.PI * 0.25);
+sc.stroke();
+sc.setLineDash([]);
+
+// Connecting rod (crank to gimbal)
+sc.strokeStyle = '#4488cc';
+sc.lineWidth = 2;
+sc.setLineDash([3, 3]);
+sc.beginPath();
+sc.moveTo(crankX + 10, crankY);
+sc.lineTo(surfaceX + surfaceW/2 - 20, surfaceY + 5);
+sc.stroke();
+sc.setLineDash([]);
+
+// Crank label
+sc.fillStyle = '#4488cc';
+sc.font = 'bold 8px Courier New';
+sc.textAlign = 'center';
+sc.fillText('HAND CRANK', crankX - 5, crankY + 26);
+sc.font = '7px Courier New';
+sc.fillText('(L/R TILT)', crankX - 5, crankY + 36);
+
+// Second crank hint (behind first, shown as ghost)
+sc.fillStyle = 'rgba(68,136,204,0.2)';
+sc.fillRect(crankX + 25, crankY - 2, 25, 4);
+sc.font = '7px Courier New';
+sc.fillStyle = 'rgba(68,136,204,0.4)';
+sc.fillText('2ND CRANK', crankX + 55, crankY + 12);
+sc.fillText('(FWD/BACK)', crankX + 55, crankY + 22);
+sc.fillText('(behind)', crankX + 55, crankY + 32);
+
+// ── Stick figure player ──
+const playerX = frameL - 25, playerY = legY - 50;
+
+sc.strokeStyle = '#6688aa';
+sc.lineWidth = 2;
+// Head
+sc.beginPath();
+sc.arc(playerX, playerY - 40, 7, 0, Math.PI * 2);
+sc.stroke();
+// Torso
+sc.beginPath(); sc.moveTo(playerX, playerY - 33); sc.lineTo(playerX, playerY - 5); sc.stroke();
+// Legs
+sc.beginPath(); sc.moveTo(playerX, playerY - 5); sc.lineTo(playerX - 10, playerY + 20); sc.stroke();
+sc.beginPath(); sc.moveTo(playerX, playerY - 5); sc.lineTo(playerX + 10, playerY + 20); sc.stroke();
+// Arms reaching for cranks
+sc.beginPath(); sc.moveTo(playerX, playerY - 25); sc.lineTo(crankX - 19, crankY); sc.stroke();
+sc.beginPath(); sc.moveTo(playerX, playerY - 22); sc.lineTo(crankX + 30, crankY); sc.stroke();
+
+// Hands on cranks
+sc.fillStyle = '#6688aa';
+sc.beginPath(); sc.arc(crankX - 19, crankY, 3, 0, Math.PI * 2); sc.fill();
+sc.beginPath(); sc.arc(crankX + 30, crankY, 3, 0, Math.PI * 2); sc.fill();
+
+sc.fillStyle = '#6688aa';
+sc.font = '9px Courier New';
+sc.textAlign = 'center';
+sc.fillText('PLAYER', playerX, playerY + 35);
+
+// ── Sand timer ──
+const timerX = frameR - 5, timerY = legY - legH - 45;
+sc.fillStyle = '#FFD700';
+sc.globalAlpha = 0.6;
+// Top bulb
+sc.beginPath(); sc.moveTo(timerX - 4, timerY - 12); sc.lineTo(timerX + 4, timerY - 12);
+sc.lineTo(timerX + 1, timerY); sc.lineTo(timerX - 1, timerY); sc.closePath(); sc.fill();
+// Bottom bulb
+sc.beginPath(); sc.moveTo(timerX - 1, timerY); sc.lineTo(timerX + 1, timerY);
+sc.lineTo(timerX + 4, timerY + 12); sc.lineTo(timerX - 4, timerY + 12); sc.closePath(); sc.fill();
+// Sand
+sc.fillStyle = '#cc9900';
+sc.beginPath(); sc.moveTo(timerX - 3, timerY + 5); sc.lineTo(timerX + 3, timerY + 5);
+sc.lineTo(timerX + 4, timerY + 12); sc.lineTo(timerX - 4, timerY + 12); sc.closePath(); sc.fill();
+sc.globalAlpha = 1;
+
+sc.fillStyle = '#FFD700';
+sc.font = '7px Courier New';
+sc.textAlign = 'center';
+sc.fillText('60 SEC', timerX, timerY + 22);
+sc.fillText('TIMER', timerX, timerY + 30);
+
+// ── Dimension: table height ──
+sc.strokeStyle = '#6688aa';
+sc.lineWidth = 1;
+sc.beginPath(); sc.moveTo(frameR + 8, legY); sc.lineTo(frameR + 8, legY - legH); sc.stroke();
+sc.beginPath(); sc.moveTo(frameR + 4, legY); sc.lineTo(frameR + 12, legY); sc.stroke();
+sc.beginPath(); sc.moveTo(frameR + 4, legY - legH); sc.lineTo(frameR + 12, legY - legH); sc.stroke();
+
+sc.save();
+sc.translate(frameR + 18, legY - legH/2);
+sc.rotate(-Math.PI/2);
+sc.fillStyle = '#6688aa';
+sc.font = '9px Courier New';
+sc.textAlign = 'center';
+sc.fillText('30" table height', 0, 0);
+sc.restore();
+
+// ── Zone annotations (sidebar) ──
+const zoneX = frameR - 20;
+// Maze zone
+sc.fillStyle = 'rgba(26,26,58,0.4)';
+sc.fillRect(zoneX, surfaceY - 16, 8, 16);
+sc.fillStyle = 'rgba(100,100,200,0.5)';
+sc.font = '6px Courier New';
+sc.textAlign = 'left';
+sc.fillText('MAZE', zoneX + 12, surfaceY - 6);
+
+// Mechanism zone
+sc.fillStyle = 'rgba(68,136,204,0.2)';
+sc.fillRect(zoneX, surfaceY, 8, 50);
+sc.fillStyle = 'rgba(68,136,204,0.5)';
+sc.fillText('MECHANISM', zoneX + 12, surfaceY + 28);
+
+// ── Title ──
+sc.fillStyle = '#6688aa';
+sc.font = '10px Courier New';
+sc.textAlign = 'center';
+sc.fillText('SIDE CROSS-SECTION', SW/2, SH - 15);
+sc.fillText('(GIMBAL + CRANK + ALARM)', SW/2, SH - 3);
+
+</script>
+
+</body>
+</html>

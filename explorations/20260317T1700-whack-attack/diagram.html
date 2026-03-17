@@ -1,0 +1,751 @@
+<!-- screenshot: 900x1900 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Whack Attack — Concept Diagram</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1a0f0a; color: #e0e0e0; font-family: 'Courier New', monospace; padding: 20px; }
+  h1 { text-align: center; color: #ff6633; margin-bottom: 4px; font-size: 28px; letter-spacing: 4px; text-shadow: 0 0 10px rgba(255,102,51,0.4); }
+  .subtitle { text-align: center; color: #8a6644; margin-bottom: 30px; font-size: 14px; }
+  .views { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; }
+  .view { background: #1a1008; border: 1px solid #3a2818; border-radius: 8px; padding: 20px; }
+  .view h2 { color: #ff6633; margin-bottom: 16px; font-size: 16px; text-align: center; }
+  canvas { display: block; }
+  .legend { margin-top: 30px; max-width: 860px; margin-left: auto; margin-right: auto; }
+  .legend h3 { color: #ff6633; margin-bottom: 10px; }
+  .legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; }
+  .legend-item { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; font-size: 13px; }
+  .legend-swatch { width: 16px; height: 16px; border-radius: 3px; flex-shrink: 0; }
+  .specs { margin-top: 30px; max-width: 860px; margin-left: auto; margin-right: auto; background: #1a1008; border: 1px solid #3a2818; border-radius: 8px; padding: 20px; }
+  .specs h3 { color: #ff6633; margin-bottom: 10px; }
+  .specs table { width: 100%; font-size: 13px; }
+  .specs td { padding: 3px 8px; }
+  .specs td:first-child { color: #8a6644; }
+</style>
+</head>
+<body>
+
+<h1>WHACK ATTACK</h1>
+<p class="subtitle">manual whack-a-mole × two-player × human-powered AI — the cheapest, funniest carnival game</p>
+
+<div class="views">
+  <div class="view">
+    <h2>FRONT VIEW (Whacker's Perspective)</h2>
+    <canvas id="front" width="520" height="560"></canvas>
+  </div>
+  <div class="view">
+    <h2>SIDE CROSS-SECTION (Both Players)</h2>
+    <canvas id="side" width="300" height="560"></canvas>
+  </div>
+</div>
+
+<div class="legend">
+  <h3>LEGEND</h3>
+  <div class="legend-grid">
+    <div class="legend-item"><div class="legend-swatch" style="background:#4a8833"></div> Whack board (painted grass field)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#5c3a1e"></div> Mole holes (4" diameter, brown rings)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#cc7744"></div> Foam plunger heads (3.5" mole faces)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#ff6633"></div> Foam mallet (pool noodle + dowel)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#8B6914"></div> A-frame base (2×4 lumber)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#4488cc"></div> Whacker (Player front — mallet swinger)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#cc4488"></div> Operator (Player behind — mole popper)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#FFD700"></div> Golden Mole (bonus, 3× points)</div>
+  </div>
+</div>
+
+<div class="specs">
+  <h3>KEY SPECS</h3>
+  <table>
+    <tr><td>Whack board</td><td>48"W × 36"H, ¾" plywood, 12 holes (4×3 grid)</td></tr>
+    <tr><td>Holes</td><td>4" diameter, 10" spacing, sanded smooth</td></tr>
+    <tr><td>Plungers</td><td>½" dowel + 3.5" foam ball head, 18" length, googly eyes</td></tr>
+    <tr><td>Mallet</td><td>Pool noodle on ¾" dowel, ~28" total length</td></tr>
+    <tr><td>A-frame depth</td><td>24" per side, bolt-together for transport</td></tr>
+    <tr><td>Board height</td><td>12" ground clearance, center at ~30"</td></tr>
+    <tr><td>Round length</td><td>30 sec per role, then swap</td></tr>
+    <tr><td>Total footprint</td><td>48"W × 48"D × 60"H</td></tr>
+    <tr><td>Est. cost</td><td>~$130–150 (cheapest in lineup!)</td></tr>
+    <tr><td>Build time</td><td>Single Saturday</td></tr>
+  </table>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// FRONT VIEW — Whacker's Perspective
+// ══════════════════════════════════════════
+const fc = document.getElementById('front').getContext('2d');
+const FW = 520, FH = 560;
+
+// Warm background
+fc.fillStyle = '#1a0f0a';
+fc.fillRect(0, 0, FW, FH);
+
+// Ground
+fc.fillStyle = '#2a1a0f';
+fc.fillRect(0, 460, FW, 100);
+fc.strokeStyle = '#3a2818';
+fc.lineWidth = 1;
+fc.beginPath(); fc.moveTo(20, 460); fc.lineTo(500, 460); fc.stroke();
+
+// ── A-Frame legs (visible from front as verticals on each side) ──
+fc.fillStyle = '#8B6914';
+fc.fillRect(58, 100, 14, 360); // left
+fc.fillRect(448, 100, 14, 360); // right
+// Cross brace at bottom
+fc.fillRect(72, 440, 376, 10);
+// Rubber feet
+fc.fillStyle = '#444';
+fc.fillRect(55, 458, 20, 6);
+fc.fillRect(445, 458, 20, 6);
+
+// ── Whack Board ──
+const bx = 75, by = 105, bw = 370, bh = 320;
+
+// Grass field background
+const grassGrad = fc.createLinearGradient(bx, by, bx, by + bh);
+grassGrad.addColorStop(0, '#3a7025');
+grassGrad.addColorStop(0.5, '#4a8833');
+grassGrad.addColorStop(1, '#3a6820');
+fc.fillStyle = grassGrad;
+fc.fillRect(bx, by, bw, bh);
+
+// Grass texture (subtle horizontal strokes)
+fc.strokeStyle = 'rgba(60,120,40,0.3)';
+fc.lineWidth = 1;
+for (let gy = by + 15; gy < by + bh; gy += 8) {
+  fc.beginPath();
+  fc.moveTo(bx + 5 + Math.random() * 10, gy);
+  fc.lineTo(bx + bw - 5 - Math.random() * 10, gy);
+  fc.stroke();
+}
+
+// Board border
+fc.strokeStyle = '#5c3a1e';
+fc.lineWidth = 5;
+fc.strokeRect(bx, by, bw, bh);
+
+// Board title at top
+fc.fillStyle = '#FFD700';
+fc.font = 'bold 14px Courier New';
+fc.textAlign = 'center';
+fc.fillText('W H A C K   A T T A C K', bx + bw/2, by + 22);
+
+// ── Mole Holes (4×3 grid) ──
+function drawMoleHole(cx, cy, state, label) {
+  // Dirt mound around hole
+  fc.fillStyle = '#5c3a1e';
+  fc.beginPath();
+  fc.ellipse(cx, cy + 5, 28, 12, 0, 0, Math.PI * 2);
+  fc.fill();
+
+  // Hole
+  fc.fillStyle = '#1a0a05';
+  fc.beginPath();
+  fc.arc(cx, cy, 20, 0, Math.PI * 2);
+  fc.fill();
+
+  // Hole ring
+  fc.strokeStyle = '#3a1e0f';
+  fc.lineWidth = 3;
+  fc.beginPath();
+  fc.arc(cx, cy, 20, 0, Math.PI * 2);
+  fc.stroke();
+
+  // Inner shadow
+  fc.fillStyle = 'rgba(0,0,0,0.3)';
+  fc.beginPath();
+  fc.arc(cx, cy, 16, 0, Math.PI * 2);
+  fc.fill();
+
+  if (state === 'mole') {
+    // Foam mole head popping out
+    drawMoleFace(cx, cy - 8, false);
+  } else if (state === 'golden') {
+    drawMoleFace(cx, cy - 8, true);
+  } else if (state === 'whacked') {
+    // Impact effect
+    drawWhackEffect(cx, cy);
+  }
+
+  // Hole number
+  if (label) {
+    fc.fillStyle = 'rgba(255,255,255,0.3)';
+    fc.font = '8px Courier New';
+    fc.textAlign = 'center';
+    fc.fillText(label, cx, cy + 30);
+  }
+}
+
+function drawMoleFace(cx, cy, golden) {
+  const bodyColor = golden ? '#FFD700' : '#cc7744';
+  const noseColor = golden ? '#ffaa00' : '#ff8866';
+
+  // Body popping up
+  fc.fillStyle = bodyColor;
+  fc.beginPath();
+  fc.ellipse(cx, cy, 16, 20, 0, 0, Math.PI * 2);
+  fc.fill();
+
+  // Highlight
+  fc.fillStyle = golden ? 'rgba(255,255,200,0.3)' : 'rgba(255,200,150,0.2)';
+  fc.beginPath();
+  fc.ellipse(cx - 4, cy - 5, 8, 12, -0.2, 0, Math.PI * 2);
+  fc.fill();
+
+  // Glow for golden
+  if (golden) {
+    fc.shadowColor = '#FFD700';
+    fc.shadowBlur = 12;
+    fc.beginPath();
+    fc.arc(cx, cy, 3, 0, Math.PI * 2);
+    fc.fillStyle = '#FFD700';
+    fc.fill();
+    fc.shadowBlur = 0;
+  }
+
+  // Eyes (googly!)
+  // Left eye white
+  fc.fillStyle = '#fff';
+  fc.beginPath();
+  fc.arc(cx - 6, cy - 6, 5, 0, Math.PI * 2);
+  fc.fill();
+  // Left pupil (offset for googly effect)
+  fc.fillStyle = '#111';
+  fc.beginPath();
+  fc.arc(cx - 5, cy - 5, 2.5, 0, Math.PI * 2);
+  fc.fill();
+
+  // Right eye white
+  fc.fillStyle = '#fff';
+  fc.beginPath();
+  fc.arc(cx + 6, cy - 6, 5, 0, Math.PI * 2);
+  fc.fill();
+  // Right pupil
+  fc.fillStyle = '#111';
+  fc.beginPath();
+  fc.arc(cx + 7, cy - 4, 2.5, 0, Math.PI * 2);
+  fc.fill();
+
+  // Nose
+  fc.fillStyle = noseColor;
+  fc.beginPath();
+  fc.arc(cx, cy + 2, 3.5, 0, Math.PI * 2);
+  fc.fill();
+
+  // Mouth (little smile)
+  fc.strokeStyle = '#6b3322';
+  fc.lineWidth = 1.5;
+  fc.beginPath();
+  fc.arc(cx, cy + 6, 5, 0.2, Math.PI - 0.2);
+  fc.stroke();
+
+  // Whiskers
+  fc.strokeStyle = 'rgba(100,60,30,0.4)';
+  fc.lineWidth = 1;
+  // Left whiskers
+  fc.beginPath(); fc.moveTo(cx - 8, cy + 1); fc.lineTo(cx - 16, cy - 2); fc.stroke();
+  fc.beginPath(); fc.moveTo(cx - 8, cy + 3); fc.lineTo(cx - 16, cy + 4); fc.stroke();
+  // Right whiskers
+  fc.beginPath(); fc.moveTo(cx + 8, cy + 1); fc.lineTo(cx + 16, cy - 2); fc.stroke();
+  fc.beginPath(); fc.moveTo(cx + 8, cy + 3); fc.lineTo(cx + 16, cy + 4); fc.stroke();
+
+  // Label
+  if (golden) {
+    fc.fillStyle = '#FFD700';
+    fc.font = 'bold 7px Courier New';
+    fc.textAlign = 'center';
+    fc.fillText('GOLDEN', cx, cy - 24);
+    fc.fillText('MOLE!', cx, cy - 16);
+  }
+}
+
+function drawWhackEffect(cx, cy) {
+  // Impact star burst
+  fc.strokeStyle = '#ff6633';
+  fc.lineWidth = 2;
+  const rays = 8;
+  for (let i = 0; i < rays; i++) {
+    const angle = (i / rays) * Math.PI * 2;
+    const innerR = 12;
+    const outerR = 24 + (i % 2) * 8;
+    fc.beginPath();
+    fc.moveTo(cx + Math.cos(angle) * innerR, cy + Math.sin(angle) * innerR);
+    fc.lineTo(cx + Math.cos(angle) * outerR, cy + Math.sin(angle) * outerR);
+    fc.stroke();
+  }
+
+  // "BONK!" text
+  fc.fillStyle = '#ff6633';
+  fc.font = 'bold 11px Courier New';
+  fc.textAlign = 'center';
+  fc.fillText('BONK!', cx, cy - 25);
+}
+
+// Grid positions (4 col × 3 row)
+const cols = 4, rows = 3;
+const startX = bx + 50, startY = by + 60;
+const spacingX = (bw - 100) / (cols - 1);
+const spacingY = (bh - 120) / (rows - 1);
+
+const holeStates = [
+  ['empty', 'mole', 'empty', 'empty'],    // top row
+  ['empty', 'empty', 'golden', 'mole'],    // middle row
+  ['mole', 'whacked', 'empty', 'empty'],   // bottom row
+];
+
+let holeNum = 1;
+for (let r = 0; r < rows; r++) {
+  for (let c = 0; c < cols; c++) {
+    const hx = startX + c * spacingX;
+    const hy = startY + r * spacingY;
+    drawMoleHole(hx, hy, holeStates[r][c], '#' + holeNum);
+    holeNum++;
+  }
+}
+
+// ── Mallet (swinging toward a mole) ──
+const malletTipX = startX + spacingX - 10, malletTipY = startY + spacingY - 30;
+const malletHandleX = bx + bw + 30, malletHandleY = by + bh - 40;
+
+// Mallet handle (dowel)
+fc.strokeStyle = '#8B6914';
+fc.lineWidth = 5;
+fc.beginPath();
+fc.moveTo(malletTipX + 35, malletTipY - 10);
+fc.lineTo(malletHandleX, malletHandleY);
+fc.stroke();
+
+// Mallet head (pool noodle)
+fc.save();
+fc.translate(malletTipX + 15, malletTipY - 15);
+fc.rotate(-0.8);
+fc.fillStyle = '#ff6633';
+fc.fillRect(-10, -25, 20, 50);
+// Noodle highlight
+fc.fillStyle = 'rgba(255,150,100,0.3)';
+fc.fillRect(-8, -25, 8, 50);
+// Noodle cap
+fc.fillStyle = '#ff4411';
+fc.beginPath();
+fc.ellipse(0, -25, 10, 5, 0, 0, Math.PI * 2);
+fc.fill();
+fc.restore();
+
+// Motion blur lines
+fc.strokeStyle = 'rgba(255,102,51,0.3)';
+fc.lineWidth = 2;
+for (let i = 0; i < 3; i++) {
+  const offset = 12 + i * 10;
+  fc.beginPath();
+  fc.moveTo(malletTipX + 35 + offset, malletTipY - 40);
+  fc.quadraticCurveTo(malletTipX + 50 + offset, malletTipY, malletTipX + 55 + offset, malletTipY + 30);
+  fc.stroke();
+}
+
+// Mallet label
+fc.fillStyle = '#ff6633';
+fc.font = 'bold 8px Courier New';
+fc.textAlign = 'center';
+fc.fillText('FOAM MALLET', malletHandleX - 15, malletHandleY + 16);
+fc.font = '7px Courier New';
+fc.fillText('(pool noodle)', malletHandleX - 15, malletHandleY + 26);
+
+// ── Operator hint (peeking over top) ──
+// Eyes peeking over board
+const peekY = by - 5;
+const peekX = bx + bw/2 + 40;
+fc.fillStyle = '#cc4488';
+// Left eye
+fc.beginPath(); fc.arc(peekX - 8, peekY, 5, 0, Math.PI * 2); fc.fill();
+fc.fillStyle = '#fff';
+fc.beginPath(); fc.arc(peekX - 8, peekY, 3, 0, Math.PI * 2); fc.fill();
+fc.fillStyle = '#111';
+fc.beginPath(); fc.arc(peekX - 7, peekY + 1, 1.5, 0, Math.PI * 2); fc.fill();
+// Right eye
+fc.fillStyle = '#cc4488';
+fc.beginPath(); fc.arc(peekX + 8, peekY, 5, 0, Math.PI * 2); fc.fill();
+fc.fillStyle = '#fff';
+fc.beginPath(); fc.arc(peekX + 8, peekY, 3, 0, Math.PI * 2); fc.fill();
+fc.fillStyle = '#111';
+fc.beginPath(); fc.arc(peekX + 9, peekY + 1, 1.5, 0, Math.PI * 2); fc.fill();
+
+// Eyebrows (mischievous)
+fc.strokeStyle = '#cc4488';
+fc.lineWidth = 2;
+fc.beginPath(); fc.moveTo(peekX - 13, peekY - 6); fc.lineTo(peekX - 4, peekY - 8); fc.stroke();
+fc.beginPath(); fc.moveTo(peekX + 4, peekY - 8); fc.lineTo(peekX + 13, peekY - 6); fc.stroke();
+
+fc.fillStyle = '#cc4488';
+fc.font = 'italic 8px Courier New';
+fc.textAlign = 'left';
+fc.fillText('OPERATOR PEEKING', peekX + 18, peekY - 2);
+fc.fillText('(plotting next pop...)', peekX + 18, peekY + 8);
+
+// ── Operator feet visible at bottom ──
+fc.fillStyle = '#cc4488';
+fc.fillRect(bx + bw/2 - 20, by + bh + 2, 12, 8);
+fc.fillRect(bx + bw/2 + 8, by + bh + 2, 12, 8);
+fc.font = 'italic 7px Courier New';
+fc.textAlign = 'center';
+fc.fillText('FEET VISIBLE!', bx + bw/2, by + bh + 20);
+fc.fillText('(expert whackers read foot position)', bx + bw/2, by + bh + 30);
+
+// ── Stick figure whacker ──
+const whackerX = bx + bw + 50, whackerY = 400;
+fc.strokeStyle = '#4488cc';
+fc.lineWidth = 2;
+// Head
+fc.beginPath(); fc.arc(whackerX, whackerY - 50, 8, 0, Math.PI * 2); fc.stroke();
+// Torso
+fc.beginPath(); fc.moveTo(whackerX, whackerY - 42); fc.lineTo(whackerX, whackerY - 10); fc.stroke();
+// Legs
+fc.beginPath(); fc.moveTo(whackerX, whackerY - 10); fc.lineTo(whackerX - 12, whackerY + 15); fc.stroke();
+fc.beginPath(); fc.moveTo(whackerX, whackerY - 10); fc.lineTo(whackerX + 12, whackerY + 15); fc.stroke();
+// Arms swinging mallet
+fc.beginPath(); fc.moveTo(whackerX, whackerY - 35); fc.lineTo(malletHandleX, malletHandleY); fc.stroke();
+
+fc.fillStyle = '#4488cc';
+fc.font = 'bold 9px Courier New';
+fc.textAlign = 'center';
+fc.fillText('WHACKER', whackerX, whackerY + 30);
+
+// ── Dimensions ──
+fc.fillStyle = '#8a6644';
+fc.font = '10px Courier New';
+fc.textAlign = 'center';
+
+// Board width
+fc.fillText('48"', bx + bw/2, by - 18);
+fc.strokeStyle = '#8a6644';
+fc.lineWidth = 1;
+fc.beginPath(); fc.moveTo(bx, by - 12); fc.lineTo(bx + bw, by - 12); fc.stroke();
+fc.beginPath(); fc.moveTo(bx, by - 16); fc.lineTo(bx, by - 8); fc.stroke();
+fc.beginPath(); fc.moveTo(bx + bw, by - 16); fc.lineTo(bx + bw, by - 8); fc.stroke();
+
+// Board height
+fc.save();
+fc.translate(bx - 22, by + bh/2);
+fc.rotate(-Math.PI/2);
+fc.fillText('36"', 0, 0);
+fc.restore();
+fc.beginPath(); fc.moveTo(bx - 14, by); fc.lineTo(bx - 14, by + bh); fc.stroke();
+fc.beginPath(); fc.moveTo(bx - 18, by); fc.lineTo(bx - 10, by); fc.stroke();
+fc.beginPath(); fc.moveTo(bx - 18, by + bh); fc.lineTo(bx - 10, by + bh); fc.stroke();
+
+// Ground clearance
+fc.fillStyle = '#8a6644';
+fc.font = '8px Courier New';
+fc.fillText('12" clearance', bx + bw/2, by + bh + 45);
+
+// ── Title ──
+fc.fillStyle = '#8a6644';
+fc.font = '10px Courier New';
+fc.textAlign = 'center';
+fc.fillText('FRONT VIEW — WHACKER PERSPECTIVE', FW/2, FH - 10);
+
+
+// ══════════════════════════════════════════
+// SIDE CROSS-SECTION — Both Players
+// ══════════════════════════════════════════
+const sc = document.getElementById('side').getContext('2d');
+const SW = 300, SH = 560;
+
+sc.fillStyle = '#1a0f0a';
+sc.fillRect(0, 0, SW, SH);
+
+// Ground
+sc.fillStyle = '#2a1a0f';
+sc.fillRect(0, 460, SW, 100);
+sc.strokeStyle = '#3a2818';
+sc.lineWidth = 1;
+sc.beginPath(); sc.moveTo(10, 460); sc.lineTo(290, 460); sc.stroke();
+
+// ── Board (side view — thin rectangle) ──
+const boardX = 140, boardW = 8;
+const boardTop = 140, boardBot = 420;
+
+sc.fillStyle = '#4a8833'; // green painted front face
+sc.fillRect(boardX, boardTop, boardW/2, boardBot - boardTop);
+sc.fillStyle = '#6b4422'; // brown back face
+sc.fillRect(boardX + boardW/2, boardTop, boardW/2, boardBot - boardTop);
+
+// Board border
+sc.strokeStyle = '#5c3a1e';
+sc.lineWidth = 2;
+sc.strokeRect(boardX, boardTop, boardW, boardBot - boardTop);
+
+// ── A-Frame (side view — angled braces) ──
+sc.strokeStyle = '#8B6914';
+sc.lineWidth = 8;
+
+// Front brace (angled forward)
+sc.beginPath();
+sc.moveTo(boardX, boardTop + 10);
+sc.lineTo(boardX - 50, boardBot + 30);
+sc.stroke();
+
+// Rear brace (angled backward)
+sc.beginPath();
+sc.moveTo(boardX + boardW, boardTop + 10);
+sc.lineTo(boardX + boardW + 55, boardBot + 30);
+sc.stroke();
+
+// Cross brace
+sc.lineWidth = 5;
+sc.beginPath();
+sc.moveTo(boardX - 30, boardBot + 10);
+sc.lineTo(boardX + boardW + 35, boardBot + 10);
+sc.stroke();
+
+// Rubber feet
+sc.fillStyle = '#444';
+sc.fillRect(boardX - 55, 456, 16, 6);
+sc.fillRect(boardX + boardW + 46, 456, 16, 6);
+
+// ── Mole hole (cross-section — showing plunger popping through) ──
+const holeY = 280;
+// Hole in board
+sc.fillStyle = '#1a0a05';
+sc.fillRect(boardX - 2, holeY - 12, boardW + 4, 24);
+
+// Plunger coming through
+const plungerX = boardX - 25;
+// Dowel
+sc.fillStyle = '#8B6914';
+sc.fillRect(boardX + boardW, holeY - 3, 50, 6);
+
+// Foam head (popping through to front)
+sc.fillStyle = '#cc7744';
+sc.beginPath();
+sc.arc(boardX - 10, holeY, 14, 0, Math.PI * 2);
+sc.fill();
+
+// Googly eye on foam head
+sc.fillStyle = '#fff';
+sc.beginPath(); sc.arc(boardX - 14, holeY - 4, 4, 0, Math.PI * 2); sc.fill();
+sc.fillStyle = '#111';
+sc.beginPath(); sc.arc(boardX - 13, holeY - 3, 2, 0, Math.PI * 2); sc.fill();
+
+// Nose
+sc.fillStyle = '#ff8866';
+sc.beginPath(); sc.arc(boardX - 10, holeY + 3, 2.5, 0, Math.PI * 2); sc.fill();
+
+// Label
+sc.fillStyle = '#cc7744';
+sc.font = '7px Courier New';
+sc.textAlign = 'center';
+sc.fillText('FOAM MOLE HEAD', boardX - 20, holeY + 24);
+sc.fillText('(3.5" dia.)', boardX - 20, holeY + 33);
+
+// Dowel handle (operator's hand)
+sc.fillStyle = '#8B6914';
+sc.font = '7px Courier New';
+sc.textAlign = 'left';
+sc.fillText('½" DOWEL (18")', boardX + boardW + 55, holeY + 3);
+
+// ── Plunger rack (behind board) ──
+const rackY = 350;
+sc.fillStyle = '#8B6914';
+sc.fillRect(boardX + boardW + 15, rackY, 40, 5);
+// Plungers hanging
+for (let i = 0; i < 3; i++) {
+  sc.fillStyle = '#8B6914';
+  sc.fillRect(boardX + boardW + 20 + i * 14, rackY + 5, 3, 20);
+  sc.fillStyle = '#cc7744';
+  sc.beginPath();
+  sc.arc(boardX + boardW + 21 + i * 14, rackY + 28, 6, 0, Math.PI * 2);
+  sc.fill();
+}
+sc.fillStyle = '#8a6644';
+sc.font = '7px Courier New';
+sc.textAlign = 'center';
+sc.fillText('PLUNGER RACK', boardX + boardW + 35, rackY + 45);
+
+// ── Operator (behind board) — stick figure ──
+const opX = boardX + boardW + 70, opY = 350;
+sc.strokeStyle = '#cc4488';
+sc.lineWidth = 2;
+// Head
+sc.beginPath(); sc.arc(opX, opY - 80, 9, 0, Math.PI * 2); sc.stroke();
+// Big grin
+sc.beginPath();
+sc.arc(opX, opY - 76, 5, 0.2, Math.PI - 0.2);
+sc.stroke();
+// Torso
+sc.beginPath(); sc.moveTo(opX, opY - 71); sc.lineTo(opX, opY - 30); sc.stroke();
+// Legs
+sc.beginPath(); sc.moveTo(opX, opY - 30); sc.lineTo(opX - 12, opY); sc.stroke();
+sc.beginPath(); sc.moveTo(opX, opY - 30); sc.lineTo(opX + 12, opY); sc.stroke();
+// Arms — one pushing plunger through hole
+sc.beginPath(); sc.moveTo(opX, opY - 60); sc.lineTo(boardX + boardW + 50, holeY); sc.stroke();
+// Other arm holding spare plunger
+sc.beginPath(); sc.moveTo(opX, opY - 55); sc.lineTo(opX + 15, opY - 40); sc.stroke();
+// Spare plunger in other hand
+sc.fillStyle = '#8B6914';
+sc.fillRect(opX + 12, opY - 60, 3, 25);
+sc.fillStyle = '#cc7744';
+sc.beginPath(); sc.arc(opX + 13, opY - 62, 6, 0, Math.PI * 2); sc.fill();
+
+sc.fillStyle = '#cc4488';
+sc.font = 'bold 9px Courier New';
+sc.textAlign = 'center';
+sc.fillText('OPERATOR', opX, opY + 16);
+sc.font = '7px Courier New';
+sc.fillText('(mole popper)', opX, opY + 26);
+sc.fillText('GRINNING', opX, opY + 36);
+sc.fillText('MANIACALLY', opX, opY + 46);
+
+// ── Whacker (front of board) — stick figure ──
+const wkX = boardX - 80, wkY = 350;
+sc.strokeStyle = '#4488cc';
+sc.lineWidth = 2;
+// Head
+sc.beginPath(); sc.arc(wkX, wkY - 80, 9, 0, Math.PI * 2); sc.stroke();
+// Torso
+sc.beginPath(); sc.moveTo(wkX, wkY - 71); sc.lineTo(wkX, wkY - 30); sc.stroke();
+// Legs (action stance — spread)
+sc.beginPath(); sc.moveTo(wkX, wkY - 30); sc.lineTo(wkX - 18, wkY); sc.stroke();
+sc.beginPath(); sc.moveTo(wkX, wkY - 30); sc.lineTo(wkX + 14, wkY); sc.stroke();
+// Arms swinging mallet overhead
+sc.beginPath(); sc.moveTo(wkX, wkY - 60); sc.lineTo(wkX + 25, wkY - 95); sc.stroke();
+
+// Mallet in hand
+sc.fillStyle = '#ff6633';
+sc.fillRect(wkX + 20, wkY - 120, 10, 35);
+sc.fillStyle = '#8B6914';
+sc.fillRect(wkX + 23, wkY - 120, 4, 60);
+
+// Swing arc (ghost positions)
+sc.strokeStyle = 'rgba(68,136,204,0.15)';
+sc.lineWidth = 1;
+sc.setLineDash([3, 3]);
+// Ghost mallet position (mid-swing)
+sc.beginPath();
+sc.moveTo(wkX, wkY - 60);
+sc.lineTo(boardX - 10, holeY - 10);
+sc.stroke();
+sc.setLineDash([]);
+
+// Motion arc
+sc.strokeStyle = 'rgba(255,102,51,0.3)';
+sc.lineWidth = 1.5;
+sc.beginPath();
+sc.arc(wkX + 5, wkY - 65, 55, -Math.PI * 0.8, -Math.PI * 0.2);
+sc.stroke();
+
+// Arrow on arc
+sc.fillStyle = 'rgba(255,102,51,0.4)';
+sc.beginPath();
+const arrowAngle = -Math.PI * 0.25;
+const arrowR = 55;
+const ax = wkX + 5 + Math.cos(arrowAngle) * arrowR;
+const ay = wkY - 65 + Math.sin(arrowAngle) * arrowR;
+fc.beginPath();
+sc.moveTo(ax, ay);
+sc.lineTo(ax - 5, ay - 8);
+sc.lineTo(ax + 5, ay - 3);
+sc.closePath();
+sc.fill();
+
+sc.fillStyle = '#4488cc';
+sc.font = 'bold 9px Courier New';
+sc.textAlign = 'center';
+sc.fillText('WHACKER', wkX, wkY + 16);
+sc.font = '7px Courier New';
+sc.fillText('(mallet swinger)', wkX, wkY + 26);
+
+// ── Impact indicator ──
+sc.fillStyle = '#ff6633';
+sc.font = 'bold 12px Courier New';
+sc.textAlign = 'center';
+sc.fillText('BONK!', boardX - 25, holeY - 22);
+
+// ── Sight line (operator peeking over) ──
+sc.strokeStyle = 'rgba(204,68,136,0.3)';
+sc.lineWidth = 1;
+sc.setLineDash([3, 3]);
+sc.beginPath();
+sc.moveTo(opX - 5, opY - 85);
+sc.lineTo(boardX + boardW/2, boardTop);
+sc.lineTo(wkX + 5, wkY - 75);
+sc.stroke();
+sc.setLineDash([]);
+
+sc.fillStyle = 'rgba(204,68,136,0.4)';
+sc.font = 'italic 7px Courier New';
+sc.textAlign = 'center';
+sc.fillText('SIGHT LINE', boardX + boardW/2, boardTop - 8);
+sc.fillText('(operator peeks over top)', boardX + boardW/2, boardTop - 0);
+
+// ── Dimensions ──
+// Board height
+sc.save();
+sc.translate(boardX - 35, (boardTop + boardBot) / 2);
+sc.rotate(-Math.PI/2);
+sc.fillStyle = '#8a6644';
+sc.font = '9px Courier New';
+sc.textAlign = 'center';
+sc.fillText('36" board', 0, 0);
+sc.restore();
+
+sc.strokeStyle = '#8a6644';
+sc.lineWidth = 1;
+sc.beginPath(); sc.moveTo(boardX - 25, boardTop); sc.lineTo(boardX - 25, boardBot); sc.stroke();
+sc.beginPath(); sc.moveTo(boardX - 29, boardTop); sc.lineTo(boardX - 21, boardTop); sc.stroke();
+sc.beginPath(); sc.moveTo(boardX - 29, boardBot); sc.lineTo(boardX - 21, boardBot); sc.stroke();
+
+// Ground clearance
+sc.fillStyle = '#8a6644';
+sc.font = '8px Courier New';
+sc.textAlign = 'center';
+sc.fillText('12"', boardX - 25, boardBot + 25);
+
+// A-frame depth
+sc.fillStyle = '#8a6644';
+sc.font = '9px Courier New';
+sc.textAlign = 'center';
+sc.fillText('48" total depth', SW/2, 480);
+
+sc.strokeStyle = '#8a6644';
+sc.lineWidth = 1;
+sc.beginPath(); sc.moveTo(boardX - 50, 472); sc.lineTo(boardX + boardW + 55, 472); sc.stroke();
+sc.beginPath(); sc.moveTo(boardX - 50, 468); sc.lineTo(boardX - 50, 476); sc.stroke();
+sc.beginPath(); sc.moveTo(boardX + boardW + 55, 468); sc.lineTo(boardX + boardW + 55, 476); sc.stroke();
+
+// ── Zones sidebar ──
+// Front zone
+sc.fillStyle = 'rgba(68,136,204,0.08)';
+sc.fillRect(10, boardTop, boardX - 20, boardBot - boardTop);
+sc.fillStyle = 'rgba(68,136,204,0.3)';
+sc.font = '8px Courier New';
+sc.textAlign = 'center';
+sc.save();
+sc.translate(25, (boardTop + boardBot) / 2);
+sc.rotate(-Math.PI/2);
+sc.fillText('WHACK ZONE', 0, 0);
+sc.restore();
+
+// Back zone
+sc.fillStyle = 'rgba(204,68,136,0.06)';
+sc.fillRect(boardX + boardW + 10, boardTop, 95, boardBot - boardTop);
+sc.fillStyle = 'rgba(204,68,136,0.3)';
+sc.save();
+sc.translate(SW - 15, (boardTop + boardBot) / 2);
+sc.rotate(-Math.PI/2);
+sc.fillText('OPERATOR ZONE', 0, 0);
+sc.restore();
+
+// ── Title ──
+sc.fillStyle = '#8a6644';
+sc.font = '10px Courier New';
+sc.textAlign = 'center';
+sc.fillText('SIDE CROSS-SECTION', SW/2, SH - 15);
+sc.fillText('(BOTH PLAYERS VISIBLE)', SW/2, SH - 3);
+
+</script>
+
+</body>
+</html>

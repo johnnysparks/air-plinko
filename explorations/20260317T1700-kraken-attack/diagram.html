@@ -1,0 +1,704 @@
+<!-- screenshot: 900x1900 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kraken Attack — Concept Diagram</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #020818; color: #e0e0e0; font-family: 'Courier New', monospace; padding: 20px; }
+  h1 { text-align: center; color: #00ffcc; margin-bottom: 4px; font-size: 28px; letter-spacing: 4px; text-shadow: 0 0 15px #00ffcc, 0 0 30px rgba(0,255,204,0.3); }
+  .subtitle { text-align: center; color: #5588aa; margin-bottom: 30px; font-size: 14px; }
+  .views { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; }
+  .view { background: #060d20; border: 1px solid #1a3355; border-radius: 8px; padding: 20px; }
+  .view h2 { color: #00ffcc; margin-bottom: 16px; font-size: 16px; text-align: center; }
+  canvas { display: block; }
+  .legend { margin-top: 30px; max-width: 860px; margin-left: auto; margin-right: auto; }
+  .legend h3 { color: #00ffcc; margin-bottom: 10px; }
+  .legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; }
+  .legend-item { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; font-size: 13px; }
+  .legend-swatch { width: 16px; height: 16px; border-radius: 3px; flex-shrink: 0; }
+  .specs { margin-top: 30px; max-width: 860px; margin-left: auto; margin-right: auto; background: #060d20; border: 1px solid #1a3355; border-radius: 8px; padding: 20px; }
+  .specs h3 { color: #00ffcc; margin-bottom: 10px; }
+  .specs table { width: 100%; font-size: 13px; }
+  .specs td { padding: 3px 8px; }
+  .specs td:first-child { color: #5588aa; }
+</style>
+</head>
+<body>
+
+<h1>⚓ KRAKEN ATTACK ⚓</h1>
+<p class="subtitle">giant ring toss × bioluminescent tentacles × deep-sea battle — pure skill carnival game</p>
+
+<div class="views">
+  <div class="view">
+    <h2>FRONT VIEW (Player Perspective)</h2>
+    <canvas id="front" width="520" height="560"></canvas>
+  </div>
+  <div class="view">
+    <h2>TOP-DOWN VIEW (Tentacle Layout)</h2>
+    <canvas id="top" width="300" height="560"></canvas>
+  </div>
+</div>
+
+<div class="legend">
+  <h3>LEGEND</h3>
+  <div class="legend-grid">
+    <div class="legend-item"><div class="legend-swatch" style="background:#0a1628"></div> Ocean platform (painted deep sea)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#7733aa"></div> Thick Boys (2" PVC, 10 pts) — easiest</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#dd44aa"></div> Leaners (1.5" PVC @ 15°, 25 pts)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#33ff66"></div> Whips (1" PVC, 50 pts) — thin &amp; tall</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#ff3388"></div> The Curler (1.5" PVC curved, 75 pts)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#00ccff; border: 1px solid #00ccff"></div> The Spike (¾" PVC, 100 pts) — legendary</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#ccff00; border-radius:50%"></div> Glow rings (10" diameter)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:rgba(180,0,255,0.3); border:1px solid #b400ff"></div> UV blacklight glow zone (optional)</div>
+  </div>
+</div>
+
+<div class="specs">
+  <h3>KEY SPECS</h3>
+  <table>
+    <tr><td>Platform</td><td>48"W × 48"D, raised 12" on legs, ¾" plywood</td></tr>
+    <tr><td>Tentacles</td><td>8 total — ¾" to 2" PVC, 14"–36" tall, various angles</td></tr>
+    <tr><td>Rings</td><td>10" inner dia. glow rings (glow sticks or 3D-printed + UV paint)</td></tr>
+    <tr><td>Throwing distance</td><td>72" (regulation) / 48" (K–1st grade)</td></tr>
+    <tr><td>Scoring</td><td>10–100 pts per tentacle. KRAKEN CAPTURED (3 on same) = 500 bonus</td></tr>
+    <tr><td>Rings per player</td><td>12</td></tr>
+    <tr><td>Total footprint</td><td>48"W × 120"D × 62"H</td></tr>
+    <tr><td>Est. cost</td><td>~$150–180 (base) / ~$200 with GLOW MODE</td></tr>
+    <tr><td>Build time</td><td>Single weekend (one determined dad)</td></tr>
+  </table>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// FRONT VIEW — Player's Perspective
+// ══════════════════════════════════════════
+const fc = document.getElementById('front').getContext('2d');
+const FW = 520, FH = 560;
+
+// Ocean gradient background for the scene
+const oceanGrad = fc.createLinearGradient(0, 0, 0, FH);
+oceanGrad.addColorStop(0, '#020818');
+oceanGrad.addColorStop(0.5, '#040c1e');
+oceanGrad.addColorStop(1, '#061028');
+fc.fillStyle = oceanGrad;
+fc.fillRect(0, 0, FW, FH);
+
+// Subtle water caustics (decorative lines)
+fc.strokeStyle = 'rgba(0,150,200,0.04)';
+fc.lineWidth = 1;
+for (let i = 0; i < 8; i++) {
+  fc.beginPath();
+  fc.moveTo(20, 300 + i * 25);
+  fc.quadraticCurveTo(FW * 0.3, 295 + i * 25, FW * 0.5, 302 + i * 25);
+  fc.quadraticCurveTo(FW * 0.7, 310 + i * 25, FW - 20, 298 + i * 25);
+  fc.stroke();
+}
+
+// ── Ground line ──
+fc.strokeStyle = '#1a3355';
+fc.lineWidth = 1;
+fc.beginPath(); fc.moveTo(20, 470); fc.lineTo(500, 470); fc.stroke();
+
+// ── Platform (side view — front edge visible) ──
+const platY = 380; // top of platform surface
+const platH = 14;  // platform thickness
+const platLegH = 70; // leg height
+const platX = 70, platW = 380;
+
+// Legs
+fc.fillStyle = '#3a2810';
+fc.fillRect(platX + 10, platY + platH, 16, platLegH);
+fc.fillRect(platX + platW - 26, platY + platH, 16, platLegH);
+// Cross brace
+fc.fillRect(platX + 10, platY + platH + platLegH - 14, platW - 20, 8);
+
+// Platform surface
+const platGrad = fc.createLinearGradient(platX, platY, platX + platW, platY);
+platGrad.addColorStop(0, '#0a1628');
+platGrad.addColorStop(0.3, '#0c1e3a');
+platGrad.addColorStop(0.7, '#0c1e3a');
+platGrad.addColorStop(1, '#0a1628');
+fc.fillStyle = platGrad;
+fc.fillRect(platX, platY, platW, platH);
+
+// Edge lip
+fc.strokeStyle = '#1a4060';
+fc.lineWidth = 3;
+fc.strokeRect(platX, platY, platW, platH);
+
+// Ocean scene on platform (decorative)
+fc.fillStyle = 'rgba(0,100,180,0.15)';
+for (let i = 0; i < 5; i++) {
+  fc.beginPath();
+  fc.arc(platX + 40 + i * 80, platY + 5, 12 + Math.sin(i) * 4, 0, Math.PI, true);
+  fc.fill();
+}
+
+// Seaweed wisps
+fc.strokeStyle = 'rgba(0,180,80,0.15)';
+fc.lineWidth = 2;
+for (let i = 0; i < 3; i++) {
+  const sx = platX + 50 + i * 140;
+  fc.beginPath();
+  fc.moveTo(sx, platY);
+  fc.quadraticCurveTo(sx + 5, platY - 15, sx - 3, platY - 25);
+  fc.stroke();
+}
+
+// Platform label
+fc.fillStyle = '#1a4060';
+fc.font = '8px Courier New';
+fc.textAlign = 'center';
+fc.fillText('OCEAN PLATFORM (48" × 48")', platX + platW / 2, platY + platH + platLegH + 14);
+
+// ── Draw tentacle function ──
+function drawTentacle(x, baseY, height, diameter, angle, color, name, points, glowColor) {
+  fc.save();
+  fc.translate(x, baseY);
+  fc.rotate(angle * Math.PI / 180);
+
+  const pxDia = diameter * 12; // scale: 1" = 12px roughly
+  const pxH = height * 6.5;   // scale height
+
+  // Glow effect
+  fc.shadowColor = glowColor || color;
+  fc.shadowBlur = 8;
+
+  // Pool noodle base wrap
+  fc.fillStyle = color;
+  fc.globalAlpha = 0.4;
+  fc.fillRect(-pxDia/2 - 3, -22, pxDia + 6, 22);
+  fc.globalAlpha = 1;
+
+  // PVC pipe body
+  fc.fillStyle = color;
+  fc.fillRect(-pxDia/2, -pxH, pxDia, pxH);
+
+  // Highlight stripe (3D effect)
+  fc.fillStyle = 'rgba(255,255,255,0.15)';
+  fc.fillRect(-pxDia/2 + 1, -pxH, pxDia * 0.3, pxH);
+
+  // Sucker cap on top
+  fc.fillStyle = color;
+  fc.beginPath();
+  fc.arc(0, -pxH, pxDia/2 + 2, 0, Math.PI * 2);
+  fc.fill();
+  fc.fillStyle = 'rgba(255,255,255,0.2)';
+  fc.beginPath();
+  fc.arc(0, -pxH, pxDia/2 - 1, 0, Math.PI * 2);
+  fc.fill();
+
+  fc.shadowBlur = 0;
+
+  // Point label
+  fc.fillStyle = '#fff';
+  fc.font = 'bold 10px Courier New';
+  fc.textAlign = 'center';
+  fc.fillText(points + 'pt', 0, -pxH - 10);
+
+  // Name label
+  fc.fillStyle = color;
+  fc.font = '7px Courier New';
+  fc.fillText(name, 0, -pxH - 20);
+
+  fc.restore();
+}
+
+// ── Draw The Curler (special — curved tentacle) ──
+function drawCurler(x, baseY, color) {
+  fc.save();
+  fc.shadowColor = color;
+  fc.shadowBlur = 8;
+
+  const pxDia = 18; // 1.5" scaled
+  const straightH = 80;
+  const curveH = 70;
+
+  // Pool noodle base
+  fc.fillStyle = color;
+  fc.globalAlpha = 0.4;
+  fc.fillRect(x - pxDia/2 - 3, baseY - 22, pxDia + 6, 22);
+  fc.globalAlpha = 1;
+
+  // Straight lower portion
+  fc.fillStyle = color;
+  fc.fillRect(x - pxDia/2, baseY - straightH, pxDia, straightH);
+  fc.fillStyle = 'rgba(255,255,255,0.15)';
+  fc.fillRect(x - pxDia/2 + 1, baseY - straightH, pxDia * 0.3, straightH);
+
+  // Curved upper portion (bezier arc)
+  fc.fillStyle = color;
+  fc.lineWidth = pxDia;
+  fc.strokeStyle = color;
+  fc.lineCap = 'round';
+  fc.beginPath();
+  fc.moveTo(x, baseY - straightH);
+  fc.quadraticCurveTo(x, baseY - straightH - curveH, x + 35, baseY - straightH - curveH + 10);
+  fc.lineWidth = pxDia;
+  fc.stroke();
+
+  // Highlight on curve
+  fc.strokeStyle = 'rgba(255,255,255,0.12)';
+  fc.lineWidth = pxDia * 0.3;
+  fc.beginPath();
+  fc.moveTo(x - 2, baseY - straightH);
+  fc.quadraticCurveTo(x - 2, baseY - straightH - curveH + 2, x + 33, baseY - straightH - curveH + 12);
+  fc.stroke();
+
+  // Cap
+  fc.fillStyle = color;
+  fc.beginPath();
+  fc.arc(x + 35, baseY - straightH - curveH + 10, pxDia/2 + 2, 0, Math.PI * 2);
+  fc.fill();
+
+  fc.shadowBlur = 0;
+
+  // Labels
+  fc.fillStyle = '#fff';
+  fc.font = 'bold 10px Courier New';
+  fc.textAlign = 'center';
+  fc.fillText('75pt', x + 35, baseY - straightH - curveH - 8);
+  fc.fillStyle = color;
+  fc.font = '7px Courier New';
+  fc.fillText('THE CURLER', x + 35, baseY - straightH - curveH - 18);
+
+  fc.restore();
+}
+
+// ── Draw all tentacles (from back to front for overlap) ──
+const tentBaseY = platY;
+
+// Back row: The Spike (center-back, tallest)
+drawTentacle(platX + platW/2, tentBaseY, 36, 0.75, 0, '#00ccff', 'THE SPIKE', 100, '#00ccff');
+
+// Mid row
+drawTentacle(platX + 80, tentBaseY, 28, 1, 0, '#33ff66', 'WHIP B', 50, '#33ff66');
+drawTentacle(platX + platW - 60, tentBaseY, 28, 1, 0, '#33ff66', 'WHIP A', 50, '#33ff66');
+
+// Leaners
+drawTentacle(platX + platW - 110, tentBaseY, 20, 1.5, -12, '#dd44aa', 'LEANER A', 25, '#dd44aa');
+drawTentacle(platX + 140, tentBaseY, 20, 1.5, 10, '#dd44aa', 'LEANER B', 25, '#dd44aa');
+
+// The Curler
+drawCurler(platX + platW - 145, tentBaseY, '#ff3388');
+
+// Front row: Thick Boys
+drawTentacle(platX + 110, tentBaseY, 14, 2, 0, '#7733aa', 'THICK BOY A', 10, '#9944cc');
+drawTentacle(platX + platW/2 + 30, tentBaseY, 14, 2, 0, '#7733aa', 'THICK BOY B', 10, '#9944cc');
+
+// ── Glow rings in flight ──
+function drawGlowRing(cx, cy, tilt, opacity) {
+  fc.save();
+  fc.translate(cx, cy);
+  fc.scale(1, tilt); // perspective tilt
+
+  fc.strokeStyle = '#ccff00';
+  fc.lineWidth = 4;
+  fc.globalAlpha = opacity;
+  fc.shadowColor = '#ccff00';
+  fc.shadowBlur = 12;
+  fc.beginPath();
+  fc.arc(0, 0, 22, 0, Math.PI * 2);
+  fc.stroke();
+
+  fc.shadowBlur = 0;
+  fc.globalAlpha = 1;
+  fc.restore();
+}
+
+// Ring arcing toward the Spike (dramatic shot)
+drawGlowRing(platX + platW/2 - 40, platY - 180, 0.4, 0.8);
+
+// Ring trajectory arc
+fc.strokeStyle = '#ccff00';
+fc.lineWidth = 1.5;
+fc.setLineDash([4, 4]);
+fc.globalAlpha = 0.4;
+fc.beginPath();
+fc.moveTo(platX + platW/2 - 80, platY + platH + platLegH + 50); // player's hand
+fc.quadraticCurveTo(platX + platW/2 - 60, platY - 240, platX + platW/2, platY - 200);
+fc.stroke();
+fc.setLineDash([]);
+fc.globalAlpha = 1;
+
+// Ring trajectory label
+fc.fillStyle = '#ccff00';
+fc.globalAlpha = 0.6;
+fc.font = 'italic 8px Courier New';
+fc.textAlign = 'left';
+fc.fillText('RING ARCING', platX + platW/2 - 25, platY - 210);
+fc.fillText('TOWARD SPIKE!', platX + platW/2 - 25, platY - 200);
+fc.globalAlpha = 1;
+
+// Ring landed on Thick Boy A (success!)
+fc.save();
+fc.translate(platX + 110, tentBaseY - 55);
+fc.scale(1, 0.5);
+fc.strokeStyle = '#ccff00';
+fc.lineWidth = 4;
+fc.shadowColor = '#ccff00';
+fc.shadowBlur = 10;
+fc.beginPath();
+fc.arc(0, 0, 22, 0, Math.PI * 2);
+fc.stroke();
+fc.shadowBlur = 0;
+fc.restore();
+
+fc.fillStyle = '#ccff00';
+fc.globalAlpha = 0.5;
+fc.font = 'italic 7px Courier New';
+fc.textAlign = 'center';
+fc.fillText('LANDED!', platX + 110, tentBaseY - 28);
+fc.globalAlpha = 1;
+
+// ── Stick figure player ──
+const playerX = platX + platW/2 - 80;
+const playerY = platY + platH + platLegH + 30;
+
+// Body
+fc.strokeStyle = '#5588aa';
+fc.lineWidth = 2;
+// Head
+fc.beginPath();
+fc.arc(playerX, playerY, 8, 0, Math.PI * 2);
+fc.stroke();
+// Torso
+fc.beginPath(); fc.moveTo(playerX, playerY + 8); fc.lineTo(playerX, playerY + 35); fc.stroke();
+// Legs
+fc.beginPath(); fc.moveTo(playerX, playerY + 35); fc.lineTo(playerX - 12, playerY + 55); fc.stroke();
+fc.beginPath(); fc.moveTo(playerX, playerY + 35); fc.lineTo(playerX + 12, playerY + 55); fc.stroke();
+// Throwing arm (extended forward)
+fc.beginPath(); fc.moveTo(playerX, playerY + 15); fc.lineTo(playerX + 25, playerY + 5); fc.stroke();
+// Other arm
+fc.beginPath(); fc.moveTo(playerX, playerY + 15); fc.lineTo(playerX - 15, playerY + 25); fc.stroke();
+
+// Ring in hand
+fc.strokeStyle = '#ccff00';
+fc.lineWidth = 2;
+fc.shadowColor = '#ccff00';
+fc.shadowBlur = 5;
+fc.beginPath();
+fc.arc(playerX + 28, playerY + 3, 8, 0, Math.PI * 2);
+fc.stroke();
+fc.shadowBlur = 0;
+
+fc.fillStyle = '#5588aa';
+fc.font = '9px Courier New';
+fc.textAlign = 'center';
+fc.fillText('PLAYER', playerX, playerY + 70);
+
+// ── Throwing line ──
+fc.strokeStyle = '#ff4444';
+fc.lineWidth = 2;
+fc.setLineDash([6, 4]);
+fc.beginPath();
+fc.moveTo(platX - 20, playerY + 57);
+fc.lineTo(platX + platW + 20, playerY + 57);
+fc.stroke();
+fc.setLineDash([]);
+fc.fillStyle = '#ff4444';
+fc.font = '8px Courier New';
+fc.textAlign = 'right';
+fc.fillText('THROWING LINE (72")', platX + platW + 15, playerY + 52);
+
+// ── Dimension lines ──
+// Platform width
+fc.fillStyle = '#3366aa';
+fc.font = '10px Courier New';
+fc.textAlign = 'center';
+fc.fillText('48"', platX + platW/2, platY + platH + 28);
+fc.strokeStyle = '#3366aa';
+fc.lineWidth = 1;
+fc.beginPath(); fc.moveTo(platX, platY + platH + 20); fc.lineTo(platX + platW, platY + platH + 20); fc.stroke();
+fc.beginPath(); fc.moveTo(platX, platY + platH + 16); fc.lineTo(platX, platY + platH + 24); fc.stroke();
+fc.beginPath(); fc.moveTo(platX + platW, platY + platH + 16); fc.lineTo(platX + platW, platY + platH + 24); fc.stroke();
+
+// Spike height
+fc.save();
+fc.translate(platX + platW + 35, (platY + platY - 36*6.5)/2);
+fc.rotate(-Math.PI/2);
+fc.fillStyle = '#00ccff';
+fc.font = '9px Courier New';
+fc.textAlign = 'center';
+fc.fillText('36" (THE SPIKE)', 0, 0);
+fc.restore();
+
+fc.strokeStyle = '#00ccff';
+fc.lineWidth = 1;
+fc.globalAlpha = 0.5;
+fc.beginPath(); fc.moveTo(platX + platW + 20, platY); fc.lineTo(platX + platW + 20, platY - 36*6.5); fc.stroke();
+fc.beginPath(); fc.moveTo(platX + platW + 16, platY); fc.lineTo(platX + platW + 24, platY); fc.stroke();
+fc.beginPath(); fc.moveTo(platX + platW + 16, platY - 36*6.5); fc.lineTo(platX + platW + 24, platY - 36*6.5); fc.stroke();
+fc.globalAlpha = 1;
+
+// Platform height (legs)
+fc.save();
+fc.translate(platX - 25, platY + platH + platLegH/2);
+fc.rotate(-Math.PI/2);
+fc.fillStyle = '#3366aa';
+fc.font = '9px Courier New';
+fc.textAlign = 'center';
+fc.fillText('12" legs', 0, 0);
+fc.restore();
+
+// ── UV Glow zone indicator ──
+fc.fillStyle = 'rgba(180,0,255,0.06)';
+fc.fillRect(platX - 5, platY - 260, platW + 10, 270);
+fc.strokeStyle = 'rgba(180,0,255,0.2)';
+fc.lineWidth = 1;
+fc.setLineDash([4, 6]);
+fc.strokeRect(platX - 5, platY - 260, platW + 10, 270);
+fc.setLineDash([]);
+fc.fillStyle = 'rgba(180,0,255,0.4)';
+fc.font = '8px Courier New';
+fc.textAlign = 'left';
+fc.fillText('UV GLOW ZONE', platX, platY - 250);
+fc.fillText('(optional blacklight)', platX, platY - 240);
+
+// ── Title ──
+fc.fillStyle = '#3366aa';
+fc.font = '10px Courier New';
+fc.textAlign = 'center';
+fc.fillText('FRONT VIEW — PLAYER PERSPECTIVE', FW/2, FH - 10);
+
+
+// ══════════════════════════════════════════
+// TOP-DOWN VIEW — Tentacle Layout
+// ══════════════════════════════════════════
+const tc = document.getElementById('top').getContext('2d');
+const TW = 300, TH = 560;
+
+// Background
+tc.fillStyle = '#020818';
+tc.fillRect(0, 0, TW, TH);
+
+// ── Platform (top-down = square) ──
+const tpX = 40, tpY = 100, tpW = 220, tpH = 220;
+
+// Ocean surface
+const oceanSurf = tc.createRadialGradient(tpX + tpW/2, tpY + tpH/2, 10, tpX + tpW/2, tpY + tpH/2, tpW/2);
+oceanSurf.addColorStop(0, '#0c2440');
+oceanSurf.addColorStop(1, '#081830');
+tc.fillStyle = oceanSurf;
+tc.fillRect(tpX, tpY, tpW, tpH);
+
+// Ocean details (subtle)
+tc.strokeStyle = 'rgba(0,100,200,0.1)';
+tc.lineWidth = 1;
+for (let i = 0; i < 5; i++) {
+  tc.beginPath();
+  tc.arc(tpX + 30 + i * 45, tpY + 40 + (i % 3) * 60, 15, 0.2, Math.PI - 0.2);
+  tc.stroke();
+}
+
+// Edge lip
+tc.strokeStyle = '#1a4060';
+tc.lineWidth = 4;
+tc.strokeRect(tpX, tpY, tpW, tpH);
+
+// Platform label
+tc.fillStyle = '#1a4060';
+tc.font = '9px Courier New';
+tc.textAlign = 'center';
+tc.fillText('48" × 48" PLATFORM', tpX + tpW/2, tpY - 8);
+
+// ── Tentacle positions (top-down circles) ──
+function drawTentacleTop(cx, cy, diameter, color, name, points, lean) {
+  const r = diameter * 7; // scale radius
+
+  // Glow halo
+  tc.fillStyle = color;
+  tc.globalAlpha = 0.15;
+  tc.beginPath();
+  tc.arc(cx, cy, r + 12, 0, Math.PI * 2);
+  tc.fill();
+
+  // Pool noodle wrap
+  tc.globalAlpha = 0.3;
+  tc.beginPath();
+  tc.arc(cx, cy, r + 6, 0, Math.PI * 2);
+  tc.fill();
+
+  // PVC pipe cross-section
+  tc.globalAlpha = 1;
+  tc.fillStyle = color;
+  tc.beginPath();
+  tc.arc(cx, cy, r, 0, Math.PI * 2);
+  tc.fill();
+
+  // Center highlight
+  tc.fillStyle = 'rgba(255,255,255,0.2)';
+  tc.beginPath();
+  tc.arc(cx - r * 0.2, cy - r * 0.2, r * 0.5, 0, Math.PI * 2);
+  tc.fill();
+
+  // Lean indicator
+  if (lean) {
+    tc.strokeStyle = color;
+    tc.lineWidth = 1.5;
+    tc.setLineDash([3, 2]);
+    tc.globalAlpha = 0.6;
+    const leanDx = lean === 'left' ? -15 : lean === 'right' ? 15 : 0;
+    const leanDy = lean === 'curve' ? -10 : 0;
+    tc.beginPath();
+    tc.moveTo(cx, cy);
+    tc.lineTo(cx + leanDx, cy + leanDy);
+    tc.stroke();
+    tc.setLineDash([]);
+    // Arrow
+    tc.beginPath();
+    tc.arc(cx + leanDx, cy + leanDy, 3, 0, Math.PI * 2);
+    tc.fill();
+    tc.globalAlpha = 1;
+  }
+
+  // Name label
+  tc.fillStyle = '#fff';
+  tc.font = 'bold 7px Courier New';
+  tc.textAlign = 'center';
+  tc.fillText(name, cx, cy + r + 16);
+
+  // Points
+  tc.fillStyle = color;
+  tc.font = 'bold 9px Courier New';
+  tc.fillText(points + 'pt', cx, cy + r + 26);
+}
+
+// Place tentacles according to layout from build plan
+// Back row (far from player = top of diagram)
+drawTentacleTop(tpX + tpW/2, tpY + 40, 0.75, '#00ccff', 'SPIKE', 100, null);
+
+// Mid row
+drawTentacleTop(tpX + 50, tpY + 75, 1, '#33ff66', 'WHIP B', 50, null);
+drawTentacleTop(tpX + tpW - 35, tpY + 60, 1.5, '#dd44aa', 'LEANER A', 25, 'left');
+
+// Center area
+drawTentacleTop(tpX + 40, tpY + tpH/2, 2, '#7733aa', 'THICK A', 10, null);
+drawTentacleTop(tpX + tpW - 55, tpY + tpH/2 - 15, 1.5, '#ff3388', 'CURLER', 75, 'curve');
+
+// Lower-mid
+drawTentacleTop(tpX + tpW - 50, tpY + tpH/2 + 50, 1, '#33ff66', 'WHIP A', 50, null);
+drawTentacleTop(tpX + 70, tpY + tpH/2 + 55, 1.5, '#dd44aa', 'LEANER B', 25, 'right');
+
+// Front row (closest to player = bottom of diagram)
+drawTentacleTop(tpX + tpW/2 + 15, tpY + tpH - 40, 2, '#7733aa', 'THICK B', 10, null);
+
+// ── Throwing lane ──
+tc.fillStyle = 'rgba(100,150,200,0.04)';
+tc.fillRect(tpX - 10, tpY + tpH + 20, tpW + 20, 180);
+
+// Throwing line
+tc.strokeStyle = '#ff4444';
+tc.lineWidth = 2;
+tc.setLineDash([6, 4]);
+tc.beginPath();
+tc.moveTo(tpX - 10, tpY + tpH + 140);
+tc.lineTo(tpX + tpW + 10, tpY + tpH + 140);
+tc.stroke();
+tc.setLineDash([]);
+
+tc.fillStyle = '#ff4444';
+tc.font = '8px Courier New';
+tc.textAlign = 'center';
+tc.fillText('THROWING LINE', tpX + tpW/2, tpY + tpH + 155);
+tc.fillText('(72" from front edge)', tpX + tpW/2, tpY + tpH + 167);
+
+// ── Player position ──
+tc.fillStyle = '#5588aa';
+tc.beginPath();
+tc.arc(tpX + tpW/2, tpY + tpH + 170, 8, 0, Math.PI * 2);
+tc.fill();
+tc.fillStyle = '#5588aa';
+tc.font = '9px Courier New';
+tc.textAlign = 'center';
+tc.fillText('PLAYER', tpX + tpW/2, tpY + tpH + 190);
+
+// ── Ring flight path (top-down) ──
+tc.strokeStyle = '#ccff00';
+tc.lineWidth = 1.5;
+tc.setLineDash([4, 3]);
+tc.globalAlpha = 0.5;
+tc.beginPath();
+tc.moveTo(tpX + tpW/2, tpY + tpH + 160);
+tc.lineTo(tpX + tpW/2, tpY + 40); // toward The Spike
+tc.stroke();
+tc.setLineDash([]);
+
+// Ring near target
+tc.strokeStyle = '#ccff00';
+tc.lineWidth = 3;
+tc.globalAlpha = 0.7;
+tc.shadowColor = '#ccff00';
+tc.shadowBlur = 8;
+tc.beginPath();
+tc.arc(tpX + tpW/2, tpY + 60, 16, 0, Math.PI * 2);
+tc.stroke();
+tc.shadowBlur = 0;
+tc.globalAlpha = 1;
+
+tc.fillStyle = '#ccff00';
+tc.globalAlpha = 0.5;
+tc.font = 'italic 7px Courier New';
+tc.textAlign = 'left';
+tc.fillText('RING →', tpX + tpW/2 + 20, tpY + 63);
+tc.globalAlpha = 1;
+
+// ── Difficulty zones (subtle bands) ──
+// Hard zone (back)
+tc.fillStyle = 'rgba(255,0,0,0.03)';
+tc.fillRect(tpX, tpY, tpW, tpH * 0.35);
+tc.fillStyle = 'rgba(255,100,100,0.3)';
+tc.font = '7px Courier New';
+tc.textAlign = 'right';
+tc.fillText('HARD', tpX + tpW - 4, tpY + 12);
+
+// Medium zone
+tc.fillStyle = 'rgba(255,255,0,0.02)';
+tc.fillRect(tpX, tpY + tpH * 0.35, tpW, tpH * 0.35);
+tc.fillStyle = 'rgba(255,255,100,0.3)';
+tc.fillText('MEDIUM', tpX + tpW - 4, tpY + tpH * 0.35 + 12);
+
+// Easy zone (front)
+tc.fillStyle = 'rgba(0,255,0,0.02)';
+tc.fillRect(tpX, tpY + tpH * 0.7, tpW, tpH * 0.3);
+tc.fillStyle = 'rgba(100,255,100,0.3)';
+tc.fillText('EASY', tpX + tpW - 4, tpY + tpH * 0.7 + 12);
+
+// ── Dimension: throwing distance ──
+tc.strokeStyle = '#3366aa';
+tc.lineWidth = 1;
+tc.beginPath();
+tc.moveTo(tpX + tpW + 15, tpY + tpH);
+tc.lineTo(tpX + tpW + 15, tpY + tpH + 140);
+tc.stroke();
+tc.beginPath();
+tc.moveTo(tpX + tpW + 11, tpY + tpH);
+tc.lineTo(tpX + tpW + 19, tpY + tpH);
+tc.stroke();
+tc.beginPath();
+tc.moveTo(tpX + tpW + 11, tpY + tpH + 140);
+tc.lineTo(tpX + tpW + 19, tpY + tpH + 140);
+tc.stroke();
+
+tc.save();
+tc.translate(tpX + tpW + 26, tpY + tpH + 70);
+tc.rotate(-Math.PI/2);
+tc.fillStyle = '#3366aa';
+tc.font = '8px Courier New';
+tc.textAlign = 'center';
+tc.fillText('72" THROW', 0, 0);
+tc.restore();
+
+// ── Title ──
+tc.fillStyle = '#3366aa';
+tc.font = '10px Courier New';
+tc.textAlign = 'center';
+tc.fillText('TOP-DOWN — TENTACLE LAYOUT', TW/2, TH - 10);
+
+</script>
+
+</body>
+</html>

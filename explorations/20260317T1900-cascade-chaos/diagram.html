@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>CASCADE CHAOS — Diagram</title>
+<!-- screenshot: 1200x1900 -->
+<style>
+  body {
+    margin: 0;
+    padding: 20px;
+    background: #1a1a2e;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #e0e0e0;
+  }
+  h1 {
+    text-align: center;
+    color: #ffd700;
+    font-size: 28px;
+    margin: 10px 0 5px 0;
+    letter-spacing: 2px;
+  }
+  h2 {
+    text-align: center;
+    color: #aaa;
+    font-size: 14px;
+    margin: 0 0 15px 0;
+    font-weight: normal;
+  }
+  .view-label {
+    text-align: center;
+    color: #ffd700;
+    font-size: 16px;
+    margin: 15px 0 5px 0;
+    font-weight: bold;
+  }
+  canvas {
+    display: block;
+    margin: 0 auto;
+    border: 1px solid #333;
+  }
+  .legend-container {
+    max-width: 1160px;
+    margin: 20px auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+  }
+  .legend-swatch {
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+    border: 1px solid #555;
+  }
+  .specs-table {
+    max-width: 700px;
+    margin: 15px auto;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .specs-table th, .specs-table td {
+    padding: 6px 14px;
+    border: 1px solid #444;
+    text-align: left;
+  }
+  .specs-table th {
+    background: #2a2a4a;
+    color: #ffd700;
+  }
+  .specs-table td {
+    background: #1e1e3a;
+  }
+  .sequence-container {
+    max-width: 900px;
+    margin: 20px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+  }
+  .seq-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .seq-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #ffd700;
+    color: #1a1a2e;
+    font-weight: bold;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .seq-label {
+    font-size: 11px;
+    color: #ccc;
+    text-align: center;
+    max-width: 90px;
+  }
+  .seq-arrow {
+    font-size: 24px;
+    color: #ffd700;
+    margin: 0 6px;
+    margin-bottom: 18px;
+  }
+</style>
+</head>
+<body>
+
+<h1>CASCADE CHAOS</h1>
+<h2>Strategy Phase + Avalanche Phase \u2014 Two-Player Magnetic Deflector Plinko</h2>
+
+<div class="view-label">FRONT VIEW \u2014 Player Perspective</div>
+<canvas id="frontView" width="1160" height="700"></canvas>
+
+<div class="view-label">SIDE CROSS-SECTION</div>
+<canvas id="sideView" width="1160" height="380"></canvas>
+
+<div class="view-label">GAMEPLAY SEQUENCE</div>
+<div class="sequence-container">
+  <div class="seq-step">
+    <div class="seq-circle">1</div>
+    <div class="seq-label">Load hopper<br>(10 sec)</div>
+  </div>
+  <div class="seq-arrow">\u2192</div>
+  <div class="seq-step">
+    <div class="seq-circle">2</div>
+    <div class="seq-label">Place deflectors<br>(30 sec each)</div>
+  </div>
+  <div class="seq-arrow">\u2192</div>
+  <div class="seq-step">
+    <div class="seq-circle">3</div>
+    <div class="seq-label">Pull rope!<br>AVALANCHE</div>
+  </div>
+  <div class="seq-arrow">\u2192</div>
+  <div class="seq-step">
+    <div class="seq-circle">4</div>
+    <div class="seq-label">Count bins<br>(20 sec)</div>
+  </div>
+  <div class="seq-arrow">\u2192</div>
+  <div class="seq-step">
+    <div class="seq-circle">5</div>
+    <div class="seq-label">Sweep &amp; reset<br>(20 sec)</div>
+  </div>
+</div>
+
+<div class="view-label">LEGEND</div>
+<div class="legend-container">
+  <div class="legend-item"><div class="legend-swatch" style="background:#333;border:2px solid #888;"></div>Steel-backed plywood</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:rgba(173,216,230,0.3);border:2px solid #add8e6;"></div>Acrylic front panel</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#888;"></div>Steel rod pegs</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#e74c3c;"></div>Red deflectors / balls</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#3498db;"></div>Blue deflectors / balls</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#ffd700;"></div>Gold bonus balls (5\u00d7)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#8B4513;"></div>Plywood hopper / bins</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#2ecc71;"></div>Pull rope</div>
+</div>
+
+<div class="view-label">KEY SPECS</div>
+<table class="specs-table">
+  <tr><th>Spec</th><th>Value</th><th>Notes</th></tr>
+  <tr><td>Playing field</td><td>48"W \u00d7 60"H \u00d7 4"D</td><td>Steel-backed, 20\u00b0 tilt</td></tr>
+  <tr><td>Hopper</td><td>48"W \u00d7 6"H \u00d7 4"D</td><td>Full-width, rope-release gate</td></tr>
+  <tr><td>Ball count</td><td>55 total</td><td>25 red + 25 blue + 5 gold</td></tr>
+  <tr><td>Deflectors</td><td>16 (8 per player)</td><td>3D-printed, magnetic mount</td></tr>
+  <tr><td>Scoring bins</td><td>6 (3 per side)</td><td>10 / 25 / 50 pts inside\u2192out</td></tr>
+  <tr><td>Cycle time</td><td>~2 minutes</td><td>Setup + avalanche + count + reset</td></tr>
+  <tr><td>Estimated cost</td><td>$400\u2013450</td><td>Home Depot + 3D prints + magnets</td></tr>
+</table>
+
+<script>
+// ============================================================
+// FRONT VIEW
+// ============================================================
+(function() {
+  const canvas = document.getElementById('frontView');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width;
+  const H = canvas.height;
+
+  // Background
+  ctx.fillStyle = '#0d0d1a';
+  ctx.fillRect(0, 0, W, H);
+
+  // Dimensions for the game board within canvas
+  const boardL = 130;
+  const boardR = W - 130;
+  const boardT = 80;
+  const boardB = H - 80;
+  const boardW = boardR - boardL;
+  const boardH = boardB - boardT;
+  const boardCX = (boardL + boardR) / 2;
+
+  // Hopper (above board)
+  const hopperH = 50;
+  const hopperT = boardT - hopperH - 5;
+
+  // Draw hopper
+  ctx.fillStyle = '#5C3A1E';
+  ctx.strokeStyle = '#8B4513';
+  ctx.lineWidth = 2;
+  // Back and sides
+  ctx.fillRect(boardL, hopperT, boardW, hopperH);
+  ctx.strokeRect(boardL, hopperT, boardW, hopperH);
+  // Gate (bottom, shown slightly open with dashed line)
+  ctx.setLineDash([6, 4]);
+  ctx.strokeStyle = '#cd853f';
+  ctx.beginPath();
+  ctx.moveTo(boardL, hopperT + hopperH);
+  ctx.lineTo(boardR, hopperT + hopperH);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Hopper label
+  ctx.fillStyle = '#ffd700';
+  ctx.font = 'bold 13px Segoe UI, Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('HOPPER \u2014 55 BALLS', boardCX, hopperT + 20);
+  ctx.font = '11px Segoe UI, Arial';
+  ctx.fillStyle = '#cd853f';
+  ctx.fillText('rope-release trapdoor gate', boardCX, hopperT + 36);
+
+  // Balls in hopper (packed)
+  const ballR = 7;
+  for (let row = 0; row < 3; row++) {
+    for (let col = 0; col < 28; col++) {
+      const bx = boardL + 20 + col * (boardW - 40) / 27;
+      const by = hopperT + 10 + row * 14 + (col % 2) * 5;
+      if (by < hopperT + hopperH - 5) {
+        const colors = ['#e74c3c', '#3498db', '#e74c3c', '#3498db', '#ffd700'];
+        ctx.fillStyle = colors[col % 5 === 4 && row === 1 ? 4 : col % 2 === 0 ? 0 : 1];
+        ctx.beginPath();
+        ctx.arc(bx, by, ballR - 1, 0, Math.PI * 2);
+        ctx.fill();
+        // Subtle highlight
+        ctx.fillStyle = 'rgba(255,255,255,0.25)';
+        ctx.beginPath();
+        ctx.arc(bx - 2, by - 2, ballR / 3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }
+
+  // Pull rope
+  ctx.strokeStyle = '#2ecc71';
+  ctx.lineWidth = 3;
+  ctx.setLineDash([8, 4]);
+  ctx.beginPath();
+  ctx.moveTo(boardR + 5, hopperT + hopperH);
+  ctx.lineTo(boardR + 30, hopperT + hopperH + 30);
+  ctx.lineTo(boardR + 30, boardB + 20);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  // Rope handle
+  ctx.fillStyle = '#2ecc71';
+  ctx.beginPath();
+  ctx.arc(boardR + 30, boardB + 25, 8, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.font = '9px Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText('PULL', boardR + 42, boardB + 28);
+  ctx.fillText('ROPE', boardR + 42, boardB + 40);
+
+  // Steel back panel
+  ctx.fillStyle = '#1a1a1a';
+  ctx.fillRect(boardL, boardT, boardW, boardH);
+  ctx.strokeStyle = '#444';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(boardL, boardT, boardW, boardH);
+
+  // Center divider line
+  ctx.strokeStyle = '#fffa';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([10, 6]);
+  ctx.beginPath();
+  ctx.moveTo(boardCX, boardT);
+  ctx.lineTo(boardCX, boardB);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Player labels
+  ctx.fillStyle = '#e74c3c';
+  ctx.font = 'bold 14px Segoe UI, Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('PLAYER A (Red)', boardL + boardW * 0.25, boardT - 8);
+  ctx.fillStyle = '#3498db';
+  ctx.fillText('PLAYER B (Blue)', boardL + boardW * 0.75, boardT - 8);
+
+  // Peg grid
+  const pegSpacingX = 48;
+  const pegSpacingY = 44;
+  const pegStartX = boardL + 35;
+  const pegStartY = boardT + 35;
+  const pegs = [];
+
+  for (let row = 0; row < 11; row++) {
+    const offsetX = (row % 2) * (pegSpacingX / 2);
+    const cols = row % 2 === 0 ? 18 : 17;
+    for (let col = 0; col < cols; col++) {
+      const px = pegStartX + offsetX + col * pegSpacingX;
+      const py = pegStartY + row * pegSpacingY;
+      if (px > boardL + 10 && px < boardR - 10 && py < boardB - 60) {
+        pegs.push({ x: px, y: py });
+        // Steel peg
+        ctx.fillStyle = '#777';
+        ctx.beginPath();
+        ctx.arc(px, py, 4, 0, Math.PI * 2);
+        ctx.fill();
+        // Metallic highlight
+        ctx.fillStyle = '#aaa';
+        ctx.beginPath();
+        ctx.arc(px - 1, py - 1, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }
+
+  // Magnetic deflectors — Player A (Red), placed on left half
+  const deflectorsA = [
+    { x: boardL + 80, y: boardT + 100, angle: -30 },
+    { x: boardL + 200, y: boardT + 160, angle: 25 },
+    { x: boardL + 120, y: boardT + 250, angle: -20 },
+    { x: boardL + 280, y: boardT + 200, angle: 35 },
+    { x: boardL + 160, y: boardT + 330, angle: -15 },
+    { x: boardL + 320, y: boardT + 290, angle: 20 },
+    { x: boardL + 240, y: boardT + 400, angle: -25 },
+    { x: boardL + 100, y: boardT + 430, angle: 30 },
+  ];
+
+  function drawDeflector(x, y, angle, color) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle * Math.PI / 180);
+    // Wedge shape
+    ctx.beginPath();
+    ctx.moveTo(-14, 6);
+    ctx.lineTo(14, 6);
+    ctx.lineTo(14, -2);
+    ctx.lineTo(-14, -8);
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    // Magnet dots
+    ctx.fillStyle = '#555';
+    ctx.beginPath();
+    ctx.arc(-7, 2, 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(7, 2, 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  deflectorsA.forEach(d => drawDeflector(d.x, d.y, d.angle, '#e74c3c'));
+
+  // Magnetic deflectors — Player B (Blue), placed on right half
+  const deflectorsB = [
+    { x: boardR - 80, y: boardT + 120, angle: 30 },
+    { x: boardR - 200, y: boardT + 180, angle: -25 },
+    { x: boardR - 130, y: boardT + 270, angle: 15 },
+    { x: boardR - 300, y: boardT + 220, angle: -35 },
+    { x: boardR - 170, y: boardT + 350, angle: 20 },
+    { x: boardR - 330, y: boardT + 310, angle: -20 },
+    { x: boardR - 250, y: boardT + 410, angle: 25 },
+    { x: boardR - 110, y: boardT + 440, angle: -30 },
+  ];
+
+  deflectorsB.forEach(d => drawDeflector(d.x, d.y, d.angle, '#3498db'));
+
+  // Avalanche balls mid-cascade (show some balls falling through the field)
+  const cascadeBalls = [
+    { x: boardL + 150, y: boardT + 70, color: '#e74c3c', opacity: 0.9 },
+    { x: boardL + 310, y: boardT + 90, color: '#3498db', opacity: 0.85 },
+    { x: boardR - 250, y: boardT + 110, color: '#e74c3c', opacity: 0.8 },
+    { x: boardR - 120, y: boardT + 80, color: '#3498db', opacity: 0.9 },
+    { x: boardCX - 40, y: boardT + 150, color: '#ffd700', opacity: 1.0 },
+    { x: boardL + 200, y: boardT + 200, color: '#e74c3c', opacity: 0.7 },
+    { x: boardR - 180, y: boardT + 230, color: '#3498db', opacity: 0.75 },
+    { x: boardCX + 60, y: boardT + 280, color: '#e74c3c', opacity: 0.65 },
+    { x: boardL + 100, y: boardT + 310, color: '#3498db', opacity: 0.7 },
+    { x: boardR - 300, y: boardT + 350, color: '#ffd700', opacity: 0.9 },
+    { x: boardCX - 100, y: boardT + 370, color: '#e74c3c', opacity: 0.6 },
+    { x: boardR - 80, y: boardT + 400, color: '#3498db', opacity: 0.65 },
+    { x: boardL + 250, y: boardT + 420, color: '#e74c3c', opacity: 0.55 },
+    { x: boardCX + 150, y: boardT + 450, color: '#3498db', opacity: 0.6 },
+    { x: boardL + 180, y: boardT + 480, color: '#ffd700', opacity: 0.8 },
+  ];
+
+  cascadeBalls.forEach(b => {
+    ctx.globalAlpha = b.opacity;
+    // Ball shadow/glow
+    ctx.shadowColor = b.color;
+    ctx.shadowBlur = 6;
+    ctx.fillStyle = b.color;
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, ballR + 1, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    // Highlight
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.beginPath();
+    ctx.arc(b.x - 2, b.y - 2, 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1.0;
+  });
+
+  // Scoring bins at bottom
+  const binY = boardB - 55;
+  const binH = 55;
+  const binWidth = boardW / 6;
+
+  const binLabels = ['10', '25', '50', '50', '25', '10'];
+  const binColors = [
+    'rgba(231,76,60,0.15)', 'rgba(231,76,60,0.25)', 'rgba(231,76,60,0.4)',
+    'rgba(52,152,219,0.4)', 'rgba(52,152,219,0.25)', 'rgba(52,152,219,0.15)'
+  ];
+  const binBorders = ['#e74c3c', '#e74c3c', '#e74c3c', '#3498db', '#3498db', '#3498db'];
+
+  for (let i = 0; i < 6; i++) {
+    const bx = boardL + i * binWidth;
+    // Bin background
+    ctx.fillStyle = binColors[i];
+    ctx.fillRect(bx + 2, binY, binWidth - 4, binH);
+    ctx.strokeStyle = binBorders[i];
+    ctx.lineWidth = 2;
+    ctx.strokeRect(bx + 2, binY, binWidth - 4, binH);
+    // Divider
+    if (i > 0) {
+      ctx.strokeStyle = '#8B4513';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(bx, binY);
+      ctx.lineTo(bx, boardB);
+      ctx.stroke();
+    }
+    // Score label
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 18px Segoe UI, Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText(binLabels[i], bx + binWidth / 2, binY + 32);
+    ctx.font = '10px Segoe UI, Arial';
+    ctx.fillStyle = '#aaa';
+    ctx.fillText('pts', bx + binWidth / 2, binY + 46);
+  }
+
+  // Bin width labels
+  ctx.fillStyle = '#888';
+  ctx.font = '10px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('\u2190 wide \u2192', boardL + binWidth / 2, boardB + 14);
+  ctx.fillText('med', boardL + binWidth * 1.5, boardB + 14);
+  ctx.fillText('\u2190 narrow \u2192', boardCX, boardB + 14);
+  ctx.fillText('med', boardR - binWidth * 1.5, boardB + 14);
+  ctx.fillText('\u2190 wide \u2192', boardR - binWidth / 2, boardB + 14);
+
+  // A few balls landed in bins
+  const binBalls = [
+    { bin: 0, idx: 0, color: '#e74c3c' },
+    { bin: 0, idx: 1, color: '#3498db' },
+    { bin: 1, idx: 0, color: '#e74c3c' },
+    { bin: 2, idx: 0, color: '#ffd700' },
+    { bin: 3, idx: 0, color: '#3498db' },
+    { bin: 3, idx: 1, color: '#e74c3c' },
+    { bin: 4, idx: 0, color: '#3498db' },
+    { bin: 5, idx: 0, color: '#3498db' },
+    { bin: 5, idx: 1, color: '#e74c3c' },
+  ];
+  binBalls.forEach(bb => {
+    const bx = boardL + bb.bin * binWidth + binWidth / 2 + (bb.idx - 0.5) * 18;
+    const by = binY + binH - 14;
+    ctx.fillStyle = bb.color;
+    ctx.beginPath();
+    ctx.arc(bx, by, ballR, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.beginPath();
+    ctx.arc(bx - 2, by - 2, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // Acrylic front panel indicator (subtle border)
+  ctx.strokeStyle = 'rgba(173,216,230,0.4)';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(boardL - 3, boardT - 3, boardW + 6, boardH + 6);
+  ctx.fillStyle = 'rgba(173,216,230,0.5)';
+  ctx.font = '10px Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText('ACRYLIC FRONT', boardL, boardT - 8);
+
+  // Dimension lines
+  ctx.strokeStyle = '#666';
+  ctx.lineWidth = 1;
+  ctx.fillStyle = '#999';
+  ctx.font = '11px Arial';
+  ctx.textAlign = 'center';
+
+  // Width dimension (top)
+  const dimY = hopperT - 18;
+  ctx.beginPath();
+  ctx.moveTo(boardL, dimY);
+  ctx.lineTo(boardR, dimY);
+  ctx.stroke();
+  // Arrowheads
+  ctx.beginPath(); ctx.moveTo(boardL, dimY - 4); ctx.lineTo(boardL, dimY + 4); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(boardR, dimY - 4); ctx.lineTo(boardR, dimY + 4); ctx.stroke();
+  ctx.fillText('48" (4 ft)', boardCX, dimY - 4);
+
+  // Height dimension (left)
+  const dimX = boardL - 30;
+  ctx.beginPath();
+  ctx.moveTo(dimX, boardT);
+  ctx.lineTo(dimX, boardB);
+  ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(dimX - 4, boardT); ctx.lineTo(dimX + 4, boardT); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(dimX - 4, boardB); ctx.lineTo(dimX + 4, boardB); ctx.stroke();
+  ctx.save();
+  ctx.translate(dimX - 8, boardT + boardH / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText('60" (5 ft)', 0, 0);
+  ctx.restore();
+
+  // Hopper height dimension
+  const hdimX = boardL - 55;
+  ctx.beginPath();
+  ctx.moveTo(hdimX, hopperT);
+  ctx.lineTo(hdimX, hopperT + hopperH);
+  ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(hdimX - 3, hopperT); ctx.lineTo(hdimX + 3, hopperT); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(hdimX - 3, hopperT + hopperH); ctx.lineTo(hdimX + 3, hopperT + hopperH); ctx.stroke();
+  ctx.save();
+  ctx.translate(hdimX - 6, hopperT + hopperH / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText('6"', 0, 0);
+  ctx.restore();
+
+  // Deflector callout
+  ctx.strokeStyle = '#e74c3c';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([3, 3]);
+  ctx.beginPath();
+  ctx.moveTo(boardL + 80, boardT + 100);
+  ctx.lineTo(boardL - 10, boardT + 55);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#e74c3c';
+  ctx.font = '10px Arial';
+  ctx.textAlign = 'right';
+  ctx.fillText('Magnetic deflector', boardL - 14, boardT + 50);
+  ctx.fillText('(wedge + 2 magnets)', boardL - 14, boardT + 62);
+
+  // Timer callout (top right of board)
+  ctx.fillStyle = '#222';
+  ctx.strokeStyle = '#ffd700';
+  ctx.lineWidth = 2;
+  const timerX = boardR - 60;
+  const timerY = boardT + 8;
+  ctx.fillRect(timerX - 25, timerY - 2, 50, 24);
+  ctx.strokeRect(timerX - 25, timerY - 2, 50, 24);
+  ctx.fillStyle = '#ff4444';
+  ctx.font = 'bold 16px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('0:30', timerX, timerY + 16);
+  ctx.fillStyle = '#ffd700';
+  ctx.font = '9px Arial';
+  ctx.fillText('TIMER', timerX, timerY + 32);
+
+  // Zone sidebar (subtle colored bands on right edge)
+  const zones = [
+    { label: 'HOPPER', y1: hopperT, y2: hopperT + hopperH, color: '#8B4513' },
+    { label: 'PEG FIELD', y1: boardT, y2: binY, color: '#444' },
+    { label: 'SCORING', y1: binY, y2: boardB, color: '#2ecc71' },
+  ];
+  zones.forEach(z => {
+    ctx.fillStyle = z.color;
+    ctx.globalAlpha = 0.4;
+    ctx.fillRect(boardR + 8, z.y1, 8, z.y2 - z.y1);
+    ctx.globalAlpha = 1.0;
+    ctx.fillStyle = '#aaa';
+    ctx.font = '9px Arial';
+    ctx.textAlign = 'left';
+    ctx.save();
+    ctx.translate(boardR + 22, (z.y1 + z.y2) / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center';
+    ctx.fillText(z.label, 0, 0);
+    ctx.restore();
+  });
+
+  // Stick figures (players) below board
+  function drawStickFigure(cx, groundY, color, label) {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    // Head
+    ctx.beginPath();
+    ctx.arc(cx, groundY - 45, 8, 0, Math.PI * 2);
+    ctx.stroke();
+    // Body
+    ctx.beginPath();
+    ctx.moveTo(cx, groundY - 37);
+    ctx.lineTo(cx, groundY - 15);
+    ctx.stroke();
+    // Arms reaching up toward board
+    ctx.beginPath();
+    ctx.moveTo(cx - 15, groundY - 35);
+    ctx.lineTo(cx, groundY - 28);
+    ctx.lineTo(cx + 15, groundY - 35);
+    ctx.stroke();
+    // Legs
+    ctx.beginPath();
+    ctx.moveTo(cx - 10, groundY);
+    ctx.lineTo(cx, groundY - 15);
+    ctx.lineTo(cx + 10, groundY);
+    ctx.stroke();
+    // Label
+    ctx.fillStyle = color;
+    ctx.font = '10px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText(label, cx, groundY + 14);
+  }
+
+  drawStickFigure(boardL + boardW * 0.25, boardB + 65, '#e74c3c', 'Player A');
+  drawStickFigure(boardL + boardW * 0.75, boardB + 65, '#3498db', 'Player B');
+
+  // Volunteer with rope
+  ctx.strokeStyle = '#2ecc71';
+  ctx.lineWidth = 2;
+  const volX = boardR + 60;
+  const volGround = boardB + 65;
+  // Head
+  ctx.beginPath();
+  ctx.arc(volX, volGround - 45, 8, 0, Math.PI * 2);
+  ctx.stroke();
+  // Body
+  ctx.beginPath();
+  ctx.moveTo(volX, volGround - 37);
+  ctx.lineTo(volX, volGround - 15);
+  ctx.stroke();
+  // Arm reaching for rope
+  ctx.beginPath();
+  ctx.moveTo(volX, volGround - 28);
+  ctx.lineTo(boardR + 30, boardB + 25);
+  ctx.stroke();
+  // Legs
+  ctx.beginPath();
+  ctx.moveTo(volX - 10, volGround);
+  ctx.lineTo(volX, volGround - 15);
+  ctx.lineTo(volX + 10, volGround);
+  ctx.stroke();
+  ctx.fillStyle = '#2ecc71';
+  ctx.font = '10px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('Volunteer', volX, volGround + 14);
+
+})();
+
+// ============================================================
+// SIDE CROSS-SECTION
+// ============================================================
+(function() {
+  const canvas = document.getElementById('sideView');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width;
+  const H = canvas.height;
+
+  ctx.fillStyle = '#0d0d1a';
+  ctx.fillRect(0, 0, W, H);
+
+  // Board cross-section (tilted ~20 degrees)
+  const tiltAngle = 20 * Math.PI / 180;
+  const boardBottomX = 350;
+  const boardBottomY = H - 60;
+  const boardLen = 400; // visual length of the board
+  const boardTopX = boardBottomX - Math.sin(tiltAngle) * boardLen;
+  const boardTopY = boardBottomY - Math.cos(tiltAngle) * boardLen;
+
+  // Gap depth (exaggerated for visibility)
+  const gapDepth = 35; // visual pixels representing 4"
+
+  // Back panel (plywood + steel)
+  ctx.strokeStyle = '#888';
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(boardBottomX, boardBottomY);
+  ctx.lineTo(boardTopX, boardTopY);
+  ctx.stroke();
+  // Label
+  ctx.fillStyle = '#999';
+  ctx.font = '10px Arial';
+  ctx.textAlign = 'right';
+  ctx.save();
+  ctx.translate(boardBottomX - 12, (boardBottomY + boardTopY) / 2);
+  ctx.rotate(-Math.PI / 2 - tiltAngle);
+  ctx.textAlign = 'center';
+  ctx.fillText('Plywood + Steel Sheet', 0, -8);
+  ctx.restore();
+
+  // Front panel (acrylic) — offset by gap
+  const frontBottomX = boardBottomX + Math.cos(tiltAngle) * gapDepth;
+  const frontBottomY = boardBottomY - Math.sin(tiltAngle) * gapDepth;
+  const frontTopX = boardTopX + Math.cos(tiltAngle) * gapDepth;
+  const frontTopY = boardTopY - Math.sin(tiltAngle) * gapDepth;
+
+  ctx.strokeStyle = 'rgba(173,216,230,0.7)';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(frontBottomX, frontBottomY);
+  ctx.lineTo(frontTopX, frontTopY);
+  ctx.stroke();
+  ctx.fillStyle = 'rgba(173,216,230,0.5)';
+  ctx.font = '10px Arial';
+  ctx.save();
+  ctx.translate(frontBottomX + 12, (frontBottomY + frontTopY) / 2);
+  ctx.rotate(-Math.PI / 2 - tiltAngle);
+  ctx.textAlign = 'center';
+  ctx.fillText('Acrylic Front', 0, 8);
+  ctx.restore();
+
+  // Gap dimension line
+  const midBoardY = (boardBottomY + boardTopY) / 2;
+  const midBoardX = (boardBottomX + boardTopX) / 2;
+  const midFrontY = (frontBottomY + frontTopY) / 2;
+  const midFrontX = (frontBottomX + frontTopX) / 2;
+
+  ctx.strokeStyle = '#666';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(midBoardX + 2, midBoardY);
+  ctx.lineTo(midFrontX - 2, midFrontY);
+  ctx.stroke();
+  ctx.fillStyle = '#ccc';
+  ctx.font = '11px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('4"', (midBoardX + midFrontX) / 2, (midBoardY + midFrontY) / 2 - 8);
+
+  // Pegs in cross-section (small circles between panels)
+  for (let i = 0; i < 8; i++) {
+    const t = (i + 1) / 9;
+    const pegX = boardBottomX + (boardTopX - boardBottomX) * t + Math.cos(tiltAngle) * gapDepth / 2;
+    const pegY = boardBottomY + (boardTopY - boardBottomY) * t + Math.sin(tiltAngle) * gapDepth / 2;
+    // Peg cross-section (circle)
+    ctx.fillStyle = '#777';
+    ctx.beginPath();
+    ctx.arc(pegX, pegY, 3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Deflector in cross-section (shown attached to back panel)
+  const defT = 0.45;
+  const defX = boardBottomX + (boardTopX - boardBottomX) * defT + Math.cos(tiltAngle) * 5;
+  const defY = boardBottomY + (boardTopY - boardBottomY) * defT - Math.sin(tiltAngle) * 5;
+  ctx.save();
+  ctx.translate(defX, defY);
+  ctx.rotate(-tiltAngle);
+  ctx.fillStyle = '#e74c3c';
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(18, 0);
+  ctx.lineTo(18, -8);
+  ctx.closePath();
+  ctx.fill();
+  // Magnet dot
+  ctx.fillStyle = '#555';
+  ctx.beginPath();
+  ctx.arc(4, -1, 2.5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+
+  // Deflector callout
+  ctx.strokeStyle = '#e74c3c';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([3, 3]);
+  ctx.beginPath();
+  ctx.moveTo(defX + 20, defY - 15);
+  ctx.lineTo(defX + 60, defY - 40);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#e74c3c';
+  ctx.font = '10px Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText('Deflector wedge', defX + 63, defY - 43);
+  ctx.fillText('(magnets on back)', defX + 63, defY - 31);
+
+  // Ball in cross-section (between panels)
+  const ballT = 0.6;
+  const ballX = boardBottomX + (boardTopX - boardBottomX) * ballT + Math.cos(tiltAngle) * gapDepth * 0.55;
+  const ballY = boardBottomY + (boardTopY - boardBottomY) * ballT - Math.sin(tiltAngle) * gapDepth * 0.55;
+  ctx.fillStyle = '#3498db';
+  ctx.shadowColor = '#3498db';
+  ctx.shadowBlur = 5;
+  ctx.beginPath();
+  ctx.arc(ballX, ballY, 8, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = 'rgba(255,255,255,0.3)';
+  ctx.beginPath();
+  ctx.arc(ballX - 2, ballY - 2, 3, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Ball trajectory (downward)
+  ctx.strokeStyle = 'rgba(52,152,219,0.4)';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  ctx.moveTo(ballX, ballY + 10);
+  ctx.lineTo(ballX + 25, ballY + 60);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Hopper cross-section (box at top)
+  const hopperDepth = gapDepth + 8; // slightly wider than gap
+  ctx.fillStyle = '#5C3A1E';
+  ctx.strokeStyle = '#8B4513';
+  ctx.lineWidth = 2;
+  // Hopper is a box sitting on top of the board
+  const hx1 = boardTopX - 5;
+  const hy1 = boardTopY - 5;
+  const hx2 = hx1 + Math.cos(tiltAngle) * hopperDepth;
+  const hy2 = hy1 - Math.sin(tiltAngle) * hopperDepth;
+  // Draw as a rectangle rotated to match board angle
+  ctx.save();
+  ctx.translate(hx1, hy1);
+  ctx.rotate(-tiltAngle);
+  ctx.fillRect(-5, -40, hopperDepth + 10, 40);
+  ctx.strokeRect(-5, -40, hopperDepth + 10, 40);
+  // Gate hinge at bottom
+  ctx.strokeStyle = '#cd853f';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([4, 3]);
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(hopperDepth, 0);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  // Balls in hopper cross-section
+  const hopperBallColors = ['#e74c3c', '#3498db', '#ffd700', '#e74c3c', '#3498db'];
+  for (let i = 0; i < 5; i++) {
+    ctx.fillStyle = hopperBallColors[i];
+    ctx.beginPath();
+    ctx.arc(8 + i * 8, -12 - (i % 2) * 10, 5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+
+  ctx.fillStyle = '#8B4513';
+  ctx.font = '10px Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText('Hopper', hx1 - 30, hy1 - 42);
+
+  // Support legs
+  ctx.strokeStyle = '#8B4513';
+  ctx.lineWidth = 4;
+  // Rear leg
+  ctx.beginPath();
+  ctx.moveTo(boardBottomX - 20, boardBottomY + 5);
+  ctx.lineTo(boardBottomX - 80, H - 25);
+  ctx.stroke();
+  // Front support (short)
+  ctx.beginPath();
+  ctx.moveTo(frontBottomX + 10, frontBottomY + 5);
+  ctx.lineTo(frontBottomX + 20, H - 25);
+  ctx.stroke();
+
+  // Ground line
+  ctx.strokeStyle = '#444';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(100, H - 25);
+  ctx.lineTo(W - 100, H - 25);
+  ctx.stroke();
+
+  // Tilt angle arc
+  ctx.strokeStyle = '#ffd700';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(boardBottomX, boardBottomY - 60);
+  ctx.lineTo(boardBottomX, boardBottomY - 120);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(boardBottomX, boardBottomY, 100, -Math.PI/2, -Math.PI/2 - tiltAngle, true);
+  ctx.stroke();
+  ctx.fillStyle = '#ffd700';
+  ctx.font = '12px Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText('20\u00b0', boardBottomX - 45, boardBottomY - 105);
+
+  // Scoring bin cross-section (at bottom of board)
+  ctx.fillStyle = '#5C3A1E';
+  ctx.save();
+  ctx.translate(boardBottomX, boardBottomY);
+  ctx.rotate(-tiltAngle);
+  ctx.fillRect(-5, -5, gapDepth + 10, 20);
+  ctx.strokeStyle = '#8B4513';
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(-5, -5, gapDepth + 10, 20);
+  ctx.fillStyle = '#aaa';
+  ctx.font = '9px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('Bins', gapDepth / 2, 12);
+  ctx.restore();
+
+  // Stick figure (player) — in front of the board
+  const playerX = frontBottomX + 100;
+  const playerGroundY = H - 25;
+  ctx.strokeStyle = '#e74c3c';
+  ctx.lineWidth = 2;
+  // Head
+  ctx.beginPath();
+  ctx.arc(playerX, playerGroundY - 80, 10, 0, Math.PI * 2);
+  ctx.stroke();
+  // Body
+  ctx.beginPath();
+  ctx.moveTo(playerX, playerGroundY - 70);
+  ctx.lineTo(playerX, playerGroundY - 30);
+  ctx.stroke();
+  // Arms reaching toward board
+  ctx.beginPath();
+  ctx.moveTo(playerX, playerGroundY - 55);
+  ctx.lineTo(playerX - 30, playerGroundY - 65);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(playerX, playerGroundY - 55);
+  ctx.lineTo(playerX - 35, playerGroundY - 50);
+  ctx.stroke();
+  // Legs
+  ctx.beginPath();
+  ctx.moveTo(playerX - 12, playerGroundY);
+  ctx.lineTo(playerX, playerGroundY - 30);
+  ctx.lineTo(playerX + 12, playerGroundY);
+  ctx.stroke();
+  // Label
+  ctx.fillStyle = '#e74c3c';
+  ctx.font = '10px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('Player', playerX, playerGroundY + 14);
+
+  // Sight line from player to board
+  ctx.strokeStyle = 'rgba(231,76,60,0.3)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([3, 5]);
+  ctx.beginPath();
+  ctx.moveTo(playerX - 10, playerGroundY - 80);
+  ctx.lineTo((frontTopX + frontBottomX) / 2 + 10, (frontTopY + frontBottomY) / 2);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // "SIDE VIEW" label
+  ctx.fillStyle = '#666';
+  ctx.font = '10px Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText('(not to scale \u2014 depth exaggerated for clarity)', 20, H - 8);
+
+  // Key callouts on right side
+  const calloutX = 680;
+  ctx.fillStyle = '#ffd700';
+  ctx.font = 'bold 13px Segoe UI, Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText('CROSS-SECTION DETAIL', calloutX, 30);
+
+  ctx.font = '12px Segoe UI, Arial';
+  ctx.fillStyle = '#ccc';
+  const callouts = [
+    '1. Steel sheet screwed to plywood = magnetic surface',
+    '2. Deflectors snap on via neodymium magnets',
+    '3. 4" gap fits whiffle balls + deflector wedges',
+    '4. Acrylic front keeps balls contained',
+    '5. 20\u00b0 tilt: gravity pulls balls down + sideways',
+    '6. Hopper gate opens full width for avalanche',
+    '7. Bins at base catch balls for scoring',
+  ];
+  callouts.forEach((text, i) => {
+    ctx.fillStyle = i === 0 ? '#888' : '#aaa';
+    ctx.fillText(text, calloutX, 55 + i * 22);
+  });
+
+  // Deflector detail inset (zoomed view)
+  const insetX = 700;
+  const insetY = 230;
+  ctx.strokeStyle = '#555';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(insetX, insetY, 180, 100);
+  ctx.fillStyle = '#0d0d1a';
+  ctx.fillRect(insetX + 1, insetY + 1, 178, 98);
+  ctx.fillStyle = '#ffd700';
+  ctx.font = 'bold 10px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('DEFLECTOR DETAIL', insetX + 90, insetY + 14);
+
+  // Zoomed deflector
+  ctx.save();
+  ctx.translate(insetX + 50, insetY + 60);
+  // Steel surface (back)
+  ctx.fillStyle = '#444';
+  ctx.fillRect(-5, -2, 10, 40);
+  ctx.fillStyle = '#666';
+  ctx.font = '8px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('Steel', 0, 50);
+  // Wedge
+  ctx.fillStyle = '#e74c3c';
+  ctx.beginPath();
+  ctx.moveTo(5, -15);
+  ctx.lineTo(35, -15);
+  ctx.lineTo(35, 5);
+  ctx.lineTo(5, -5);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  // Magnets
+  ctx.fillStyle = '#888';
+  ctx.beginPath();
+  ctx.arc(10, -8, 4, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#666';
+  ctx.font = '8px Arial';
+  ctx.fillText('N42', 10, 12);
+  ctx.fillText('magnet', 10, 22);
+  // Grip fin
+  ctx.fillStyle = '#c0392b';
+  ctx.fillRect(17, -22, 10, 7);
+  ctx.fillStyle = '#aaa';
+  ctx.font = '8px Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText('Grip fin', 32, -17);
+  // Ball bouncing off
+  ctx.fillStyle = '#3498db';
+  ctx.beginPath();
+  ctx.arc(55, -25, 7, 0, Math.PI * 2);
+  ctx.fill();
+  // Bounce arrow
+  ctx.strokeStyle = '#3498db';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(45, -5);
+  ctx.lineTo(50, -18);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(55, -18);
+  ctx.lineTo(65, -35);
+  ctx.stroke();
+  // Arrow tip
+  ctx.beginPath();
+  ctx.moveTo(65, -35);
+  ctx.lineTo(62, -28);
+  ctx.moveTo(65, -35);
+  ctx.lineTo(60, -33);
+  ctx.stroke();
+
+  ctx.restore();
+
+  // Dimensions label on deflector detail
+  ctx.fillStyle = '#999';
+  ctx.font = '8px Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText('3" wide \u00d7 1" tall', insetX + 100, insetY + 75);
+  ctx.fillText('\u00bd" neodymium discs', insetX + 100, insetY + 88);
+
+})();
+</script>
+
+</body>
+</html>
