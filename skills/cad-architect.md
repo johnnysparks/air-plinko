@@ -28,6 +28,9 @@
 - For complex machines with moving parts (flippers, bumpers), show GHOST positions at reduced opacity to communicate range of motion. This immediately conveys "this thing moves" without animation
 - Cable/linkage mechanisms (like bike cable to flipper) benefit from showing the external control AND the internal part connected by a dashed line — communicates the actuation path
 - When a game has distinct vertical zones (bumper zone, peg field, flipper zone), use subtle colored bands on a sidebar to annotate the zone structure — helps readers understand spatial layout at a glance
+- For head-to-head 2-player games, a TOP-DOWN view is essential to communicate the spatial relationship between players. FRONT view shows one side's mechanics, TOP-DOWN shows the competitive dynamic. Both views together tell the full story
+- When a game has pass-through mechanics (balls going through a wall/barrier), show the path crossing the barrier in the top-down view with contrasting player colors to make the interaction clear
+- Estimate total page height carefully — legend + specs below two canvas views can easily push past 1600px. Use `<!-- screenshot: 900xNNNN -->` hints and test at 1900px+ for content-heavy pages
 
 ### Rendering intangible/atmospheric elements:
 1. **Fog and mist zones** — Use gradient fills (opaque at source → transparent at edges) rather than solid fills. Add subtle curved stroke "swirl" hints to suggest movement

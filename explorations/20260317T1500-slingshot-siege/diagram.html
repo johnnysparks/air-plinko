@@ -1,0 +1,834 @@
+<!-- screenshot: 900x1900 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slingshot Siege — Concept Diagram</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0d0d1a; color: #e0e0e0; font-family: 'Courier New', monospace; padding: 20px; }
+  h1 { text-align: center; color: #FFD700; margin-bottom: 4px; font-size: 28px; letter-spacing: 4px; text-shadow: 0 0 10px #FFD700; }
+  .subtitle { text-align: center; color: #888; margin-bottom: 30px; font-size: 14px; }
+  .views { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; }
+  .view { background: #111128; border: 1px solid #333; border-radius: 8px; padding: 20px; }
+  .view h2 { color: #FFD700; margin-bottom: 16px; font-size: 16px; text-align: center; }
+  canvas { display: block; }
+  .legend { margin-top: 30px; max-width: 860px; margin-left: auto; margin-right: auto; }
+  .legend h3 { color: #FFD700; margin-bottom: 10px; }
+  .legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; }
+  .legend-item { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; font-size: 13px; }
+  .legend-swatch { width: 16px; height: 16px; border-radius: 3px; flex-shrink: 0; }
+  .specs { margin-top: 30px; max-width: 860px; margin-left: auto; margin-right: auto; background: #111128; border: 1px solid #333; border-radius: 8px; padding: 20px; }
+  .specs h3 { color: #FFD700; margin-bottom: 10px; }
+  .specs table { width: 100%; font-size: 13px; }
+  .specs td { padding: 3px 8px; }
+  .specs td:first-child { color: #888; }
+</style>
+</head>
+<body>
+
+<h1>SLINGSHOT SIEGE</h1>
+<p class="subtitle">slingshots × fortress wall × castle gates × dual plinko cascades — head-to-head carnival battle</p>
+
+<div class="views">
+  <div class="view">
+    <h2>FRONT VIEW (Side A — Player 1's target)</h2>
+    <canvas id="front" width="520" height="560"></canvas>
+  </div>
+  <div class="view">
+    <h2>TOP-DOWN VIEW (Both Players)</h2>
+    <canvas id="top" width="300" height="560"></canvas>
+  </div>
+</div>
+
+<div class="legend">
+  <h3>LEGEND</h3>
+  <div class="legend-grid">
+    <div class="legend-item"><div class="legend-swatch" style="background:#1a1a2e"></div> Plywood fortress wall (matte black)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:rgba(135,206,250,0.3); border:1px solid #87CEFA"></div> Clear acrylic panels (both sides)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#ff6ec7"></div> Neon pink pegs</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#39ff14"></div> Neon green pegs</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#ffff00"></div> Neon yellow pegs</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#00ffff"></div> Neon cyan pegs</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#FFD700"></div> Castle gate openings (pass-through holes)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#8B4513"></div> 3D-printed gate arch frames</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#e94560"></div> Player 1 (RED) — slingshot station</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#4da6ff"></div> Player 2 (BLUE) — slingshot station</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#c0c0c0"></div> Scoring moats (point values labeled)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#333"></div> Battlements & turrets (3D-printed)</div>
+  </div>
+</div>
+
+<div class="specs">
+  <h3>KEY SPECS</h3>
+  <table>
+    <tr><td>Fortress Wall</td><td>60"W × 48"H × 8"D (double-sided plinko board)</td></tr>
+    <tr><td>Plywood core</td><td>¾" thick, gates cut through with jigsaw</td></tr>
+    <tr><td>Peg field</td><td>~40 pegs per side (80 total), neon colors, 5" spacing</td></tr>
+    <tr><td>Castle gates</td><td>6 total — 2 Main (6"W), 2 Arrow Slit (4.5"W), 2 Tower (3.5"W)</td></tr>
+    <tr><td>Slingshots</td><td>Y-frame on swivel mount, Theraband Gold tubing, 60° aim cone</td></tr>
+    <tr><td>Shooting dist.</td><td>48"–60" (adjustable for age)</td></tr>
+    <tr><td>Scoring</td><td>Moat pts × Gate multiplier (1×/2×/3×) — max 750 per ball</td></tr>
+    <tr><td>Balls per player</td><td>12 (red or blue whiffle balls)</td></tr>
+    <tr><td>Total footprint</td><td>60"W × 120"D × 60"H</td></tr>
+    <tr><td>Est. cost</td><td>~$400–450</td></tr>
+  </table>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// FRONT VIEW — Side A (Player 2 shoots AT this side)
+// ══════════════════════════════════════════
+const fc = document.getElementById('front').getContext('2d');
+const FW = 520, FH = 560;
+
+// Ground line
+fc.strokeStyle = '#333';
+fc.lineWidth = 1;
+fc.beginPath(); fc.moveTo(20, 500); fc.lineTo(500, 500); fc.stroke();
+
+// ── Base Frame (T-supports) ──
+fc.strokeStyle = '#666';
+fc.lineWidth = 5;
+// Left T-support foot
+fc.beginPath(); fc.moveTo(60, 500); fc.lineTo(110, 500); fc.stroke();
+fc.beginPath(); fc.moveTo(85, 440); fc.lineTo(85, 500); fc.stroke();
+// Right T-support foot
+fc.beginPath(); fc.moveTo(410, 500); fc.lineTo(460, 500); fc.stroke();
+fc.beginPath(); fc.moveTo(435, 440); fc.lineTo(435, 500); fc.stroke();
+// Cross brace at bottom
+fc.lineWidth = 3;
+fc.beginPath(); fc.moveTo(85, 490); fc.lineTo(435, 490); fc.stroke();
+
+// Rubber feet
+fc.fillStyle = '#e94560';
+[56, 106, 406, 456].forEach(x => fc.fillRect(x, 498, 12, 5));
+
+// ── Fortress Wall ──
+const wx = 70, wy = 50, ww = 380, wh = 390;
+
+// Wall back panel (plywood)
+fc.fillStyle = '#1a1a2e';
+fc.fillRect(wx, wy, ww, wh);
+
+// Stone texture suggestion — subtle horizontal lines
+fc.strokeStyle = 'rgba(255,255,255,0.04)';
+fc.lineWidth = 1;
+for (let y = wy + 20; y < wy + wh; y += 18) {
+  fc.beginPath(); fc.moveTo(wx, y); fc.lineTo(wx + ww, y); fc.stroke();
+}
+
+// Wall border (edge rails)
+fc.strokeStyle = '#555';
+fc.lineWidth = 4;
+fc.strokeRect(wx, wy, ww, wh);
+
+// ── Battlements (crenellations) along top ──
+fc.fillStyle = '#333';
+const crenW = 24, crenH = 18, crenGap = 14;
+let crenX = wx + 8;
+while (crenX + crenW < wx + ww) {
+  fc.fillRect(crenX, wy - crenH, crenW, crenH);
+  fc.strokeStyle = '#555';
+  fc.lineWidth = 1;
+  fc.strokeRect(crenX, wy - crenH, crenW, crenH);
+  crenX += crenW + crenGap;
+}
+
+// ── Corner Turrets ──
+function drawTurret(tx, ty) {
+  // Tower cylinder
+  fc.fillStyle = '#333';
+  fc.fillRect(tx - 12, ty - 30, 24, 40);
+  fc.strokeStyle = '#555';
+  fc.lineWidth = 1.5;
+  fc.strokeRect(tx - 12, ty - 30, 24, 40);
+  // Cone roof
+  fc.fillStyle = '#8B4513';
+  fc.beginPath();
+  fc.moveTo(tx, ty - 45);
+  fc.lineTo(tx - 14, ty - 30);
+  fc.lineTo(tx + 14, ty - 30);
+  fc.closePath();
+  fc.fill();
+  fc.stroke();
+  // Pennant flag
+  fc.fillStyle = '#FFD700';
+  fc.beginPath();
+  fc.moveTo(tx, ty - 45);
+  fc.lineTo(tx + 18, ty - 40);
+  fc.lineTo(tx, ty - 35);
+  fc.closePath();
+  fc.fill();
+}
+drawTurret(wx + 2, wy + 5);
+drawTurret(wx + ww - 2, wy + 5);
+
+// ── Castle Gates (pass-through holes) ──
+function drawGate(gx, gy, gw, gh, label, tier) {
+  // Gate opening (bright to show it's a hole)
+  fc.fillStyle = 'rgba(255,215,0,0.25)';
+  fc.fillRect(gx, gy, gw, gh);
+
+  // Arch frame (3D-printed)
+  fc.strokeStyle = '#8B4513';
+  fc.lineWidth = 3;
+  // Sides
+  fc.beginPath(); fc.moveTo(gx, gy); fc.lineTo(gx, gy + gh); fc.stroke();
+  fc.beginPath(); fc.moveTo(gx + gw, gy); fc.lineTo(gx + gw, gy + gh); fc.stroke();
+  // Arch top
+  fc.beginPath();
+  fc.moveTo(gx, gy);
+  fc.quadraticCurveTo(gx + gw/2, gy - gh * 0.3, gx + gw, gy);
+  fc.stroke();
+  // Bottom
+  fc.beginPath(); fc.moveTo(gx, gy + gh); fc.lineTo(gx + gw, gy + gh); fc.stroke();
+
+  // Label
+  fc.fillStyle = '#FFD700';
+  fc.font = 'bold 8px Courier New';
+  fc.textAlign = 'center';
+  fc.fillText(label, gx + gw/2, gy + gh/2 + 3);
+
+  // Tier multiplier label
+  fc.fillStyle = '#ff6ec7';
+  fc.font = 'bold 9px Courier New';
+  fc.fillText(tier, gx + gw/2, gy - 6);
+}
+
+// Gate positions (symmetric left-right pairs)
+// MAIN GATES — Tier 1 (bottom, largest)
+const mainGateY = wy + wh - 90;
+drawGate(wx + 60, mainGateY, 55, 40, 'MAIN GATE', '1×');
+drawGate(wx + ww - 115, mainGateY, 55, 40, 'MAIN GATE', '1×');
+
+// ARROW SLITS — Tier 2 (middle)
+const arrowSlitY = wy + wh * 0.45;
+drawGate(wx + 75, arrowSlitY, 42, 34, 'ARROW SLIT', '2×');
+drawGate(wx + ww - 117, arrowSlitY, 42, 34, 'ARROW SLIT', '2×');
+
+// TOWER GATES — Tier 3 (top, smallest)
+const towerGateY = wy + 55;
+drawGate(wx + 90, towerGateY, 32, 28, 'TOWER', '3×');
+drawGate(wx + ww - 122, towerGateY, 32, 28, 'TOWER', '3×');
+
+// ── Peg Grid (around gates) ──
+const pegColors = ['#ff6ec7', '#39ff14', '#ffff00', '#00ffff'];
+let pegIdx = 0;
+const pegSpX = 30, pegSpY = 28;
+
+for (let row = 0; row < 12; row++) {
+  const offset = (row % 2 === 0) ? 0 : pegSpX / 2;
+  for (let col = 0; col < 12; col++) {
+    const px = wx + 25 + col * pegSpX + offset;
+    const py = wy + 35 + row * pegSpY;
+
+    // Skip pegs that overlap with gate regions (with padding)
+    const gates = [
+      { x: wx + 55, y: mainGateY - 5, w: 65, h: 50 },
+      { x: wx + ww - 120, y: mainGateY - 5, w: 65, h: 50 },
+      { x: wx + 70, y: arrowSlitY - 5, w: 52, h: 44 },
+      { x: wx + ww - 122, y: arrowSlitY - 5, w: 52, h: 44 },
+      { x: wx + 85, y: towerGateY - 5, w: 42, h: 38 },
+      { x: wx + ww - 127, y: towerGateY - 5, w: 42, h: 38 },
+    ];
+    let skip = false;
+    for (const g of gates) {
+      if (px > g.x && px < g.x + g.w && py > g.y && py < g.y + g.h) { skip = true; break; }
+    }
+    if (px < wx + 12 || px > wx + ww - 12 || py > wy + wh - 30) skip = true;
+    if (skip) continue;
+
+    const color = pegColors[pegIdx % 4];
+    pegIdx++;
+    fc.fillStyle = color;
+    fc.globalAlpha = 0.85;
+    fc.beginPath();
+    fc.arc(px, py, 5, 0, Math.PI * 2);
+    fc.fill();
+    // Highlight
+    fc.fillStyle = 'rgba(255,255,255,0.3)';
+    fc.beginPath();
+    fc.arc(px - 1.5, py - 1.5, 2, 0, Math.PI * 2);
+    fc.fill();
+    fc.globalAlpha = 1;
+  }
+}
+
+// ── Scoring Moats at bottom ──
+const moatY = wy + wh + 2;
+const moatH = 28;
+const moats = [
+  { label: '0', w: 22, color: '#333', name: 'SWAMP' },
+  { label: '50', w: 52, color: '#39ff14', name: 'PEASANT' },
+  { label: '100', w: 44, color: '#4da6ff', name: 'KNIGHT' },
+  { label: '250', w: 34, color: '#FFD700', name: 'ROYAL' },
+  { label: '100', w: 44, color: '#4da6ff', name: 'KNIGHT' },
+  { label: '50', w: 52, color: '#39ff14', name: 'PEASANT' },
+  { label: '0', w: 22, color: '#333', name: 'SWAMP' },
+];
+const totalMoatW = moats.reduce((s, m) => s + m.w, 0);
+const moatGap = (ww - totalMoatW) / (moats.length + 1);
+let moatX = wx + moatGap;
+
+moats.forEach(m => {
+  fc.fillStyle = m.color;
+  fc.globalAlpha = 0.5;
+  fc.fillRect(moatX, moatY, m.w, moatH);
+  fc.globalAlpha = 1;
+  fc.strokeStyle = m.color;
+  fc.lineWidth = 1.5;
+  fc.strokeRect(moatX, moatY, m.w, moatH);
+
+  fc.fillStyle = '#fff';
+  fc.font = 'bold 10px Courier New';
+  fc.textAlign = 'center';
+  fc.fillText(m.label, moatX + m.w/2, moatY + 12);
+
+  if (m.name) {
+    fc.font = '6px Courier New';
+    fc.fillStyle = m.color === '#333' ? '#666' : m.color;
+    fc.fillText(m.name, moatX + m.w/2, moatY + 22);
+  }
+  moatX += m.w + moatGap;
+});
+
+// ── Ball trajectory (slingshot shot arcing toward a gate) ──
+// Shot aimed at tower gate
+fc.strokeStyle = '#e94560';
+fc.lineWidth = 1.5;
+fc.setLineDash([4, 3]);
+fc.globalAlpha = 0.7;
+fc.beginPath();
+fc.moveTo(wx + ww/2, wy + wh + 120);  // slingshot position (below, in front)
+fc.quadraticCurveTo(wx + ww * 0.35, wy - 20, wx + 106, towerGateY + 14);
+fc.stroke();
+fc.setLineDash([]);
+// Arrowhead
+fc.fillStyle = '#e94560';
+fc.beginPath();
+fc.moveTo(wx + 106, towerGateY + 14);
+fc.lineTo(wx + 100, towerGateY + 24);
+fc.lineTo(wx + 112, towerGateY + 24);
+fc.closePath();
+fc.fill();
+fc.font = 'italic 8px Courier New';
+fc.textAlign = 'left';
+fc.fillText('P2 FIRES AT', wx + 115, towerGateY + 10);
+fc.fillText('TOWER GATE!', wx + 115, towerGateY + 20);
+
+// Ball cascading down after passing through (opponent's side)
+fc.strokeStyle = '#FFE44D';
+fc.lineWidth = 1;
+fc.setLineDash([3, 3]);
+fc.globalAlpha = 0.4;
+fc.beginPath();
+fc.moveTo(wx + 106, towerGateY + 28);
+const cascadePoints = [
+  [wx + 130, towerGateY + 55],
+  [wx + 110, towerGateY + 90],
+  [wx + 140, towerGateY + 130],
+  [wx + 115, towerGateY + 170],
+  [wx + 145, towerGateY + 210],
+  [wx + 125, towerGateY + 245],
+];
+cascadePoints.forEach(p => fc.lineTo(p[0], p[1]));
+fc.stroke();
+fc.setLineDash([]);
+fc.fillStyle = '#FFE44D';
+fc.globalAlpha = 0.5;
+fc.font = 'italic 7px Courier New';
+fc.textAlign = 'left';
+fc.fillText('CASCADE', wx + 150, towerGateY + 150);
+fc.fillText('THROUGH', wx + 150, towerGateY + 160);
+fc.fillText('9 PEG ROWS!', wx + 150, towerGateY + 170);
+fc.globalAlpha = 1;
+
+// ── A second shot at main gate (easier, lower value) ──
+fc.strokeStyle = '#e94560';
+fc.lineWidth = 1;
+fc.setLineDash([4, 3]);
+fc.globalAlpha = 0.35;
+fc.beginPath();
+fc.moveTo(wx + ww * 0.6, wy + wh + 100);
+fc.quadraticCurveTo(wx + ww * 0.55, mainGateY - 30, wx + ww - 88, mainGateY + 20);
+fc.stroke();
+fc.setLineDash([]);
+fc.font = 'italic 7px Courier New';
+fc.textAlign = 'right';
+fc.fillText('safe shot → main gate', wx + ww - 40, mainGateY - 5);
+fc.globalAlpha = 1;
+
+// ── Slingshot icon (below wall, representing player 2) ──
+const slingshotX = wx + ww/2, slingshotY = wy + wh + 110;
+// Y-frame
+fc.strokeStyle = '#e94560';
+fc.lineWidth = 3;
+fc.beginPath();
+fc.moveTo(slingshotX, slingshotY + 25);  // handle
+fc.lineTo(slingshotX, slingshotY);       // joint
+fc.stroke();
+fc.beginPath();
+fc.moveTo(slingshotX, slingshotY);
+fc.lineTo(slingshotX - 12, slingshotY - 18);  // left fork
+fc.stroke();
+fc.beginPath();
+fc.moveTo(slingshotX, slingshotY);
+fc.lineTo(slingshotX + 12, slingshotY - 18);  // right fork
+fc.stroke();
+// Tubing (stretched)
+fc.strokeStyle = '#e94560';
+fc.lineWidth = 1.5;
+fc.setLineDash([2, 2]);
+fc.beginPath();
+fc.moveTo(slingshotX - 12, slingshotY - 18);
+fc.quadraticCurveTo(slingshotX, slingshotY + 5, slingshotX + 12, slingshotY - 18);
+fc.stroke();
+fc.setLineDash([]);
+// Ball in pouch
+fc.fillStyle = '#e94560';
+fc.globalAlpha = 0.8;
+fc.beginPath();
+fc.arc(slingshotX, slingshotY - 2, 6, 0, Math.PI * 2);
+fc.fill();
+fc.globalAlpha = 1;
+// Label
+fc.fillStyle = '#e94560';
+fc.font = 'bold 9px Courier New';
+fc.textAlign = 'center';
+fc.fillText('P2 SLINGSHOT (RED)', slingshotX, slingshotY + 40);
+fc.font = '8px Courier New';
+fc.fillText('(facing this side)', slingshotX, slingshotY + 50);
+
+// ── Acrylic front panel indicator ──
+fc.strokeStyle = 'rgba(135, 206, 250, 0.3)';
+fc.lineWidth = 2;
+fc.setLineDash([8, 4]);
+fc.strokeRect(wx + 3, wy + 3, ww - 6, wh - 6);
+fc.setLineDash([]);
+fc.fillStyle = 'rgba(135,206,250,0.4)';
+fc.font = '8px Courier New';
+fc.textAlign = 'right';
+fc.fillText('ACRYLIC PANEL (Side A)', wx + ww - 8, wy + 14);
+
+// ── Dimension lines ──
+fc.fillStyle = '#555';
+fc.font = '10px Courier New';
+fc.textAlign = 'center';
+// Width
+fc.fillText('60"', wx + ww/2, wy - 26);
+fc.strokeStyle = '#555';
+fc.lineWidth = 1;
+fc.beginPath(); fc.moveTo(wx, wy - 22); fc.lineTo(wx + ww, wy - 22); fc.stroke();
+fc.beginPath(); fc.moveTo(wx, wy - 26); fc.lineTo(wx, wy - 18); fc.stroke();
+fc.beginPath(); fc.moveTo(wx + ww, wy - 26); fc.lineTo(wx + ww, wy - 18); fc.stroke();
+
+// Height
+fc.save();
+fc.translate(wx - 22, wy + wh/2);
+fc.rotate(-Math.PI/2);
+fc.fillText('48"', 0, 0);
+fc.restore();
+fc.strokeStyle = '#555';
+fc.beginPath(); fc.moveTo(wx - 14, wy); fc.lineTo(wx - 14, wy + wh); fc.stroke();
+fc.beginPath(); fc.moveTo(wx - 18, wy); fc.lineTo(wx - 10, wy); fc.stroke();
+fc.beginPath(); fc.moveTo(wx - 18, wy + wh); fc.lineTo(wx - 10, wy + wh); fc.stroke();
+
+// Gate tier height labels on right side
+fc.fillStyle = 'rgba(255,215,0,0.5)';
+fc.font = '8px Courier New';
+fc.textAlign = 'left';
+fc.fillText('42" high', wx + ww + 8, towerGateY + 14);
+fc.fillText('28" high', wx + ww + 8, arrowSlitY + 17);
+fc.fillText('12" high', wx + ww + 8, mainGateY + 20);
+
+// Title
+fc.fillStyle = '#555';
+fc.font = '10px Courier New';
+fc.textAlign = 'center';
+fc.fillText('FRONT VIEW — SIDE A (P1 defends, P2 attacks)', FW/2, 545);
+
+
+// ══════════════════════════════════════════
+// TOP-DOWN VIEW (overhead, showing both players)
+// ══════════════════════════════════════════
+const tc = document.getElementById('top').getContext('2d');
+const TW = 300, TH = 560;
+
+// ── Layout: Player 1 at top, Wall in middle, Player 2 at bottom ──
+const wallTopY = 220;    // top edge of wall in top-down
+const wallBotY = 260;    // bottom edge (8" depth shown exaggerated)
+const wallLeftX = 40;
+const wallRightX = 260;
+const wallMidX = (wallLeftX + wallRightX) / 2;
+
+// ── Ground/floor area ──
+tc.fillStyle = '#0a0a15';
+tc.fillRect(0, 0, TW, TH);
+
+// ── Shooting Lane labels ──
+tc.fillStyle = 'rgba(74,166,255,0.06)';
+tc.fillRect(wallLeftX, 40, wallRightX - wallLeftX, wallTopY - 45);
+tc.fillStyle = 'rgba(233,69,96,0.06)';
+tc.fillRect(wallLeftX, wallBotY + 5, wallRightX - wallLeftX, wallTopY - 45);
+
+tc.fillStyle = '#4da6ff';
+tc.globalAlpha = 0.3;
+tc.font = '10px Courier New';
+tc.textAlign = 'center';
+tc.fillText('SIDE B — P1 ZONE', wallMidX, 60);
+tc.fillText('(P1 peg field & moats)', wallMidX, 74);
+tc.globalAlpha = 1;
+
+tc.fillStyle = '#e94560';
+tc.globalAlpha = 0.3;
+tc.font = '10px Courier New';
+tc.textAlign = 'center';
+tc.fillText('SIDE A — P2 ZONE', wallMidX, wallBotY + 145);
+tc.fillText('(P2 peg field & moats)', wallMidX, wallBotY + 159);
+tc.globalAlpha = 1;
+
+// ── Fortress Wall (top-down = thick rectangle) ──
+// Plywood core
+tc.fillStyle = '#1a1a2e';
+tc.fillRect(wallLeftX, wallTopY, wallRightX - wallLeftX, wallBotY - wallTopY);
+tc.strokeStyle = '#666';
+tc.lineWidth = 2;
+tc.strokeRect(wallLeftX, wallTopY, wallRightX - wallLeftX, wallBotY - wallTopY);
+
+// Label the wall
+tc.fillStyle = '#888';
+tc.font = 'bold 9px Courier New';
+tc.textAlign = 'center';
+tc.fillText('FORTRESS WALL', wallMidX, wallTopY + 14);
+tc.font = '7px Courier New';
+tc.fillText('(plywood + pegs + acrylic)', wallMidX, wallTopY + 24);
+
+// Gate pass-throughs (shown as bright lines through the wall)
+tc.strokeStyle = '#FFD700';
+tc.lineWidth = 2;
+// Tower gates
+[wallLeftX + 55, wallRightX - 55].forEach(gx => {
+  tc.beginPath(); tc.moveTo(gx, wallTopY - 2); tc.lineTo(gx, wallBotY + 2); tc.stroke();
+  tc.fillStyle = '#FFD700';
+  tc.font = '6px Courier New';
+  tc.textAlign = 'center';
+  tc.fillText('T', gx, wallTopY + 36);
+});
+// Arrow slits
+tc.lineWidth = 3;
+[wallLeftX + 80, wallRightX - 80].forEach(gx => {
+  tc.beginPath(); tc.moveTo(gx, wallTopY - 2); tc.lineTo(gx, wallBotY + 2); tc.stroke();
+  tc.fillStyle = '#FFD700';
+  tc.font = '6px Courier New';
+  tc.textAlign = 'center';
+  tc.fillText('A', gx, wallTopY + 36);
+});
+// Main gates
+tc.lineWidth = 4;
+[wallLeftX + 110, wallRightX - 110].forEach(gx => {
+  tc.beginPath(); tc.moveTo(gx, wallTopY - 2); tc.lineTo(gx, wallBotY + 2); tc.stroke();
+  tc.fillStyle = '#FFD700';
+  tc.font = '6px Courier New';
+  tc.textAlign = 'center';
+  tc.fillText('M', gx, wallTopY + 36);
+});
+
+// Gate legend
+tc.fillStyle = '#FFD700';
+tc.globalAlpha = 0.5;
+tc.font = '7px Courier New';
+tc.textAlign = 'left';
+tc.fillText('T=Tower A=Arrow M=Main', wallLeftX, wallBotY + 15);
+tc.globalAlpha = 1;
+
+// ── Acrylic panels (dashed lines along front and back of wall) ──
+tc.strokeStyle = 'rgba(135,206,250,0.4)';
+tc.lineWidth = 1.5;
+tc.setLineDash([5, 3]);
+// Side B acrylic (facing P1)
+tc.beginPath(); tc.moveTo(wallLeftX, wallTopY - 10); tc.lineTo(wallRightX, wallTopY - 10); tc.stroke();
+// Side A acrylic (facing P2)
+tc.beginPath(); tc.moveTo(wallLeftX, wallBotY + 10); tc.lineTo(wallRightX, wallBotY + 10); tc.stroke();
+tc.setLineDash([]);
+
+tc.fillStyle = 'rgba(135,206,250,0.3)';
+tc.font = '6px Courier New';
+tc.textAlign = 'right';
+tc.fillText('ACRYLIC', wallRightX + 5, wallTopY - 6);
+tc.fillText('ACRYLIC', wallRightX + 5, wallBotY + 14);
+
+// ── Scoring moats (rectangles along each acrylic panel) ──
+function drawTopMoats(y, side) {
+  const moatColors = ['#333', '#39ff14', '#4da6ff', '#FFD700', '#4da6ff', '#39ff14', '#333'];
+  const moatWidths = [14, 40, 34, 24, 34, 40, 14];
+  const totalW = moatWidths.reduce((a,b) => a+b, 0);
+  const gap = ((wallRightX - wallLeftX) - totalW) / (moatWidths.length + 1);
+  let mx = wallLeftX + gap;
+  const my = (side === 'top') ? y - 8 : y + 2;
+
+  moatWidths.forEach((w, i) => {
+    tc.fillStyle = moatColors[i];
+    tc.globalAlpha = 0.4;
+    tc.fillRect(mx, my, w, 6);
+    tc.globalAlpha = 1;
+    tc.strokeStyle = moatColors[i];
+    tc.lineWidth = 0.5;
+    tc.strokeRect(mx, my, w, 6);
+    mx += w + gap;
+  });
+}
+drawTopMoats(wallTopY - 10, 'top');
+drawTopMoats(wallBotY + 10, 'bottom');
+
+// ── Player 1 (BLUE) — at top ──
+const p1X = wallMidX, p1Y = 110;
+
+// Slingshot station (top-down: circle for post + V for slingshot)
+tc.fillStyle = '#4da6ff';
+tc.beginPath();
+tc.arc(p1X, p1Y, 10, 0, Math.PI * 2);
+tc.fill();
+// Post
+tc.fillStyle = '#666';
+tc.beginPath();
+tc.arc(p1X, p1Y, 5, 0, Math.PI * 2);
+tc.fill();
+// Y-frame arms pointing down (toward wall)
+tc.strokeStyle = '#4da6ff';
+tc.lineWidth = 2;
+tc.beginPath(); tc.moveTo(p1X, p1Y + 5); tc.lineTo(p1X - 8, p1Y + 18); tc.stroke();
+tc.beginPath(); tc.moveTo(p1X, p1Y + 5); tc.lineTo(p1X + 8, p1Y + 18); tc.stroke();
+
+// Player label
+tc.fillStyle = '#4da6ff';
+tc.font = 'bold 10px Courier New';
+tc.textAlign = 'center';
+tc.fillText('PLAYER 1', p1X, p1Y - 25);
+tc.font = '9px Courier New';
+tc.fillText('(BLUE)', p1X, p1Y - 14);
+
+// Aim cone (60°, pointing down toward wall)
+tc.fillStyle = 'rgba(74,166,255,0.08)';
+tc.beginPath();
+tc.moveTo(p1X, p1Y + 18);
+tc.lineTo(p1X - 70, wallTopY - 14);
+tc.lineTo(p1X + 70, wallTopY - 14);
+tc.closePath();
+tc.fill();
+tc.strokeStyle = 'rgba(74,166,255,0.2)';
+tc.lineWidth = 1;
+tc.setLineDash([4, 3]);
+tc.beginPath(); tc.moveTo(p1X, p1Y + 18); tc.lineTo(p1X - 70, wallTopY - 14); tc.stroke();
+tc.beginPath(); tc.moveTo(p1X, p1Y + 18); tc.lineTo(p1X + 70, wallTopY - 14); tc.stroke();
+tc.setLineDash([]);
+
+// Firing line label
+tc.fillStyle = 'rgba(74,166,255,0.3)';
+tc.font = '7px Courier New';
+tc.fillText('60° AIM CONE', p1X, p1Y + 40);
+
+// ── Player 2 (RED) — at bottom ──
+const p2X = wallMidX, p2Y = TH - 110;
+
+// Slingshot station
+tc.fillStyle = '#e94560';
+tc.beginPath();
+tc.arc(p2X, p2Y, 10, 0, Math.PI * 2);
+tc.fill();
+tc.fillStyle = '#666';
+tc.beginPath();
+tc.arc(p2X, p2Y, 5, 0, Math.PI * 2);
+tc.fill();
+// Y-frame arms pointing up (toward wall)
+tc.strokeStyle = '#e94560';
+tc.lineWidth = 2;
+tc.beginPath(); tc.moveTo(p2X, p2Y - 5); tc.lineTo(p2X - 8, p2Y - 18); tc.stroke();
+tc.beginPath(); tc.moveTo(p2X, p2Y - 5); tc.lineTo(p2X + 8, p2Y - 18); tc.stroke();
+
+// Player label
+tc.fillStyle = '#e94560';
+tc.font = 'bold 10px Courier New';
+tc.textAlign = 'center';
+tc.fillText('PLAYER 2', p2X, p2Y + 35);
+tc.font = '9px Courier New';
+tc.fillText('(RED)', p2X, p2Y + 46);
+
+// Aim cone (60°, pointing up toward wall)
+tc.fillStyle = 'rgba(233,69,96,0.08)';
+tc.beginPath();
+tc.moveTo(p2X, p2Y - 18);
+tc.lineTo(p2X - 70, wallBotY + 14);
+tc.lineTo(p2X + 70, wallBotY + 14);
+tc.closePath();
+tc.fill();
+tc.strokeStyle = 'rgba(233,69,96,0.2)';
+tc.lineWidth = 1;
+tc.setLineDash([4, 3]);
+tc.beginPath(); tc.moveTo(p2X, p2Y - 18); tc.lineTo(p2X - 70, wallBotY + 14); tc.stroke();
+tc.beginPath(); tc.moveTo(p2X, p2Y - 18); tc.lineTo(p2X + 70, wallBotY + 14); tc.stroke();
+tc.setLineDash([]);
+
+tc.fillStyle = 'rgba(233,69,96,0.3)';
+tc.font = '7px Courier New';
+tc.fillText('60° AIM CONE', p2X, p2Y - 40);
+
+// ── Ball flight paths (top-down) ──
+// P1 shooting at Side A (through wall)
+tc.strokeStyle = '#4da6ff';
+tc.lineWidth = 1.5;
+tc.setLineDash([4, 3]);
+tc.globalAlpha = 0.6;
+tc.beginPath();
+tc.moveTo(p1X + 5, p1Y + 18);
+tc.lineTo(wallLeftX + 55, wallTopY);
+tc.stroke();
+// Ball passing through gate
+tc.lineWidth = 2;
+tc.beginPath();
+tc.moveTo(wallLeftX + 55, wallTopY);
+tc.lineTo(wallLeftX + 55, wallBotY);
+tc.stroke();
+// Ball continuing to Side A peg field
+tc.lineWidth = 1;
+tc.beginPath();
+tc.moveTo(wallLeftX + 55, wallBotY);
+tc.lineTo(wallLeftX + 65, wallBotY + 40);
+tc.stroke();
+tc.setLineDash([]);
+// Arrow
+tc.fillStyle = '#4da6ff';
+tc.beginPath();
+tc.moveTo(wallLeftX + 65, wallBotY + 40);
+tc.lineTo(wallLeftX + 59, wallBotY + 32);
+tc.lineTo(wallLeftX + 71, wallBotY + 32);
+tc.closePath();
+tc.fill();
+tc.globalAlpha = 1;
+
+// Label the shot
+tc.fillStyle = '#4da6ff';
+tc.globalAlpha = 0.6;
+tc.font = 'italic 7px Courier New';
+tc.textAlign = 'left';
+tc.fillText('P1 FIRES →', p1X + 15, p1Y + 40);
+tc.fillText('THROUGH GATE →', p1X + 15, p1Y + 50);
+tc.fillText('INTO P2 ZONE!', p1X + 15, p1Y + 60);
+tc.globalAlpha = 1;
+
+// P2 shooting at Side B
+tc.strokeStyle = '#e94560';
+tc.lineWidth = 1.5;
+tc.setLineDash([4, 3]);
+tc.globalAlpha = 0.6;
+tc.beginPath();
+tc.moveTo(p2X - 5, p2Y - 18);
+tc.lineTo(wallRightX - 55, wallBotY);
+tc.stroke();
+tc.lineWidth = 2;
+tc.beginPath();
+tc.moveTo(wallRightX - 55, wallBotY);
+tc.lineTo(wallRightX - 55, wallTopY);
+tc.stroke();
+tc.lineWidth = 1;
+tc.beginPath();
+tc.moveTo(wallRightX - 55, wallTopY);
+tc.lineTo(wallRightX - 45, wallTopY - 40);
+tc.stroke();
+tc.setLineDash([]);
+tc.fillStyle = '#e94560';
+tc.beginPath();
+tc.moveTo(wallRightX - 45, wallTopY - 40);
+tc.lineTo(wallRightX - 51, wallTopY - 32);
+tc.lineTo(wallRightX - 39, wallTopY - 32);
+tc.closePath();
+tc.fill();
+tc.globalAlpha = 1;
+
+tc.fillStyle = '#e94560';
+tc.globalAlpha = 0.6;
+tc.font = 'italic 7px Courier New';
+tc.textAlign = 'right';
+tc.fillText('← P2 FIRES', p2X - 15, p2Y - 55);
+tc.fillText('← THROUGH GATE', p2X - 15, p2Y - 45);
+tc.fillText('INTO P1 ZONE!', p2X - 15, p2Y - 35);
+tc.globalAlpha = 1;
+
+// ── Ricochet net (dashed lines across each lane) ──
+tc.strokeStyle = 'rgba(255,255,255,0.15)';
+tc.lineWidth = 1;
+tc.setLineDash([3, 5]);
+tc.beginPath(); tc.moveTo(wallLeftX, wallTopY - 30); tc.lineTo(wallRightX, wallTopY - 30); tc.stroke();
+tc.beginPath(); tc.moveTo(wallLeftX, wallBotY + 30); tc.lineTo(wallRightX, wallBotY + 30); tc.stroke();
+tc.setLineDash([]);
+tc.fillStyle = 'rgba(255,255,255,0.15)';
+tc.font = '6px Courier New';
+tc.textAlign = 'left';
+tc.fillText('MOATS', wallLeftX - 2, wallTopY - 22);
+tc.fillText('MOATS', wallLeftX - 2, wallBotY + 38);
+
+// ── Dimension: Distance from slingshot to wall ──
+tc.strokeStyle = '#555';
+tc.lineWidth = 1;
+tc.beginPath(); tc.moveTo(wallRightX + 15, p1Y); tc.lineTo(wallRightX + 15, wallTopY); tc.stroke();
+tc.beginPath(); tc.moveTo(wallRightX + 11, p1Y); tc.lineTo(wallRightX + 19, p1Y); tc.stroke();
+tc.beginPath(); tc.moveTo(wallRightX + 11, wallTopY); tc.lineTo(wallRightX + 19, wallTopY); tc.stroke();
+tc.fillStyle = '#555';
+tc.font = '8px Courier New';
+tc.textAlign = 'left';
+tc.save();
+tc.translate(wallRightX + 24, (p1Y + wallTopY) / 2);
+tc.rotate(-Math.PI/2);
+tc.textAlign = 'center';
+tc.fillText('48-60"', 0, 0);
+tc.restore();
+
+// Same for P2
+tc.beginPath(); tc.moveTo(wallRightX + 15, wallBotY); tc.lineTo(wallRightX + 15, p2Y); tc.stroke();
+tc.beginPath(); tc.moveTo(wallRightX + 11, wallBotY); tc.lineTo(wallRightX + 19, wallBotY); tc.stroke();
+tc.beginPath(); tc.moveTo(wallRightX + 11, p2Y); tc.lineTo(wallRightX + 19, p2Y); tc.stroke();
+tc.save();
+tc.translate(wallRightX + 24, (wallBotY + p2Y) / 2);
+tc.rotate(-Math.PI/2);
+tc.textAlign = 'center';
+tc.fillText('48-60"', 0, 0);
+tc.restore();
+
+// ── Ball holder trays (near each player) ──
+tc.fillStyle = '#666';
+tc.fillRect(p1X - 20, p1Y + 22, 16, 10);
+tc.fillRect(p1X + 4, p1Y + 22, 16, 10);
+tc.fillStyle = '#4da6ff';
+tc.globalAlpha = 0.6;
+for (let i = 0; i < 3; i++) { tc.beginPath(); tc.arc(p1X - 14 + i*6, p1Y + 27, 3, 0, Math.PI*2); tc.fill(); }
+for (let i = 0; i < 3; i++) { tc.beginPath(); tc.arc(p1X + 8 + i*6, p1Y + 27, 3, 0, Math.PI*2); tc.fill(); }
+tc.globalAlpha = 1;
+tc.font = '6px Courier New';
+tc.textAlign = 'center';
+tc.fillStyle = '#888';
+tc.fillText('BALL TRAYS', p1X, p1Y + 42);
+
+tc.fillStyle = '#666';
+tc.fillRect(p2X - 20, p2Y - 32, 16, 10);
+tc.fillRect(p2X + 4, p2Y - 32, 16, 10);
+tc.fillStyle = '#e94560';
+tc.globalAlpha = 0.6;
+for (let i = 0; i < 3; i++) { tc.beginPath(); tc.arc(p2X - 14 + i*6, p2Y - 27, 3, 0, Math.PI*2); tc.fill(); }
+for (let i = 0; i < 3; i++) { tc.beginPath(); tc.arc(p2X + 8 + i*6, p2Y - 27, 3, 0, Math.PI*2); tc.fill(); }
+tc.globalAlpha = 1;
+tc.font = '6px Courier New';
+tc.textAlign = 'center';
+tc.fillStyle = '#888';
+tc.fillText('BALL TRAYS', p2X, p2Y - 15);
+
+// ── Title ──
+tc.fillStyle = '#555';
+tc.font = '10px Courier New';
+tc.textAlign = 'center';
+tc.fillText('TOP-DOWN VIEW — OVERHEAD', TW/2, TH - 15);
+
+</script>
+
+</body>
+</html>
