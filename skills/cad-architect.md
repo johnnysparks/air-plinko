@@ -28,3 +28,12 @@
 - For complex machines with moving parts (flippers, bumpers), show GHOST positions at reduced opacity to communicate range of motion. This immediately conveys "this thing moves" without animation
 - Cable/linkage mechanisms (like bike cable to flipper) benefit from showing the external control AND the internal part connected by a dashed line — communicates the actuation path
 - When a game has distinct vertical zones (bumper zone, peg field, flipper zone), use subtle colored bands on a sidebar to annotate the zone structure — helps readers understand spatial layout at a glance
+
+### Rendering intangible/atmospheric elements:
+1. **Fog and mist zones** — Use gradient fills (opaque at source → transparent at edges) rather than solid fills. Add subtle curved stroke "swirl" hints to suggest movement
+2. **Glow effects** — Canvas `shadowColor` + `shadowBlur` on small elements (pegs, balls) creates convincing blacklight/UV glow without cluttering the diagram. Keep blur radius small (3-8px)
+3. **Lightning/electrical effects** — Zigzag line segments with reduced opacity + a glow shadow sell the effect. One bright bolt is more readable than many faint ones
+4. **Sound indicators** — Small rectangles for chime tubes attached to pegs, speaker cone circles for subwoofers, and wave arcs for bass vibration. Sound is invisible but the hardware is drawable
+5. **Smell and mist** — Show the physical delivery system (nozzles, spray lines) with dashed spray-pattern lines radiating outward. The viewer infers the sensation from the hardware
+6. **Sensory system callouts** — When a game has multiple subsystems (fog, light, sound, mist, candy), label each one clearly in the side cross-section where spatial relationships between hidden components matter most
+7. **Stagger dense labels vertically** — When multiple scoring buckets or elements are tightly packed, alternate label Y positions (even items above, odd items below) to prevent overlap

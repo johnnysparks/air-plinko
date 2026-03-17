@@ -1,0 +1,1130 @@
+<!-- screenshot: 900x1800 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thunder Drops — Concept Diagram</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0a14; color: #e0e0e0; font-family: 'Courier New', monospace; padding: 20px; }
+  h1 { text-align: center; color: #FFD700; margin-bottom: 4px; font-size: 28px; letter-spacing: 4px; text-shadow: 0 0 15px #FFD700, 0 0 30px rgba(255,215,0,0.3); }
+  .subtitle { text-align: center; color: #7a7aaa; margin-bottom: 30px; font-size: 13px; }
+  .views { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; }
+  .view { background: #0e0e20; border: 1px solid #2a2a4a; border-radius: 8px; padding: 20px; }
+  .view h2 { color: #FFD700; margin-bottom: 16px; font-size: 16px; text-align: center; }
+  canvas { display: block; }
+  .legend { margin-top: 30px; max-width: 860px; margin-left: auto; margin-right: auto; }
+  .legend h3 { color: #FFD700; margin-bottom: 10px; }
+  .legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; }
+  .legend-item { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; font-size: 12px; }
+  .legend-swatch { width: 16px; height: 16px; border-radius: 3px; flex-shrink: 0; }
+  .senses { margin-top: 30px; max-width: 860px; margin-left: auto; margin-right: auto; }
+  .senses h3 { color: #FFD700; margin-bottom: 10px; }
+  .sense-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .sense-card { background: #0e0e20; border: 1px solid #2a2a4a; border-radius: 8px; padding: 12px; text-align: center; }
+  .sense-card .icon { font-size: 24px; margin-bottom: 6px; }
+  .sense-card .name { color: #FFD700; font-size: 11px; font-weight: bold; margin-bottom: 4px; }
+  .sense-card .desc { color: #888; font-size: 10px; line-height: 1.3; }
+  .specs { margin-top: 30px; max-width: 860px; margin-left: auto; margin-right: auto; background: #0e0e20; border: 1px solid #2a2a4a; border-radius: 8px; padding: 20px; }
+  .specs h3 { color: #FFD700; margin-bottom: 10px; }
+  .specs table { width: 100%; font-size: 13px; }
+  .specs td { padding: 3px 8px; }
+  .specs td:first-child { color: #7a7aaa; }
+</style>
+</head>
+<body>
+
+<h1>⚡ THUNDER DROPS ⚡</h1>
+<p class="subtitle">fog canopy × blacklight pegs × wind chimes × mist jets × candy dispensers — full-sensory carnival plinko</p>
+
+<div class="views">
+  <div class="view">
+    <h2>FRONT VIEW</h2>
+    <canvas id="front" width="520" height="700"></canvas>
+  </div>
+  <div class="view">
+    <h2>SIDE CROSS-SECTION</h2>
+    <canvas id="side" width="300" height="700"></canvas>
+  </div>
+</div>
+
+<div class="senses">
+  <h3>THE FIVE SENSES</h3>
+  <div class="sense-grid">
+    <div class="sense-card">
+      <div class="icon">👁️</div>
+      <div class="name">SIGHT</div>
+      <div class="desc">Blacklight canopy, LED lightning, fog clouds, UV-glow pegs & balls, strobing jackpot</div>
+    </div>
+    <div class="sense-card">
+      <div class="icon">👂</div>
+      <div class="name">SOUND</div>
+      <div class="desc">Wind chime pegs, thunder subwoofer, rain ambiance, bucket hit tones, sad rain on gutter</div>
+    </div>
+    <div class="sense-card">
+      <div class="icon">✋</div>
+      <div class="name">TOUCH</div>
+      <div class="desc">Crank catapult launcher, mist jets on scoring, bass vibration, textured storm balls</div>
+    </div>
+    <div class="sense-card">
+      <div class="icon">👃</div>
+      <div class="name">SMELL</div>
+      <div class="desc">Cedar wood pegs, petrichor fog fluid, eucalyptus mist spray — the scent of rain</div>
+    </div>
+    <div class="sense-card">
+      <div class="icon">👅</div>
+      <div class="name">TASTE</div>
+      <div class="desc">Candy-dispensing buckets: Jolly Ranchers → fun-size bars → FULL SIZE jackpot bar</div>
+    </div>
+  </div>
+</div>
+
+<div class="legend">
+  <h3>LEGEND</h3>
+  <div class="legend-grid">
+    <div class="legend-item"><div class="legend-swatch" style="background:#1a1a2e"></div> Plywood back panel (matte black)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:rgba(135,206,250,0.3); border:1px solid #87CEFA"></div> Clear acrylic front panel</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#ff6ec7"></div> Neon pink cedar pegs (UV-reactive caps)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#39ff14"></div> Neon green cedar pegs</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#ffff00"></div> Neon yellow cedar pegs</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#00ffff"></div> Neon cyan pegs + wind chime rows</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#FFD700"></div> Scoring buckets (candy dispensers)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#ff4444"></div> GUTTER zones (0 pts, sad rain)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:rgba(200,180,255,0.4); border:1px dashed #b8a9e8"></div> Fog zone (top third of board)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#b344e8"></div> UV blacklight strips</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3)"></div> LED lightning strip (behind panel)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#4da6ff"></div> Mist jet nozzles</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#e94560"></div> Player 1 crank launcher (red)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#4da6ff"></div> Player 2 crank launcher (blue)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#8B4513"></div> Candy tube system (PVC behind board)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#666"></div> 2×4 support frame + canopy shelf</div>
+  </div>
+</div>
+
+<div class="specs">
+  <h3>KEY SPECS</h3>
+  <table>
+    <tr><td>Board</td><td>48"W × 72"H × 5" deep, ¾" plywood + ¼" acrylic</td></tr>
+    <tr><td>Tilt</td><td>~20° from vertical, peak at 84"</td></tr>
+    <tr><td>Pegs</td><td>~154 cedar dowels with 3D-printed UV mushroom caps, 4 neon colors</td></tr>
+    <tr><td>Chime pegs</td><td>~40 aluminum tubes across rows 3, 6, 9, 12</td></tr>
+    <tr><td>Launchers</td><td>Spring-loaded crank catapult, 3-7 cranks = variable power</td></tr>
+    <tr><td>Fog</td><td>400W fog machine on canopy shelf, petrichor-scented</td></tr>
+    <tr><td>Lighting</td><td>2× 24" UV strips + WS2812B LED strip (Arduino-triggered lightning)</td></tr>
+    <tr><td>Sound</td><td>Car subwoofer (thunder) + bluetooth speaker (rain ambiance)</td></tr>
+    <tr><td>Mist</td><td>Garden mister nozzles, solenoid-triggered on scores, eucalyptus-scented</td></tr>
+    <tr><td>Candy</td><td>7 gravity-fed PVC dispensers, ball-weight lever trigger, tiered rewards</td></tr>
+    <tr><td>Scoring</td><td>50 / 100 / 200 / 500 / GUTTER (0)</td></tr>
+    <tr><td>Round time</td><td>60 seconds, 10 balls per player</td></tr>
+    <tr><td>Est. cost</td><td>~$750–850</td></tr>
+  </table>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// FRONT VIEW
+// ══════════════════════════════════════════
+const fc = document.getElementById('front').getContext('2d');
+const FW = 520, FH = 700;
+
+// Ground line
+fc.strokeStyle = '#2a2a4a';
+fc.lineWidth = 1;
+fc.beginPath();
+fc.moveTo(20, 620);
+fc.lineTo(500, 620);
+fc.stroke();
+
+// ── Support Frame (legs) ──
+fc.strokeStyle = '#555';
+fc.lineWidth = 5;
+// Left legs
+fc.beginPath(); fc.moveTo(75, 30); fc.lineTo(55, 620); fc.stroke();
+fc.beginPath(); fc.moveTo(105, 30); fc.lineTo(90, 620); fc.stroke();
+// Right legs
+fc.beginPath(); fc.moveTo(415, 30); fc.lineTo(430, 620); fc.stroke();
+fc.beginPath(); fc.moveTo(445, 30); fc.lineTo(460, 620); fc.stroke();
+// Cross brace
+fc.lineWidth = 4;
+fc.beginPath(); fc.moveTo(72, 340); fc.lineTo(440, 340); fc.stroke();
+
+// Rubber feet
+fc.fillStyle = '#888';
+[51, 86, 426, 456].forEach(x => fc.fillRect(x, 618, 12, 5));
+
+// ── Canopy Shelf ──
+const canopyY = 20;
+const canopyH = 30;
+fc.fillStyle = '#2a2a3a';
+fc.fillRect(70, canopyY, 380, canopyH);
+fc.strokeStyle = '#555';
+fc.lineWidth = 2;
+fc.strokeRect(70, canopyY, 380, canopyH);
+
+// Fog machine on canopy
+fc.fillStyle = '#444';
+fc.fillRect(200, canopyY + 2, 50, 20);
+fc.fillStyle = '#888';
+fc.font = '7px Courier New';
+fc.textAlign = 'center';
+fc.fillText('FOG', 225, canopyY + 14);
+
+// UV blacklight strips under canopy
+fc.strokeStyle = '#b344e8';
+fc.lineWidth = 3;
+fc.shadowColor = '#b344e8';
+fc.shadowBlur = 8;
+fc.beginPath(); fc.moveTo(90, canopyY + canopyH); fc.lineTo(220, canopyY + canopyH); fc.stroke();
+fc.beginPath(); fc.moveTo(300, canopyY + canopyH); fc.lineTo(430, canopyY + canopyH); fc.stroke();
+fc.shadowBlur = 0;
+
+// UV labels
+fc.fillStyle = '#b344e8';
+fc.font = '6px Courier New';
+fc.textAlign = 'center';
+fc.fillText('UV STRIP', 155, canopyY + canopyH + 8);
+fc.fillText('UV STRIP', 365, canopyY + canopyH + 8);
+
+// Canopy drape (black fabric)
+fc.fillStyle = 'rgba(20,20,30,0.7)';
+fc.beginPath();
+fc.moveTo(70, canopyY);
+fc.lineTo(60, canopyY + canopyH + 15);
+fc.lineTo(70, canopyY + canopyH);
+fc.closePath();
+fc.fill();
+fc.beginPath();
+fc.moveTo(450, canopyY);
+fc.lineTo(460, canopyY + canopyH + 15);
+fc.lineTo(450, canopyY + canopyH);
+fc.closePath();
+fc.fill();
+
+fc.fillStyle = '#555';
+fc.font = '7px Courier New';
+fc.textAlign = 'center';
+fc.fillText('CANOPY SHELF + FOG + BLACKLIGHTS', 260, canopyY - 4);
+
+// ── Plinko Board ──
+const bx = 80, by = 60, bw = 360, bh = 470;
+
+// Board back panel
+fc.fillStyle = '#1a1a2e';
+fc.fillRect(bx, by, bw, bh);
+
+// ── Fog Zone (top third) ──
+const fogH = bh * 0.32;
+const fogGrad = fc.createLinearGradient(bx, by, bx, by + fogH);
+fogGrad.addColorStop(0, 'rgba(180, 170, 220, 0.35)');
+fogGrad.addColorStop(0.5, 'rgba(160, 150, 200, 0.2)');
+fogGrad.addColorStop(1, 'rgba(140, 130, 180, 0.0)');
+fc.fillStyle = fogGrad;
+fc.fillRect(bx, by, bw, fogH);
+
+// Fog swirl hints
+fc.strokeStyle = 'rgba(200, 190, 240, 0.15)';
+fc.lineWidth = 2;
+for (let i = 0; i < 5; i++) {
+  fc.beginPath();
+  const cx = bx + 60 + i * 65;
+  const cy = by + 30 + (i % 2) * 30;
+  fc.arc(cx, cy, 20 + i * 3, 0.5, Math.PI * 1.5);
+  fc.stroke();
+}
+
+// Fog zone label
+fc.fillStyle = 'rgba(200, 190, 240, 0.6)';
+fc.font = 'bold 10px Courier New';
+fc.textAlign = 'center';
+fc.fillText('☁ FOG ZONE ☁', bx + bw/2, by + 20);
+fc.font = '8px Courier New';
+fc.fillText('balls vanish into clouds...', bx + bw/2, by + 32);
+
+// LED lightning strip indicator (zigzag behind board)
+fc.strokeStyle = 'rgba(255,255,255,0.12)';
+fc.lineWidth = 4;
+fc.setLineDash([10, 5]);
+fc.beginPath();
+fc.moveTo(bx + 10, by + 10);
+fc.lineTo(bx + bw - 10, by + 60);
+fc.lineTo(bx + 10, by + 120);
+fc.lineTo(bx + bw - 10, by + 180);
+fc.lineTo(bx + 10, by + 240);
+fc.lineTo(bx + bw - 10, by + 300);
+fc.lineTo(bx + 10, by + 360);
+fc.lineTo(bx + bw - 10, by + 420);
+fc.stroke();
+fc.setLineDash([]);
+
+// Lightning flash effect (one bright bolt)
+fc.strokeStyle = 'rgba(255, 255, 200, 0.5)';
+fc.lineWidth = 2;
+fc.shadowColor = '#FFD700';
+fc.shadowBlur = 15;
+fc.beginPath();
+fc.moveTo(bx + bw * 0.65, by + 10);
+fc.lineTo(bx + bw * 0.55, by + 50);
+fc.lineTo(bx + bw * 0.68, by + 55);
+fc.lineTo(bx + bw * 0.48, by + 110);
+fc.stroke();
+fc.shadowBlur = 0;
+fc.fillStyle = 'rgba(255,255,200,0.5)';
+fc.font = '7px Courier New';
+fc.textAlign = 'left';
+fc.fillText('⚡ LED FLASH', bx + bw * 0.7, by + 60);
+
+// Board border (edge rails)
+fc.strokeStyle = '#444';
+fc.lineWidth = 4;
+fc.strokeRect(bx, by, bw, bh);
+
+// ── Peg Grid ──
+const pegColors = ['#ff6ec7', '#39ff14', '#ffff00', '#00ffff'];
+const pegRows = 14;
+const pegCols = 11;
+const pegSpacingX = bw / (pegCols + 1);
+const pegSpacingY = (bh - 80) / (pegRows + 1);
+let pegIdx = 0;
+
+const chimeRows = [2, 5, 8, 11]; // rows 3, 6, 9, 12 (0-indexed)
+
+for (let row = 0; row < pegRows; row++) {
+  const offset = (row % 2 === 0) ? 0 : pegSpacingX / 2;
+  const cols = (row % 2 === 0) ? pegCols : pegCols - 1;
+  const isChimeRow = chimeRows.includes(row);
+
+  for (let col = 0; col < cols; col++) {
+    const px = bx + pegSpacingX + col * pegSpacingX + offset;
+    const py = by + 50 + row * pegSpacingY;
+    const color = pegColors[pegIdx % 4];
+    pegIdx++;
+
+    // Mushroom cap peg
+    fc.fillStyle = color;
+    fc.globalAlpha = 0.85;
+    // Glow effect under blacklight
+    fc.shadowColor = color;
+    fc.shadowBlur = 4;
+    fc.beginPath();
+    fc.arc(px, py, 5, 0, Math.PI * 2);
+    fc.fill();
+    fc.shadowBlur = 0;
+    // Stem
+    fc.fillRect(px - 1.5, py, 3, 4);
+    // Highlight
+    fc.fillStyle = 'rgba(255,255,255,0.3)';
+    fc.beginPath();
+    fc.arc(px - 1.5, py - 1.5, 2, 0, Math.PI * 2);
+    fc.fill();
+    fc.globalAlpha = 1;
+
+    // Wind chime indicator on chime rows
+    if (isChimeRow && col % 2 === 0) {
+      fc.strokeStyle = 'rgba(192, 192, 192, 0.5)';
+      fc.lineWidth = 1;
+      fc.beginPath();
+      fc.moveTo(px + 5, py);
+      fc.lineTo(px + 5, py + 10);
+      fc.stroke();
+      fc.fillStyle = 'rgba(192, 192, 192, 0.6)';
+      fc.fillRect(px + 4, py + 10, 3, 6);
+    }
+  }
+
+  // Chime row label
+  if (isChimeRow) {
+    fc.fillStyle = 'rgba(192, 192, 192, 0.5)';
+    fc.font = '6px Courier New';
+    fc.textAlign = 'right';
+    fc.fillText('♪ CHIMES', bx - 4, by + 53 + row * pegSpacingY);
+  }
+}
+
+// ── Scoring Buckets ──
+const bucketY = by + bh - 2;
+const bucketH = 28;
+const buckets = [
+  { label: '0', w: 16, color: '#ff4444', name: 'GUTTER' },
+  { label: '50', w: 44, color: '#4da6ff', name: 'DRIZZLE' },
+  { label: '100', w: 38, color: '#39ff14', name: 'RAIN' },
+  { label: '200', w: 32, color: '#ff6ec7', name: 'STORM' },
+  { label: '500', w: 22, color: '#FFD700', name: 'THUNDER' },
+  { label: '200', w: 32, color: '#ff6ec7', name: 'STORM' },
+  { label: '100', w: 38, color: '#39ff14', name: 'RAIN' },
+  { label: '50', w: 44, color: '#4da6ff', name: 'DRIZZLE' },
+  { label: '0', w: 16, color: '#ff4444', name: 'GUTTER' },
+];
+
+const totalBucketW = buckets.reduce((s, b) => s + b.w, 0);
+const bucketGap = (bw - totalBucketW) / (buckets.length + 1);
+let bucketX = bx + bucketGap;
+
+buckets.forEach((b, i) => {
+  // Bucket glow
+  fc.fillStyle = b.color;
+  fc.globalAlpha = 0.15;
+  fc.shadowColor = b.color;
+  fc.shadowBlur = 10;
+  fc.fillRect(bucketX - 2, bucketY - 5, b.w + 4, bucketH + 10);
+  fc.shadowBlur = 0;
+  fc.globalAlpha = 1;
+
+  // Bucket slot
+  fc.fillStyle = b.color;
+  fc.globalAlpha = 0.5;
+  fc.fillRect(bucketX, bucketY, b.w, bucketH);
+  fc.globalAlpha = 1;
+  fc.strokeStyle = b.color;
+  fc.lineWidth = 1.5;
+  fc.strokeRect(bucketX, bucketY, b.w, bucketH);
+
+  // Points label
+  fc.fillStyle = '#fff';
+  fc.font = 'bold 9px Courier New';
+  fc.textAlign = 'center';
+  fc.fillText(b.label, bucketX + b.w/2, bucketY + 12);
+
+  // Name label (stagger vertically for tight buckets)
+  fc.font = '6px Courier New';
+  fc.fillStyle = b.color;
+  const nameY = (i % 2 === 0) ? bucketY + 22 : bucketY + 38;
+  fc.fillText(b.name, bucketX + b.w/2, nameY);
+
+  // Candy icon below bucket
+  if (b.label !== '0') {
+    fc.fillStyle = '#8B4513';
+    fc.font = '7px Courier New';
+    fc.fillText('🍬', bucketX + b.w/2, bucketY + bucketH + 12);
+  }
+
+  bucketX += b.w + bucketGap;
+});
+
+// Candy dispenser label
+fc.fillStyle = '#8B4513';
+fc.font = '8px Courier New';
+fc.textAlign = 'center';
+fc.fillText('↓ CANDY DISPENSERS (gravity-fed, ball-weight trigger) ↓', bx + bw/2, bucketY + bucketH + 24);
+
+// ── Crank Catapult Launchers ──
+function drawLauncher(cx, groundY, color, label) {
+  // Base platform
+  fc.fillStyle = '#2a2a2a';
+  fc.fillRect(cx - 30, groundY - 8, 60, 12);
+  fc.strokeStyle = color;
+  fc.lineWidth = 2;
+  fc.strokeRect(cx - 30, groundY - 8, 60, 12);
+
+  // Catapult arm (spring-loaded lever)
+  fc.strokeStyle = color;
+  fc.lineWidth = 3;
+  fc.beginPath();
+  fc.moveTo(cx - 10, groundY - 8);
+  fc.lineTo(cx - 5, groundY - 35);
+  fc.stroke();
+
+  // Ball cup at end of arm
+  fc.strokeStyle = color;
+  fc.lineWidth = 2;
+  fc.beginPath();
+  fc.arc(cx - 5, groundY - 38, 6, Math.PI, 0);
+  fc.stroke();
+
+  // Crank handle
+  fc.fillStyle = '#666';
+  fc.fillRect(cx + 10, groundY - 20, 18, 6);
+  fc.fillStyle = color;
+  fc.beginPath();
+  fc.arc(cx + 28, groundY - 17, 5, 0, Math.PI * 2);
+  fc.fill();
+
+  // Spring indicator
+  fc.strokeStyle = 'rgba(255,255,255,0.3)';
+  fc.lineWidth = 1;
+  for (let i = 0; i < 4; i++) {
+    const sy = groundY - 10 - i * 5;
+    fc.beginPath();
+    fc.moveTo(cx - 8, sy);
+    fc.lineTo(cx - 3, sy - 3);
+    fc.lineTo(cx + 2, sy);
+    fc.stroke();
+  }
+
+  // Label
+  fc.fillStyle = color;
+  fc.font = 'bold 9px Courier New';
+  fc.textAlign = 'center';
+  fc.fillText(label, cx, groundY + 16);
+  fc.font = '7px Courier New';
+  fc.fillText('CRANK + RELEASE', cx, groundY + 26);
+
+  // Hand crank motion arrow
+  fc.strokeStyle = 'rgba(255,255,255,0.4)';
+  fc.lineWidth = 1;
+  fc.beginPath();
+  fc.arc(cx + 28, groundY - 17, 10, -Math.PI * 0.3, Math.PI * 0.8);
+  fc.stroke();
+  fc.fillStyle = 'rgba(255,255,255,0.4)';
+  fc.font = '7px Courier New';
+  fc.fillText('↻', cx + 40, groundY - 12);
+}
+
+drawLauncher(bx + 70, 608, '#e94560', 'P1 (RED)');
+drawLauncher(bx + bw - 70, 608, '#4da6ff', 'P2 (BLUE)');
+
+// ── Mist Jets ──
+function drawMistJet(cx, groundY, color) {
+  // Gooseneck arm
+  fc.strokeStyle = '#4da6ff';
+  fc.lineWidth = 2;
+  fc.beginPath();
+  fc.moveTo(cx, groundY - 8);
+  fc.quadraticCurveTo(cx, groundY - 50, cx + 15, groundY - 55);
+  fc.stroke();
+
+  // Nozzle
+  fc.fillStyle = '#4da6ff';
+  fc.beginPath();
+  fc.arc(cx + 15, groundY - 55, 3, 0, Math.PI * 2);
+  fc.fill();
+
+  // Mist spray lines
+  fc.strokeStyle = 'rgba(100, 180, 255, 0.3)';
+  fc.lineWidth = 1;
+  fc.setLineDash([2, 3]);
+  for (let i = -2; i <= 2; i++) {
+    fc.beginPath();
+    fc.moveTo(cx + 15, groundY - 55);
+    fc.lineTo(cx + 15 + i * 8, groundY - 75);
+    fc.stroke();
+  }
+  fc.setLineDash([]);
+
+  // Mist label
+  fc.fillStyle = 'rgba(100, 180, 255, 0.6)';
+  fc.font = '6px Courier New';
+  fc.textAlign = 'center';
+  fc.fillText('💧 MIST', cx + 15, groundY - 80);
+  fc.fillText('(eucalyptus)', cx + 15, groundY - 73);
+}
+
+drawMistJet(bx + 30, 608, '#4da6ff');
+drawMistJet(bx + bw - 60, 608, '#4da6ff');
+
+// ── Ball Launch Trajectory ──
+fc.strokeStyle = '#39ff14';
+fc.lineWidth = 1.5;
+fc.setLineDash([4, 3]);
+fc.globalAlpha = 0.6;
+// Strong launch from P1 — into fog zone
+fc.beginPath();
+fc.moveTo(bx + 70, 570);
+fc.quadraticCurveTo(bx + 100, by + bh/2, bx + 120, by + 50);
+fc.stroke();
+// Arrowhead
+fc.setLineDash([]);
+fc.fillStyle = '#39ff14';
+fc.beginPath();
+fc.moveTo(bx + 120, by + 50);
+fc.lineTo(bx + 114, by + 62);
+fc.lineTo(bx + 126, by + 62);
+fc.closePath();
+fc.fill();
+fc.font = 'italic 8px Courier New';
+fc.textAlign = 'left';
+fc.fillText('7 CRANKS →', bx + 130, by + 50);
+fc.fillText('INTO THE FOG!', bx + 130, by + 60);
+fc.globalAlpha = 1;
+
+// Weak launch trajectory
+fc.strokeStyle = '#39ff14';
+fc.lineWidth = 1;
+fc.setLineDash([3, 3]);
+fc.globalAlpha = 0.3;
+fc.beginPath();
+fc.moveTo(bx + 70, 570);
+fc.quadraticCurveTo(bx + 90, by + bh - 80, bx + 110, by + bh - 120);
+fc.stroke();
+fc.setLineDash([]);
+fc.font = 'italic 7px Courier New';
+fc.fillText('3 cranks', bx + 115, by + bh - 115);
+fc.globalAlpha = 1;
+
+// ── Ball cascading through pegs (dotted path) ──
+fc.strokeStyle = '#FFE44D';
+fc.lineWidth = 1;
+fc.setLineDash([2, 3]);
+fc.globalAlpha = 0.4;
+fc.beginPath();
+fc.moveTo(bx + 120, by + 50);
+const cascadePoints = [
+  [bx + 180, by + 100],
+  [bx + 140, by + 160],
+  [bx + 200, by + 220],
+  [bx + 160, by + 280],
+  [bx + 220, by + 340],
+  [bx + 190, by + 400],
+  [bx + 210, by + bh - 10],
+];
+cascadePoints.forEach(p => fc.lineTo(p[0], p[1]));
+fc.stroke();
+fc.setLineDash([]);
+
+// Ball glow at end
+fc.fillStyle = '#39ff14';
+fc.shadowColor = '#39ff14';
+fc.shadowBlur = 8;
+fc.globalAlpha = 0.7;
+fc.beginPath();
+fc.arc(bx + 210, by + bh - 10, 5, 0, Math.PI * 2);
+fc.fill();
+fc.shadowBlur = 0;
+fc.globalAlpha = 1;
+
+// ── Acrylic front panel overlay ──
+fc.strokeStyle = 'rgba(135, 206, 250, 0.25)';
+fc.lineWidth = 2;
+fc.setLineDash([8, 4]);
+fc.strokeRect(bx + 3, by + 3, bw - 6, bh - 6);
+fc.setLineDash([]);
+fc.fillStyle = 'rgba(135,206,250,0.4)';
+fc.font = '7px Courier New';
+fc.textAlign = 'right';
+fc.fillText('ACRYLIC FRONT', bx + bw - 8, by + bh - 8);
+
+// ── Subwoofer indicator ──
+fc.fillStyle = 'rgba(255,215,0,0.3)';
+fc.font = '8px Courier New';
+fc.textAlign = 'left';
+fc.fillText('🔊 SUB BEHIND', bx + bw + 8, by + bh/2 - 5);
+fc.fillText('   PANEL', bx + bw + 8, by + bh/2 + 5);
+fc.fillText('   (THUNDER!)', bx + bw + 8, by + bh/2 + 15);
+
+// ── BT Speaker on canopy ──
+fc.fillStyle = '#888';
+fc.fillRect(330, canopyY + 3, 30, 16);
+fc.fillStyle = '#aaa';
+fc.font = '6px Courier New';
+fc.textAlign = 'center';
+fc.fillText('🔊 BT', 345, canopyY + 13);
+
+// ── Dimensions ──
+fc.fillStyle = '#555';
+fc.font = '10px Courier New';
+fc.textAlign = 'center';
+// Width
+fc.fillText('48"', bx + bw/2, by - 16);
+fc.strokeStyle = '#555';
+fc.lineWidth = 1;
+fc.beginPath(); fc.moveTo(bx, by - 10); fc.lineTo(bx + bw, by - 10); fc.stroke();
+fc.beginPath(); fc.moveTo(bx, by - 14); fc.lineTo(bx, by - 6); fc.stroke();
+fc.beginPath(); fc.moveTo(bx + bw, by - 14); fc.lineTo(bx + bw, by - 6); fc.stroke();
+
+// Height
+fc.save();
+fc.translate(bx - 22, by + bh/2);
+fc.rotate(-Math.PI/2);
+fc.fillText('72"', 0, 0);
+fc.restore();
+fc.strokeStyle = '#555';
+fc.beginPath(); fc.moveTo(bx - 14, by); fc.lineTo(bx - 14, by + bh); fc.stroke();
+fc.beginPath(); fc.moveTo(bx - 18, by); fc.lineTo(bx - 10, by); fc.stroke();
+fc.beginPath(); fc.moveTo(bx - 18, by + bh); fc.lineTo(bx - 10, by + bh); fc.stroke();
+
+// Peak height
+fc.fillStyle = '#444';
+fc.font = '9px Courier New';
+fc.textAlign = 'left';
+fc.fillText('84" peak', bx + bw + 8, canopyY + 15);
+fc.fillText('(incl. canopy)', bx + bw + 8, canopyY + 25);
+
+// Bottom view label
+fc.fillStyle = '#555';
+fc.font = '10px Courier New';
+fc.textAlign = 'center';
+fc.fillText('FRONT VIEW — PLAYER PERSPECTIVE', FW/2, 670);
+fc.font = '8px Courier New';
+fc.fillStyle = '#FFD700';
+fc.fillText('⚡ ALL FIVE SENSES ENGAGED ⚡', FW/2, 685);
+
+
+// ══════════════════════════════════════════
+// SIDE CROSS-SECTION
+// ══════════════════════════════════════════
+const sc = document.getElementById('side').getContext('2d');
+const SW = 300, SH = 700;
+
+// Ground line
+sc.strokeStyle = '#2a2a4a';
+sc.lineWidth = 1;
+sc.beginPath();
+sc.moveTo(20, 620);
+sc.lineTo(280, 620);
+sc.stroke();
+
+// ── Board (tilted ~20° from vertical) ──
+const boardBottom = 540;
+const boardTop = 60;
+const boardFrontBottom = 140;
+const boardBackBottom = 156;
+const boardFrontTop = 110;
+const boardBackTop = 126;
+
+// Back panel (plywood)
+sc.fillStyle = '#1a1a2e';
+sc.beginPath();
+sc.moveTo(boardBackTop, boardTop);
+sc.lineTo(boardBackBottom, boardBottom);
+sc.lineTo(boardBackBottom + 4, boardBottom);
+sc.lineTo(boardBackTop + 4, boardTop);
+sc.closePath();
+sc.fill();
+sc.strokeStyle = '#444';
+sc.lineWidth = 1;
+sc.stroke();
+
+// LED strip behind back panel (zigzag)
+sc.strokeStyle = 'rgba(255,255,200,0.15)';
+sc.lineWidth = 2;
+sc.setLineDash([3, 5]);
+sc.beginPath();
+sc.moveTo(boardBackTop + 6, boardTop + 10);
+sc.lineTo(boardBackTop + 6, boardBottom - 10);
+sc.stroke();
+sc.setLineDash([]);
+sc.fillStyle = 'rgba(255,255,200,0.3)';
+sc.font = '6px Courier New';
+sc.textAlign = 'left';
+sc.fillText('LED', boardBackTop + 10, boardTop + 30);
+sc.fillText('STRIP', boardBackTop + 10, boardTop + 38);
+
+// Playing field gap
+sc.fillStyle = '#0a0a15';
+sc.beginPath();
+sc.moveTo(boardFrontTop, boardTop);
+sc.lineTo(boardFrontBottom, boardBottom);
+sc.lineTo(boardBackBottom, boardBottom);
+sc.lineTo(boardBackTop, boardTop);
+sc.closePath();
+sc.fill();
+
+// Front panel (acrylic)
+sc.strokeStyle = 'rgba(135, 206, 250, 0.5)';
+sc.lineWidth = 3;
+sc.beginPath();
+sc.moveTo(boardFrontTop, boardTop);
+sc.lineTo(boardFrontBottom, boardBottom);
+sc.stroke();
+
+// Pegs inside (side view)
+for (let i = 0; i < 12; i++) {
+  const t = (i + 1) / 13;
+  const py = boardTop + (boardBottom - boardTop) * t;
+  const px = boardFrontTop + (boardFrontBottom - boardFrontTop) * t + 12;
+  const color = pegColors[i % 4];
+  sc.fillStyle = color;
+  sc.globalAlpha = 0.7;
+  sc.shadowColor = color;
+  sc.shadowBlur = 3;
+  sc.beginPath();
+  sc.arc(px, py, 3, 0, Math.PI * 2);
+  sc.fill();
+  sc.shadowBlur = 0;
+  sc.globalAlpha = 1;
+
+  // Chime on every 3rd peg (side view)
+  if (i % 3 === 2) {
+    sc.strokeStyle = 'rgba(192, 192, 192, 0.4)';
+    sc.lineWidth = 1;
+    sc.beginPath();
+    sc.moveTo(px + 3, py);
+    sc.lineTo(px + 3, py + 8);
+    sc.stroke();
+    sc.fillStyle = 'rgba(192,192,192,0.5)';
+    sc.fillRect(px + 2, py + 8, 3, 5);
+  }
+}
+
+// Fog zone (top third, side view)
+const fogTopSide = boardTop;
+const fogBottomSide = boardTop + (boardBottom - boardTop) * 0.32;
+sc.fillStyle = 'rgba(180, 170, 220, 0.15)';
+sc.beginPath();
+sc.moveTo(boardFrontTop, fogTopSide);
+sc.lineTo(boardFrontTop + (boardFrontBottom - boardFrontTop) * 0.32, fogBottomSide);
+sc.lineTo(boardBackTop + (boardBackBottom - boardBackTop) * 0.32 + 4, fogBottomSide);
+sc.lineTo(boardBackTop + 4, fogTopSide);
+sc.closePath();
+sc.fill();
+sc.fillStyle = 'rgba(200,190,240,0.4)';
+sc.font = '6px Courier New';
+sc.textAlign = 'center';
+sc.fillText('FOG', (boardFrontTop + boardBackTop + 4) / 2 + 3, boardTop + 25);
+
+// ── Canopy Shelf (side view) ──
+sc.fillStyle = '#2a2a3a';
+sc.fillRect(boardFrontTop - 30, boardTop - 35, 70, 12);
+sc.strokeStyle = '#555';
+sc.lineWidth = 1;
+sc.strokeRect(boardFrontTop - 30, boardTop - 35, 70, 12);
+
+// Fog machine on canopy (side view)
+sc.fillStyle = '#444';
+sc.fillRect(boardBackTop - 5, boardTop - 47, 25, 12);
+sc.fillStyle = '#888';
+sc.font = '6px Courier New';
+sc.textAlign = 'center';
+sc.fillText('FOG', boardBackTop + 7, boardTop - 38);
+
+// UV strip under canopy (side view)
+sc.strokeStyle = '#b344e8';
+sc.lineWidth = 2;
+sc.shadowColor = '#b344e8';
+sc.shadowBlur = 5;
+sc.beginPath();
+sc.moveTo(boardFrontTop - 25, boardTop - 23);
+sc.lineTo(boardBackTop + 20, boardTop - 23);
+sc.stroke();
+sc.shadowBlur = 0;
+sc.fillStyle = '#b344e8';
+sc.font = '6px Courier New';
+sc.fillText('UV', (boardFrontTop + boardBackTop) / 2, boardTop - 15);
+
+// Fog cloud rolling down (side view)
+sc.strokeStyle = 'rgba(200, 190, 240, 0.2)';
+sc.lineWidth = 1.5;
+sc.beginPath();
+sc.moveTo(boardBackTop, boardTop - 25);
+sc.quadraticCurveTo(boardFrontTop - 10, boardTop - 10, boardFrontTop + 5, boardTop + 40);
+sc.stroke();
+sc.fillStyle = 'rgba(200,190,240,0.3)';
+sc.font = '6px Courier New';
+sc.textAlign = 'left';
+sc.fillText('fog rolls', boardFrontTop - 45, boardTop + 10);
+sc.fillText('down →', boardFrontTop - 45, boardTop + 18);
+
+// ── Scoring bucket at bottom (side view) ──
+sc.fillStyle = '#FFD700';
+sc.globalAlpha = 0.5;
+sc.fillRect(boardFrontBottom - 5, boardBottom, 30, 12);
+sc.globalAlpha = 1;
+sc.strokeStyle = '#FFD700';
+sc.lineWidth = 1;
+sc.strokeRect(boardFrontBottom - 5, boardBottom, 30, 12);
+sc.fillStyle = '#FFD700';
+sc.font = '7px Courier New';
+sc.textAlign = 'left';
+sc.fillText('BUCKETS', boardFrontBottom + 28, boardBottom + 9);
+
+// ── Candy dispenser behind bucket (side view) ──
+sc.fillStyle = '#8B4513';
+sc.globalAlpha = 0.6;
+// Vertical candy tube
+sc.fillRect(boardBackBottom + 8, boardBottom - 80, 8, 85);
+sc.globalAlpha = 1;
+sc.strokeStyle = '#8B4513';
+sc.lineWidth = 1;
+sc.strokeRect(boardBackBottom + 8, boardBottom - 80, 8, 85);
+
+// Candy pieces in tube
+for (let i = 0; i < 4; i++) {
+  sc.fillStyle = ['#ff4444', '#39ff14', '#FFD700', '#ff6ec7'][i];
+  sc.globalAlpha = 0.7;
+  sc.fillRect(boardBackBottom + 9, boardBottom - 20 - i * 15, 6, 8);
+  sc.globalAlpha = 1;
+}
+
+// Lever/seesaw at bucket
+sc.strokeStyle = '#8B4513';
+sc.lineWidth = 1.5;
+sc.beginPath();
+sc.moveTo(boardFrontBottom + 10, boardBottom + 12);
+sc.lineTo(boardBackBottom + 12, boardBottom + 5);
+sc.stroke();
+// Pivot point
+sc.fillStyle = '#666';
+sc.beginPath();
+sc.arc(boardBackBottom + 2, boardBottom + 8, 2, 0, Math.PI * 2);
+sc.fill();
+
+sc.fillStyle = '#8B4513';
+sc.font = '6px Courier New';
+sc.textAlign = 'left';
+sc.fillText('CANDY', boardBackBottom + 20, boardBottom - 50);
+sc.fillText('TUBE', boardBackBottom + 20, boardBottom - 42);
+sc.fillText('(PVC)', boardBackBottom + 20, boardBottom - 34);
+
+// Candy chute to player
+sc.strokeStyle = '#8B4513';
+sc.lineWidth = 1.5;
+sc.setLineDash([3, 3]);
+sc.beginPath();
+sc.moveTo(boardBackBottom + 12, boardBottom + 5);
+sc.lineTo(60, 590);
+sc.stroke();
+sc.setLineDash([]);
+sc.fillStyle = '#8B4513';
+sc.font = '6px Courier New';
+sc.textAlign = 'center';
+sc.fillText('candy slides', 75, 585);
+sc.fillText('to player →', 75, 593);
+
+// ── Subwoofer behind board (side view) ──
+sc.fillStyle = '#333';
+sc.strokeStyle = '#FFD700';
+sc.lineWidth = 1.5;
+const subX = boardBackTop + 20;
+const subY = boardTop + (boardBottom - boardTop) * 0.45;
+sc.fillRect(subX, subY, 25, 25);
+sc.strokeRect(subX, subY, 25, 25);
+// Speaker cone
+sc.beginPath();
+sc.arc(subX + 12, subY + 12, 8, 0, Math.PI * 2);
+sc.stroke();
+sc.beginPath();
+sc.arc(subX + 12, subY + 12, 3, 0, Math.PI * 2);
+sc.fill();
+// Bass vibration waves
+sc.strokeStyle = 'rgba(255,215,0,0.3)';
+sc.lineWidth = 1;
+for (let i = 1; i <= 3; i++) {
+  sc.beginPath();
+  sc.arc(subX + 12, subY + 12, 15 + i * 5, -0.5, 0.5);
+  sc.stroke();
+}
+sc.fillStyle = '#FFD700';
+sc.font = '6px Courier New';
+sc.textAlign = 'left';
+sc.fillText('SUBWOOFER', subX + 30, subY + 10);
+sc.fillText('(THUNDER)', subX + 30, subY + 18);
+
+// ── Support Legs (side view) ──
+sc.strokeStyle = '#555';
+sc.lineWidth = 5;
+// Front leg
+sc.beginPath();
+sc.moveTo(boardFrontBottom, boardBottom);
+sc.lineTo(boardFrontBottom + 40, 620);
+sc.stroke();
+// Rear leg
+sc.beginPath();
+sc.moveTo(boardBackTop + 4, boardTop + 20);
+sc.lineTo(boardBackTop + 35, 620);
+sc.stroke();
+// Cross brace
+sc.lineWidth = 3;
+sc.beginPath();
+sc.moveTo(boardFrontBottom + 22, 580);
+sc.lineTo(boardBackTop + 22, 480);
+sc.stroke();
+
+// Rubber feet
+sc.fillStyle = '#888';
+sc.fillRect(boardFrontBottom + 36, 618, 12, 5);
+sc.fillRect(boardBackTop + 31, 618, 12, 5);
+
+// ── Mist jet (side view) ──
+const mistX = 55;
+const mistY = 580;
+sc.strokeStyle = '#4da6ff';
+sc.lineWidth = 2;
+sc.beginPath();
+sc.moveTo(mistX, 610);
+sc.quadraticCurveTo(mistX - 5, mistY, mistX + 10, mistY - 15);
+sc.stroke();
+sc.fillStyle = '#4da6ff';
+sc.beginPath();
+sc.arc(mistX + 10, mistY - 15, 3, 0, Math.PI * 2);
+sc.fill();
+
+// Mist spray
+sc.strokeStyle = 'rgba(100, 180, 255, 0.3)';
+sc.lineWidth = 1;
+sc.setLineDash([2, 2]);
+for (let i = -1; i <= 1; i++) {
+  sc.beginPath();
+  sc.moveTo(mistX + 10, mistY - 15);
+  sc.lineTo(mistX + 10 + i * 5, mistY - 35);
+  sc.stroke();
+}
+sc.setLineDash([]);
+sc.fillStyle = 'rgba(100,180,255,0.5)';
+sc.font = '6px Courier New';
+sc.textAlign = 'center';
+sc.fillText('MIST JET', mistX + 10, mistY - 40);
+
+// ── Crank launcher (side view) ──
+const launchX = 65;
+const launchY = 610;
+sc.fillStyle = '#2a2a2a';
+sc.fillRect(launchX - 15, launchY, 30, 10);
+sc.strokeStyle = '#e94560';
+sc.lineWidth = 2;
+sc.strokeRect(launchX - 15, launchY, 30, 10);
+
+// Catapult arm
+sc.strokeStyle = '#e94560';
+sc.lineWidth = 3;
+sc.beginPath();
+sc.moveTo(launchX, launchY);
+sc.lineTo(launchX + 5, launchY - 25);
+sc.stroke();
+
+// Ball cup
+sc.strokeStyle = '#e94560';
+sc.lineWidth = 2;
+sc.beginPath();
+sc.arc(launchX + 5, launchY - 28, 5, Math.PI, 0);
+sc.stroke();
+
+// UV ball in cup
+sc.fillStyle = '#39ff14';
+sc.shadowColor = '#39ff14';
+sc.shadowBlur = 6;
+sc.beginPath();
+sc.arc(launchX + 5, launchY - 30, 4, 0, Math.PI * 2);
+sc.fill();
+sc.shadowBlur = 0;
+
+sc.fillStyle = '#e94560';
+sc.font = '7px Courier New';
+sc.textAlign = 'center';
+sc.fillText('CRANK', launchX, launchY + 20);
+sc.fillText('LAUNCHER', launchX, launchY + 28);
+
+// Launch trajectory (side view)
+sc.strokeStyle = '#39ff14';
+sc.lineWidth = 1.5;
+sc.setLineDash([4, 3]);
+sc.globalAlpha = 0.5;
+sc.beginPath();
+sc.moveTo(launchX + 5, launchY - 30);
+sc.quadraticCurveTo(boardFrontTop - 15, boardTop + 200, boardFrontTop + 8, boardTop + 40);
+sc.stroke();
+sc.setLineDash([]);
+// Arrowhead
+sc.fillStyle = '#39ff14';
+sc.beginPath();
+sc.moveTo(boardFrontTop + 8, boardTop + 40);
+sc.lineTo(boardFrontTop + 3, boardTop + 52);
+sc.lineTo(boardFrontTop + 13, boardTop + 52);
+sc.closePath();
+sc.fill();
+sc.font = 'italic 7px Courier New';
+sc.textAlign = 'left';
+sc.fillText('BALL LAUNCHES', boardFrontTop + 18, boardTop + 42);
+sc.fillText('INTO FOG!', boardFrontTop + 18, boardTop + 50);
+sc.globalAlpha = 1;
+
+// ── Pump sprayer behind board (side view) ──
+sc.fillStyle = '#2a6a2a';
+sc.globalAlpha = 0.6;
+sc.fillRect(boardBackBottom + 45, boardBottom - 30, 15, 35);
+sc.globalAlpha = 1;
+sc.strokeStyle = '#2a6a2a';
+sc.lineWidth = 1;
+sc.strokeRect(boardBackBottom + 45, boardBottom - 30, 15, 35);
+sc.fillStyle = '#4da6ff';
+sc.font = '6px Courier New';
+sc.textAlign = 'center';
+sc.fillText('PUMP', boardBackBottom + 52, boardBottom + 15);
+sc.fillText('SPRAYER', boardBackBottom + 52, boardBottom + 23);
+sc.fillText('(1 gal)', boardBackBottom + 52, boardBottom + 31);
+
+// Water line to mist jet
+sc.strokeStyle = 'rgba(100,180,255,0.3)';
+sc.lineWidth = 1;
+sc.setLineDash([3, 3]);
+sc.beginPath();
+sc.moveTo(boardBackBottom + 45, boardBottom - 10);
+sc.quadraticCurveTo(100, 600, mistX, 610);
+sc.stroke();
+sc.setLineDash([]);
+
+// ── Dimension labels ──
+// Gap dimension
+sc.strokeStyle = '#888';
+sc.lineWidth = 1;
+sc.beginPath();
+sc.moveTo(boardFrontTop - 5, boardTop - 55);
+sc.lineTo(boardBackTop + 8, boardTop - 55);
+sc.stroke();
+sc.beginPath(); sc.moveTo(boardFrontTop, boardTop - 59); sc.lineTo(boardFrontTop, boardTop - 51); sc.stroke();
+sc.beginPath(); sc.moveTo(boardBackTop + 4, boardTop - 59); sc.lineTo(boardBackTop + 4, boardTop - 51); sc.stroke();
+sc.fillStyle = '#888';
+sc.font = '8px Courier New';
+sc.textAlign = 'center';
+sc.fillText('5"', (boardFrontTop + boardBackTop + 4) / 2, boardTop - 60);
+
+// Board height
+sc.fillStyle = '#555';
+sc.font = '9px Courier New';
+sc.save();
+sc.translate(boardBackTop + 55, (boardTop + boardBottom) / 2);
+sc.rotate(-Math.PI/2);
+sc.textAlign = 'center';
+sc.fillText('72" BOARD', 0, 0);
+sc.restore();
+
+// Tilt angle
+sc.strokeStyle = '#FFD700';
+sc.lineWidth = 1;
+sc.globalAlpha = 0.5;
+sc.setLineDash([3, 3]);
+sc.beginPath();
+sc.moveTo(boardBackTop + 4, boardTop);
+sc.lineTo(boardBackTop + 4, boardTop + 50);
+sc.stroke();
+sc.setLineDash([]);
+sc.beginPath();
+sc.arc(boardBackTop + 4, boardTop, 25, Math.PI/2, Math.PI/2 + 0.35);
+sc.stroke();
+sc.globalAlpha = 1;
+sc.fillStyle = '#FFD700';
+sc.font = '8px Courier New';
+sc.textAlign = 'left';
+sc.fillText('20°', boardBackTop + 10, boardTop + 35);
+
+// Panel labels
+sc.fillStyle = 'rgba(135,206,250,0.4)';
+sc.font = '7px Courier New';
+sc.textAlign = 'left';
+sc.fillText('ACRYLIC', boardFrontTop - 45, boardTop + 75);
+sc.fillText('FRONT', boardFrontTop - 45, boardTop + 83);
+
+sc.fillStyle = '#555';
+sc.fillText('PLYWOOD', boardBackTop + 10, boardTop + 75);
+sc.fillText('BACK', boardBackTop + 10, boardTop + 83);
+
+// Ball return chute (behind board)
+sc.fillStyle = '#333';
+sc.beginPath();
+sc.moveTo(boardBackBottom + 4, boardBottom + 5);
+sc.lineTo(boardBackBottom + 30, boardBottom + 18);
+sc.lineTo(boardBackBottom + 30, boardBottom + 25);
+sc.lineTo(boardBackBottom + 4, boardBottom + 12);
+sc.closePath();
+sc.fill();
+sc.strokeStyle = '#555';
+sc.lineWidth = 1;
+sc.stroke();
+sc.fillStyle = '#888';
+sc.font = '6px Courier New';
+sc.textAlign = 'left';
+sc.fillText('BALL RETURN', boardBackBottom + 32, boardBottom + 18);
+sc.fillText('CHUTE', boardBackBottom + 32, boardBottom + 26);
+
+// Section label
+sc.fillStyle = '#555';
+sc.font = '10px Courier New';
+sc.textAlign = 'center';
+sc.fillText('SIDE CROSS-SECTION', SW/2, 670);
+sc.font = '8px Courier New';
+sc.fillStyle = '#FFD700';
+sc.fillText('⚡ THUNDER IN YOUR CHEST ⚡', SW/2, 685);
+
+</script>
+
+</body>
+</html>
