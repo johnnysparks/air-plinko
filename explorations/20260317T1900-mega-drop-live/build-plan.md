@@ -2,7 +2,7 @@
 
 ## Concept
 
-A standard gravity plinko board augmented with computer vision and a live game-show display. Two cameras (board cam + player cam) feed a Raspberry Pi running OpenCV and MediaPipe. A large monitor and speakers deliver real-time ball tracking effects, pose-activated power-ups, AI announcer, instant replays, and a daily leaderboard. The physical build is intentionally simple — all complexity lives in software.
+A standard gravity plinko board augmented with computer vision and a combo-chasing scoring system. A single camera (board cam) feeds a Raspberry Pi running OpenCV. A large monitor overlays numbered target zones onto the live board view — hit them in sequence (1→2→3→4→5) to build combo multipliers. The physical build is intentionally simple — all complexity lives in software. No player cam needed; all gameplay runs through ball tracking.
 
 ## Overall Dimensions
 
@@ -57,25 +57,17 @@ Standard offset plinko grid:
 
 ### 3. Camera System
 
-#### Board Cam
+#### Board Cam (single camera — no player cam needed)
 - **Hardware:** USB webcam, 1080p, wide-angle (120°+ FOV recommended)
 - **Mount position:** Top-center of the board, clamped to the top edge rail, angled down at the playing field through the acrylic
 - **Alternative mount:** Side-mount on a short gooseneck arm if top-mount creates parallax issues
-- **Purpose:** Tracks colored ball positions in real-time via HSV color segmentation
+- **Purpose:** Tracks colored ball positions in real-time via HSV color segmentation. Ball position is checked against combo target zones every frame.
 - **Key requirement:** Must see the full playing field including all 7 scoring zones
 - **Lighting note:** Board cam needs consistent lighting. A strip of USB-powered LED tape along the top inside edge (behind acrylic) provides even illumination and looks cool
 
-#### Player Cam
-- **Hardware:** USB webcam, 720p minimum
-- **Mount position:** On top of the monitor, facing the players (standard webcam position)
-- **Purpose:** Detects player poses for power-up selection using MediaPipe Pose
-- **Key requirement:** Must see players from waist up at 4-6 ft distance
-- **Privacy:** No images are stored. Pose skeleton data only. A sign states this clearly.
-
 #### Camera Mounting
-- Board cam: 3D-printed or wood bracket, clamped with a C-clamp or bolted to the edge rail
-- Player cam: Standard monitor-top webcam clip
-- Both cameras connect via USB to the Raspberry Pi (USB 2.0 sufficient for 30fps × 2)
+- 3D-printed or wood bracket, clamped with a C-clamp or bolted to the edge rail
+- Single USB connection to the Raspberry Pi (USB 2.0 sufficient for 30fps)
 
 ### 4. Display System
 
@@ -94,48 +86,68 @@ Standard offset plinko grid:
 
 #### Monitor Display Layout
 
+The monitor shows the live board cam feed at nearly full-screen, with combo target zones overlaid directly on the playing field. The display IS the game board — not a sidebar.
+
 ```
 ┌─────────────────────────────────────────────┐
-│  MEGA DROP LIVE              🏆 HIGH: 450   │
-│ ┌───────────────────┐ ┌──────────────────┐  │
-│ │                   │ │  PLAYER CAM      │  │
-│ │   BOARD CAM       │ │  ┌──────────┐    │  │
-│ │   (augmented)     │ │  │ skeleton │    │  │
-│ │   • ball trails   │ │  │ overlay  │    │  │
-│ │   • peg flashes   │ │  │          │    │  │
-│ │   • zone glow     │ │  └──────────┘    │  │
-│ │                   │ │  POWER-UP: 💪    │  │
-│ │                   │ │  "HEAVY BALL"    │  │
-│ └───────────────────┘ └──────────────────┘  │
+│  MEGA DROP LIVE        COMBO: --    HI: 750 │
+│ ┌─────────────────────────────────────────┐ │
+│ │ [1] [2] [3] [4] [5]   <- drop slots     │ │
+│ │    ·  ·  ·  ·  ·  ·  ·  ·  ·  ·        │ │
+│ │  (①)  ·  ·  ·  ·  ·  ·  ·  ·           │ │
+│ │    ·  ·  ·  ·  ·  ·  ·  ·  ·  ·        │ │
+│ │       ·  ·  ·(②) ·  ·  ·  ·  ·         │ │
+│ │    ·  ·  ·  ·  ·  ·  ·  ·  ·  ·        │ │
+│ │    ·  ·  ·  ·  ·  ·  (③) ·  ·          │ │
+│ │    ·  ·  ·  ·  ·  ·  ·  ·  ·  ·        │ │
+│ │       ·(④) ·  ·  ·  ·  ·  ·  ·         │ │
+│ │    ·  ·  ·  ·  ·  ·  ·  ·  ·  ·        │ │
+│ │    |10 |25 |50 |(⑤)00|50 |25 |10 |      │ │
+│ └─────────────────────────────────────────┘ │
 │                                             │
-│  🔴 RED: 175    ⚡ COMBO: x2    🔵 BLUE: 230│
-│  ▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░▓▓▓▓▓▓▓▓▓▓▓░░░░ │
-│         DAILY LEADERBOARD: 1. Max 680       │
+│  CHAIN: ①✓ ②✓ ③? ④  ⑤     MULTI: 2×      │
+│  🔴 RED: 175              🔵 BLUE: 230     │
+│         DAILY LEADERBOARD: 1. Max 750       │
 └─────────────────────────────────────────────┘
+
+① = green (hit)  ② = green (hit)  ③ = pulsing yellow (next target)
+④ = dim (waiting)  ⑤ = dim (waiting)
 ```
+
+**Key display states:**
+- **Pre-drop:** All 5 zones visible, numbered, pulsing gently. Zone 1 pulses brightest ("start here"). Faint ghost-path lines show approximate ball trajectories from each drop slot.
+- **During drop:** Active zone (next in sequence) pulses yellow. Hit zones turn solid green with a burst animation. Ball has a glowing trail. Combo counter updates live.
+- **Score moment:** Final multiplier math animates: "50 × 3 = 150!" Perfect chains trigger full-screen gold explosion.
+- **Replay:** 3-second slow-mo replay with zones lighting up in sequence again.
 
 ### 5. Compute System
 
 #### Raspberry Pi 4 (4GB or 8GB)
 - **OS:** Raspberry Pi OS Lite + Chromium kiosk mode
 - **Software stack:**
-  - Python 3 + OpenCV: Ball tracking pipeline
-  - MediaPipe Pose (or TensorFlow Lite PoseNet): Player skeleton detection
-  - WebSocket server (Python asyncio): Bridges CV data to the browser
+  - Python 3 + OpenCV: Ball tracking pipeline + combo zone hit detection
+  - Combo Zone Engine: Generates randomized target layouts, checks ball-in-zone collisions, manages chain state
+  - WebSocket server (Python asyncio): Bridges CV data + combo state to the browser
   - Chromium in kiosk mode: Full-screen game display (HTML5 Canvas + Web Audio)
 - **Mount:** Velcroed or zip-tied to the back of the board in a small ventilated enclosure
 - **Power:** USB-C, 5V/3A — runs from same power strip as the monitor
-- **SD Card:** 32GB+ with pre-built OS image. Entire setup is: insert SD card, plug in power + HDMI + 2× USB cameras. Boot time ~30 seconds.
+- **SD Card:** 32GB+ with pre-built OS image. Entire setup is: insert SD card, plug in power + HDMI + 1× USB camera. Boot time ~30 seconds.
 - **Backup:** Spare SD card with identical image in the parts bin
 
 #### Software Architecture
 
 ```
-Board Cam (USB) ──→ OpenCV HSV Tracking ──→ Ball positions (x,y,color)
+Board Cam (USB) ──→ OpenCV HSV Tracking ──→ Ball position (x,y,color)
                                                     │
-Player Cam (USB) ─→ MediaPipe Pose ────────→ Pose landmarks    │
-                                                    │           │
-                                              WebSocket Server ←┘
+                                          Combo Zone Engine
+                                          • generates target layout
+                                          • ball-in-zone collision
+                                          • chain state (0/5 → 5/5)
+                                          • multiplier calculation
+                                                    │
+                                              WebSocket Server
+                                              (ball pos + zone state
+                                               + chain progress)
                                                     │
                                               Browser Display
                                               (Canvas + Audio)
@@ -191,7 +203,6 @@ Player Cam (USB) ─→ MediaPipe Pose ────────→ Pose landmark
 | MicroSD card (32GB) | 2 | $14 |
 | USB-C power supply (5V/3A) | 1 | $10 |
 | USB webcam 1080p (board cam) | 1 | $25 |
-| USB webcam 720p (player cam) | 1 | $15 |
 | Micro-HDMI to HDMI cable | 1 | $8 |
 | USB LED strip (white, interior) | 1 | $8 |
 | 3.5mm aux cable | 1 | $4 |
@@ -214,8 +225,8 @@ Player Cam (USB) ─→ MediaPipe Pose ────────→ Pose landmark
 | Red + blue spray paint (if needed) | 2 cans | $10 |
 | Scoring zone vinyl numbers | 1 sheet | $5 |
 
-### **Estimated Total: $350–480**
-(Range depends on TV — thrift find vs new budget model)
+### **Estimated Total: $335–465**
+(Range depends on TV — thrift find vs new budget model. ~$15 less than original concept due to dropping the player cam.)
 
 ---
 
@@ -246,9 +257,8 @@ Player Cam (USB) ─→ MediaPipe Pose ────────→ Pose landmark
 ### Phase 3: Tech Integration (Weekend 2, Day 1)
 1. Flash Raspberry Pi SD card with pre-built OS image
 2. Mount board cam: bracket on top edge rail, angled down at playing field
-3. Mount player cam: clip on monitor top
-4. Install LED strip inside top edge, behind acrylic
-5. Connect: Pi ← USB cams, Pi → HDMI → monitor, Pi → aux → speakers
+3. Install LED strip inside top edge, behind acrylic
+4. Connect: Pi ← USB cam, Pi → HDMI → monitor, Pi → aux → speakers
 6. Mount Pi enclosure on back of board (ventilated, zip-tied)
 7. Route all cables cleanly along the back with cable ties
 8. Power test: single power strip powers Pi + monitor + speakers + LED strip
@@ -257,11 +267,13 @@ Player Cam (USB) ─→ MediaPipe Pose ────────→ Pose landmark
 1. Boot Pi, launch calibration mode
 2. Board cam calibration: adjust HSV thresholds for red and blue balls under actual lighting
 3. Map pixel coordinates to scoring zones (one-time calibration by dropping a ball in each zone)
-4. Player cam calibration: confirm pose detection works at expected player distance (4-6 ft)
-5. Test pose recognition for all 3 power-ups + default mode
-6. Sound check: verify speaker volume cuts through ambient noise
-7. Full playtest: 10 rounds, both modes (solo and versus)
-8. Create spare SD card image (identical backup)
+4. Map pixel coordinates to the full playing field grid (defines the region where combo target zones can be placed)
+5. Test combo zone generation: verify zones appear at valid, reachable positions within the peg field
+6. Test collision detection: drop balls through known target zones, confirm hit detection registers accurately
+7. Tune hitbox sizes for Easy/Medium/Hard difficulty modes
+8. Sound check: verify speaker volume cuts through ambient noise
+9. Full playtest: 10 rounds, both modes (solo and versus), all difficulty levels
+10. Create spare SD card image (identical backup)
 
 ### Phase 5: Game Day Prep
 1. Transport: Board + legs (folded) + monitor + speaker bag + Pi kit box
@@ -280,36 +292,65 @@ Player Cam (USB) ─→ MediaPipe Pose ────────→ Pose landmark
 - Contour detection → centroid = ball position
 - Kalman filter for smooth tracking through brief occlusions behind pegs
 - Score detection: ball centroid enters a scoring zone polygon → trigger score event
+- Ball position published at 30 FPS to the combo zone engine and WebSocket
 
-### Pose Detection (MediaPipe)
-- MediaPipe Pose Lite model runs at 15-20 FPS on Pi 4
-- Detect key landmarks: shoulders, elbows, wrists, hips
-- Pose classification:
-  - FLEX: Both elbows bent, wrists above shoulders
-  - T-POSE: Both arms extended horizontally (wrist-shoulder-wrist angle ~180°)
-  - CROWN: Both wrists above head, close together
-  - Default: None of the above for 5 seconds → classic mode
+### Combo Zone Engine (Python)
+The core gameplay logic. Runs alongside the CV pipeline.
+
+- **Zone generation:** Before each drop, generate N target zones (3 for Easy, 4 for Medium, 5 for Hard). Each zone is a circular region defined by (x, y, radius) in board-pixel coordinates. Zones are placed within the peg field bounds, vertically distributed (zone 1 near top, zone N near bottom), with horizontal randomization. Constraint: zones must not overlap and must be reachable by a ball (not placed directly on a peg).
+- **Collision detection:** Each frame, check if ball centroid is within any zone's radius. If ball enters zone K:
+  - If K == next_expected_zone: **HIT** — increment chain, advance next_expected_zone, fire hit event
+  - If K != next_expected_zone: **WRONG ORDER** — fire miss event (visual/audio feedback), but do NOT break the chain. Player can still hit the correct zone later.
+  - If ball has already passed zone K vertically (below it): zone becomes unreachable, mark as missed
+- **Chain state:** Tracks current chain length (0 to N). Published to browser every frame.
+- **Multiplier math:** chain 0 = 1×, chain 1 = 1.5×, chain 2 = 2×, chain 3 = 3×, chain 4 = 4×, chain 5 (perfect) = 5× + 200 bonus
+- **Ghost paths (pre-drop):** During the "Read the Board" phase, simulate 50 random ball drops from each of the 5 drop slots using a simplified peg-bounce model. Display the resulting probability clouds as faint path lines on the display. These are approximate — just enough to help the player pick a drop slot, not enough to guarantee anything.
+- **Difficulty scaling:** Volunteer presses a key (1/2/3) or the system auto-detects based on player height (short = Easy, tall = Hard). Affects zone count and hitbox radius:
+  - Easy: 3 zones, radius = 45px (~3" on board)
+  - Medium: 4 zones, radius = 35px (~2.5" on board)
+  - Hard: 5 zones, radius = 25px (~1.75" on board)
 
 ### Display (Browser)
-- HTML5 Canvas for real-time rendering (ball trails, effects)
+- HTML5 Canvas for real-time rendering (ball trails, combo zone overlays, chain effects)
 - Web Audio API for layered sound (background music + SFX + announcer)
-- WebSocket client receives ball positions + pose events at 30 FPS
-- Announcer: pre-recorded clips triggered by game events (score, near-miss, high score, combo)
+- WebSocket client receives ball position + combo zone state + chain progress at 30 FPS
+- Zone rendering: numbered circles overlaid on the live camera feed. Green = hit, pulsing yellow = next target, dim gray = waiting, red flash = wrong order
+- Announcer: pre-recorded clips triggered by combo events
+- Ghost path rendering: semi-transparent gradient lines from each drop slot, showing approximate ball trajectories
 - All assets preloaded at boot — no internet required during operation
 
 ### Announcer Clip List (record these with any enthusiastic friend)
+
+**Setup & attract:**
 - "Step right up to MEGA DROP LIVE!"
-- "Choose your power-up!"
-- "Heavy ball activated!"
-- "Scatter shot — here they come!"
-- "Crown zone — where's the gold?"
+- "Read the board... choose your slot... chase the chain!"
+- "New targets! Study the board!"
+
+**During drop — chain building:**
 - "Here... we... GO!"
-- "Left side! Right side! It's bouncing everywhere!"
-- "Heading for the hundred!"
-- "OHHH! So close!"
+- "Zone one — GOT IT!"
+- "Two for two! Keep it going!"
+- "Three in a row! The crowd is ON THEIR FEET!"
+- "FOUR! One more for the PERFECT CHAIN!"
+- "FIVE! FIVE! FIVE! PERFECT CHAIN! UNBELIEVABLE!"
+
+**During drop — misses and near-misses:**
+- "OHHH! Right past zone two!"
+- "So close! That was INCHES from the chain!"
+- "The pegs said NO!"
+- "Tough bounce... tough bounce..."
+
+**Score reveals:**
 - "TEN POINTS!" / "TWENTY-FIVE!" / "FIFTY!" / "ONE HUNDRED! JACKPOT!"
+- "Fifty times THREE — that's a hundred fifty!"
+- "ONE HUNDRED times FIVE — FIVE HUNDRED POINTS! ARE YOU KIDDING ME?!"
 - "NEW HIGH SCORE!"
-- "What a drop! Let's see that replay!"
+- "What a chain! Let's see that replay!"
+
+**Two-player:**
+- "Red hits zone three! Blue still stuck on two!"
+- "It's a CHAIN RACE!"
+- "Blue with the perfect chain — can Red answer?!"
 
 ---
 
@@ -319,3 +360,6 @@ Player Cam (USB) ─→ MediaPipe Pose ────────→ Pose landmark
 - [ ] Pre-record announcer clips or use TTS? (Pre-recorded = more energy, TTS = more variety)
 - [ ] Tournament mode logistics — how to manage brackets across a full carnival day
 - [ ] Power requirements: Pi (15W) + TV (50-80W) + speakers (20W) + LED (5W) ≈ 120W total — standard outlet sufficient
+- [ ] Ghost path accuracy: how many simulations needed for useful-but-not-spoiling path hints? 50 might be too few or too many — needs playtesting
+- [ ] Zone placement algorithm: need to ensure generated layouts are always "fair" — at least one drop slot should have a reasonable chance of hitting zones 1→2→3 in sequence. Bad RNG could create impossible layouts.
+- [ ] Hitbox tuning: the "right" radius for each difficulty needs real-world testing. Too generous = everyone gets perfect chains (boring). Too tight = nobody chains past 2 (frustrating). Target: ~5% perfect chain rate on Hard, ~30% on Easy.
