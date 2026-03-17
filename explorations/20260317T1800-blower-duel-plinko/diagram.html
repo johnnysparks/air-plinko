@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Blower Duel Plinko — Diagram</title>
+<!-- screenshot: 1200x1900 -->
+<style>
+  body { margin: 0; padding: 0; background: #0a0e1a; overflow: hidden; }
+  canvas { display: block; }
+</style>
+</head>
+<body>
+<canvas id="c" width="1200" height="1900"></canvas>
+<script>
+const c = document.getElementById('c');
+const ctx = c.getContext('2d');
+
+// Colors
+const BG = '#0a0e1a';
+const MILWAUKEE_RED = '#DB0032';
+const MESH_GREEN = 'rgba(100,200,100,0.35)';
+const MESH_LINE = 'rgba(100,200,100,0.5)';
+const PEG_COLOR = '#8B7355';
+const GOLD = '#FFD700';
+const ORANGE = '#FF8C00';
+const WHITE = '#FFFFFF';
+const GRAY = '#666666';
+const LIGHT_GRAY = '#AAAAAA';
+const DARK_GRAY = '#333333';
+const YELLOW = '#FFDD44';
+const BALL_RED = '#FF2244';
+const BALL_BLACK = '#222222';
+const CYAN = '#44CCEE';
+const AIR_BLUE = 'rgba(100,180,255,0.4)';
+
+ctx.fillStyle = BG;
+ctx.fillRect(0, 0, 1200, 1900);
+
+// ============================================================
+// TITLE
+// ============================================================
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.font = 'bold 38px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('BLOWER DUEL PLINKO', 600, 48);
+ctx.fillStyle = LIGHT_GRAY;
+ctx.font = '16px Arial';
+ctx.fillText('Aim at the Board to Score — or Aim at Your Opponent\'s FACE to Sabotage', 600, 74);
+
+// ============================================================
+// FRONT VIEW (left side — main view)
+// ============================================================
+const FV_X = 60;
+const FV_Y = 120;
+const FV_W = 480;
+const FV_H = 640;
+
+ctx.fillStyle = WHITE;
+ctx.font = 'bold 18px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('FRONT VIEW (Red Player\'s Side)', FV_X + FV_W/2, FV_Y - 15);
+
+// Board background — dark but with mesh hint
+ctx.fillStyle = '#0e1422';
+ctx.fillRect(FV_X, FV_Y, FV_W, FV_H);
+
+// Mesh grid pattern (the key visual — this isn't solid, it's open)
+ctx.strokeStyle = MESH_LINE;
+ctx.lineWidth = 0.5;
+ctx.globalAlpha = 0.15;
+for (let gx = FV_X; gx <= FV_X + FV_W; gx += 12) {
+  ctx.beginPath();
+  ctx.moveTo(gx, FV_Y); ctx.lineTo(gx, FV_Y + FV_H);
+  ctx.stroke();
+}
+for (let gy = FV_Y; gy <= FV_Y + FV_H; gy += 12) {
+  ctx.beginPath();
+  ctx.moveTo(FV_X, gy); ctx.lineTo(FV_X + FV_W, gy);
+  ctx.stroke();
+}
+ctx.globalAlpha = 1.0;
+
+// Frame (2x4 lumber — thick red border)
+ctx.strokeStyle = MILWAUKEE_RED;
+ctx.lineWidth = 10;
+ctx.strokeRect(FV_X, FV_Y, FV_W, FV_H);
+
+// Zone sidebar
+const zoneX = FV_X + FV_W + 14;
+ctx.fillStyle = 'rgba(100,200,100,0.1)';
+ctx.fillRect(FV_X + 2, FV_Y + 2, FV_W - 4, FV_H * 0.12);
+ctx.fillStyle = 'rgba(100,200,100,0.6)';
+ctx.font = '11px Arial';
+ctx.textAlign = 'left';
+ctx.fillText('DROP ZONE', zoneX, FV_Y + FV_H * 0.06);
+
+ctx.fillStyle = 'rgba(139,115,85,0.06)';
+ctx.fillRect(FV_X + 2, FV_Y + FV_H * 0.12, FV_W - 4, FV_H * 0.68);
+ctx.fillStyle = 'rgba(139,115,85,0.6)';
+ctx.fillText('PEG FIELD', zoneX, FV_Y + FV_H * 0.46);
+ctx.fillText('(OPEN MESH)', zoneX, FV_Y + FV_H * 0.49);
+
+ctx.fillStyle = 'rgba(255,215,0,0.06)';
+ctx.fillRect(FV_X + 2, FV_Y + FV_H * 0.80, FV_W - 4, FV_H * 0.20);
+ctx.fillStyle = 'rgba(255,215,0,0.6)';
+ctx.fillText('SCORING ZONE', zoneX, FV_Y + FV_H * 0.90);
+
+// ---- DROP SLOTS (top) ----
+const dropSlotY = FV_Y - 2;
+const dropPositions = [FV_X + FV_W * 0.25, FV_X + FV_W * 0.5, FV_X + FV_W * 0.75];
+dropPositions.forEach((dx, i) => {
+  ctx.fillStyle = MILWAUKEE_RED;
+  ctx.fillRect(dx - 16, dropSlotY, 32, 20);
+  ctx.fillStyle = WHITE;
+  ctx.font = '9px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('DROP ' + (i+1), dx, dropSlotY + 14);
+});
+
+// ---- PEG FIELD ----
+const pegStartY = FV_Y + FV_H * 0.15;
+const pegEndY = FV_Y + FV_H * 0.77;
+const pegRows = 10;
+const pegCols = 8;
+const pegSpacingY = (pegEndY - pegStartY) / (pegRows - 1);
+const pegSpacingX = (FV_W - 70) / (pegCols - 1);
+
+for (let row = 0; row < pegRows; row++) {
+  const offset = (row % 2 === 0) ? 0 : pegSpacingX / 2;
+  const cols = (row % 2 === 0) ? pegCols : pegCols - 1;
+  for (let col = 0; col < cols; col++) {
+    const px = FV_X + 35 + col * pegSpacingX + offset;
+    const py = pegStartY + row * pegSpacingY;
+    ctx.beginPath();
+    ctx.arc(px, py, 5, 0, Math.PI * 2);
+    ctx.fillStyle = PEG_COLOR;
+    ctx.fill();
+    ctx.strokeStyle = '#6B5335';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+}
+
+// ---- AIR PORTS (2 per side) ----
+const leftPorts = [
+  { label: 'LOW', y: FV_Y + FV_H * 0.65 },
+  { label: 'HIGH', y: FV_Y + FV_H * 0.30 }
+];
+const rightPorts = [
+  { label: 'LOW', y: FV_Y + FV_H * 0.65 },
+  { label: 'HIGH', y: FV_Y + FV_H * 0.30 }
+];
+
+// Left ports (Red player)
+leftPorts.forEach(p => {
+  ctx.beginPath();
+  ctx.arc(FV_X, p.y, 16, 0, Math.PI * 2);
+  ctx.fillStyle = MILWAUKEE_RED;
+  ctx.fill();
+  ctx.strokeStyle = '#FF4466';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(FV_X, p.y, 8, 0, Math.PI * 2);
+  ctx.fillStyle = DARK_GRAY;
+  ctx.fill();
+  ctx.fillStyle = MILWAUKEE_RED;
+  ctx.font = 'bold 10px Arial';
+  ctx.textAlign = 'right';
+  ctx.fillText(p.label, FV_X - 22, p.y + 4);
+});
+
+// Right ports (Black player)
+rightPorts.forEach(p => {
+  ctx.beginPath();
+  ctx.arc(FV_X + FV_W, p.y, 16, 0, Math.PI * 2);
+  ctx.fillStyle = '#444';
+  ctx.fill();
+  ctx.strokeStyle = '#666';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(FV_X + FV_W, p.y, 8, 0, Math.PI * 2);
+  ctx.fillStyle = DARK_GRAY;
+  ctx.fill();
+  ctx.fillStyle = '#888';
+  ctx.font = 'bold 10px Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText(p.label, FV_X + FV_W + 22, p.y + 4);
+});
+
+// ---- AIR BLAST from Red player's HIGH port (scoring mode) ----
+ctx.save();
+ctx.globalAlpha = 0.3;
+const blastX = FV_X + 16;
+const blastY = FV_Y + FV_H * 0.30;
+const blGrad = ctx.createLinearGradient(blastX, blastY, blastX + FV_W * 0.55, blastY);
+blGrad.addColorStop(0, MILWAUKEE_RED);
+blGrad.addColorStop(1, 'rgba(219,0,50,0)');
+ctx.fillStyle = blGrad;
+ctx.beginPath();
+ctx.moveTo(blastX, blastY - 5);
+ctx.lineTo(blastX + FV_W * 0.55, blastY - 22);
+ctx.lineTo(blastX + FV_W * 0.55, blastY + 22);
+ctx.lineTo(blastX, blastY + 5);
+ctx.closePath();
+ctx.fill();
+ctx.restore();
+
+ctx.fillStyle = 'rgba(255,100,100,0.7)';
+ctx.font = 'italic 10px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('AIR BLAST → STEER BALL', blastX + FV_W * 0.25, blastY - 16);
+
+// Red ball being steered
+const rbx = FV_X + FV_W * 0.35;
+const rby = blastY + 8;
+ctx.save();
+ctx.globalAlpha = 0.15;
+ctx.beginPath(); ctx.arc(rbx - 16, rby + 12, 9, 0, Math.PI*2);
+ctx.fillStyle = BALL_RED; ctx.fill();
+ctx.restore();
+ctx.beginPath(); ctx.arc(rbx, rby, 10, 0, Math.PI*2);
+ctx.fillStyle = BALL_RED; ctx.fill();
+ctx.strokeStyle = '#CC0020'; ctx.lineWidth = 1.5; ctx.stroke();
+
+// Black ball falling on opponent's side
+const bbx = FV_X + FV_W * 0.72;
+const bby = FV_Y + FV_H * 0.48;
+ctx.beginPath(); ctx.arc(bbx, bby, 10, 0, Math.PI*2);
+ctx.fillStyle = BALL_BLACK; ctx.fill();
+ctx.strokeStyle = '#555'; ctx.lineWidth = 1.5; ctx.stroke();
+ctx.save();
+ctx.globalAlpha = 0.12;
+ctx.beginPath(); ctx.arc(bbx + 5, bby - 20, 9, 0, Math.PI*2);
+ctx.fillStyle = BALL_BLACK; ctx.fill();
+ctx.restore();
+
+// ---- FACE BLAST ZONE (above the board!) ----
+// Show the arc of air going OVER the board
+ctx.save();
+ctx.setLineDash([8, 6]);
+ctx.strokeStyle = 'rgba(255, 150, 50, 0.6)';
+ctx.lineWidth = 3;
+ctx.beginPath();
+ctx.moveTo(FV_X - 40, FV_Y - 20);
+ctx.quadraticCurveTo(FV_X + FV_W/2, FV_Y - 80, FV_X + FV_W + 40, FV_Y - 20);
+ctx.stroke();
+ctx.setLineDash([]);
+ctx.restore();
+
+// Arrow at end
+ctx.fillStyle = 'rgba(255, 150, 50, 0.7)';
+ctx.beginPath();
+ctx.moveTo(FV_X + FV_W + 40, FV_Y - 20);
+ctx.lineTo(FV_X + FV_W + 30, FV_Y - 30);
+ctx.lineTo(FV_X + FV_W + 30, FV_Y - 10);
+ctx.closePath();
+ctx.fill();
+
+ctx.fillStyle = ORANGE;
+ctx.font = 'bold 13px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('⚡ FACE BLAST ZONE ⚡', FV_X + FV_W/2, FV_Y - 55);
+ctx.fillStyle = 'rgba(255,150,50,0.7)';
+ctx.font = '10px Arial';
+ctx.fillText('Aim OVER the board → blast opponent\'s face!', FV_X + FV_W/2, FV_Y - 40);
+
+// ---- BLOWERS (both sides) ----
+// Red player blower (left)
+const blwLX = FV_X - 110;
+const blwLY = FV_Y + FV_H * 0.25;
+ctx.save();
+ctx.translate(blwLX, blwLY);
+ctx.rotate(-0.05);
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.fillRect(0, 0, 70, 28);
+ctx.fillStyle = '#222';
+ctx.fillRect(15, 28, 20, 35);
+ctx.fillStyle = '#333';
+ctx.fillRect(70, 6, 30, 16);
+ctx.fillStyle = WHITE;
+ctx.font = 'bold 8px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('M18', 35, 18);
+ctx.restore();
+
+// Tether
+ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+ctx.lineWidth = 1.5;
+ctx.setLineDash([5, 4]);
+ctx.beginPath();
+ctx.moveTo(blwLX + 30, blwLY + 60);
+ctx.quadraticCurveTo(blwLX, blwLY + 120, FV_X - 10, FV_Y + FV_H * 0.50);
+ctx.stroke();
+ctx.setLineDash([]);
+
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.font = 'bold 13px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('RED PLAYER', blwLX + 40, blwLY - 18);
+
+// Stick figure (Red player)
+const rfX = blwLX + 20;
+const rfY = blwLY + 90;
+ctx.strokeStyle = MILWAUKEE_RED;
+ctx.lineWidth = 2;
+// head
+ctx.beginPath(); ctx.arc(rfX, rfY, 10, 0, Math.PI*2); ctx.stroke();
+// body
+ctx.beginPath(); ctx.moveTo(rfX, rfY+10); ctx.lineTo(rfX, rfY+45); ctx.stroke();
+// legs
+ctx.beginPath(); ctx.moveTo(rfX, rfY+45); ctx.lineTo(rfX-12, rfY+65); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(rfX, rfY+45); ctx.lineTo(rfX+12, rfY+65); ctx.stroke();
+// arms — reaching toward blower
+ctx.beginPath(); ctx.moveTo(rfX, rfY+20); ctx.lineTo(rfX+30, rfY+5); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(rfX, rfY+25); ctx.lineTo(rfX+25, rfY+15); ctx.stroke();
+
+// Black player blower (right)
+const blwRX = FV_X + FV_W + 40;
+const blwRY = FV_Y + FV_H * 0.60;
+ctx.save();
+ctx.translate(blwRX + 100, blwRY);
+ctx.scale(-1, 1);
+ctx.rotate(-0.05);
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.fillRect(0, 0, 70, 28);
+ctx.fillStyle = '#222';
+ctx.fillRect(15, 28, 20, 35);
+ctx.fillStyle = '#333';
+ctx.fillRect(70, 6, 30, 16);
+ctx.fillStyle = WHITE;
+ctx.font = 'bold 8px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('M18', 35, 18);
+ctx.restore();
+
+ctx.fillStyle = '#AAA';
+ctx.font = 'bold 13px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('BLACK PLAYER', blwRX + 50, blwRY - 18);
+
+// Stick figure (Black player)
+const bfX = blwRX + 80;
+const bfY = blwRY + 90;
+ctx.strokeStyle = '#AAA';
+ctx.lineWidth = 2;
+ctx.beginPath(); ctx.arc(bfX, bfY, 10, 0, Math.PI*2); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(bfX, bfY+10); ctx.lineTo(bfX, bfY+45); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(bfX, bfY+45); ctx.lineTo(bfX-12, bfY+65); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(bfX, bfY+45); ctx.lineTo(bfX+12, bfY+65); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(bfX, bfY+20); ctx.lineTo(bfX-30, bfY+5); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(bfX, bfY+25); ctx.lineTo(bfX-25, bfY+15); ctx.stroke();
+
+// ---- SCORING POCKETS (bottom) ----
+const pocketY = FV_Y + FV_H - 60;
+const pocketH = 55;
+const pockets = [
+  { label: '0', w: 0.08, color: '#1a1a1a', textColor: GRAY },
+  { label: '10', w: 0.12, color: '#2a2a3a', textColor: WHITE },
+  { label: '25', w: 0.10, color: '#3a3020', textColor: YELLOW },
+  { label: '50', w: 0.08, color: '#3a2510', textColor: ORANGE },
+  { label: '100', w: 0.06, color: '#4a0015', textColor: MILWAUKEE_RED },
+  { label: '50', w: 0.08, color: '#3a2510', textColor: ORANGE },
+  { label: '25', w: 0.10, color: '#3a3020', textColor: YELLOW },
+  { label: '10', w: 0.12, color: '#2a2a3a', textColor: WHITE },
+  { label: '0', w: 0.08, color: '#1a1a1a', textColor: GRAY },
+];
+
+const totalW = pockets.reduce((s, p) => s + p.w, 0);
+let pocketX = FV_X + 5;
+const usableW = FV_W - 10;
+
+pockets.forEach(p => {
+  const pw = (p.w / totalW) * usableW;
+  ctx.fillStyle = p.color;
+  ctx.fillRect(pocketX, pocketY, pw, pocketH);
+  ctx.strokeStyle = MILWAUKEE_RED;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(pocketX, pocketY); ctx.lineTo(pocketX, pocketY + pocketH);
+  ctx.stroke();
+  ctx.fillStyle = p.textColor;
+  ctx.font = 'bold 14px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText(p.label, pocketX + pw/2, pocketY + 24);
+  ctx.font = '9px Arial';
+  ctx.fillText('pts', pocketX + pw/2, pocketY + 37);
+  pocketX += pw;
+});
+ctx.strokeStyle = MILWAUKEE_RED; ctx.lineWidth = 2;
+ctx.beginPath(); ctx.moveTo(pocketX, pocketY); ctx.lineTo(pocketX, pocketY + pocketH); ctx.stroke();
+
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.font = 'bold 11px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('JACKPOT', FV_X + FV_W/2, pocketY - 6);
+
+// Board title
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.font = 'bold 20px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('BLOWER', FV_X + FV_W/2, FV_Y + 28);
+ctx.fillText('DUEL', FV_X + FV_W/2, FV_Y + 50);
+
+// ---- TOWER LIGHT ----
+const tlX = FV_X + FV_W/2;
+const tlY = FV_Y - 85;
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.fillRect(tlX - 3, tlY + 10, 6, 30);
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.fillRect(tlX - 10, tlY - 5, 20, 15);
+ctx.save();
+ctx.globalAlpha = 0.2;
+const glGrad = ctx.createRadialGradient(tlX, tlY + 2, 4, tlX, tlY + 2, 35);
+glGrad.addColorStop(0, GOLD);
+glGrad.addColorStop(1, 'rgba(255,215,0,0)');
+ctx.fillStyle = glGrad;
+ctx.beginPath(); ctx.arc(tlX, tlY + 2, 35, 0, Math.PI*2); ctx.fill();
+ctx.restore();
+ctx.fillStyle = GOLD;
+ctx.font = '9px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('M18 TOWER LIGHT', tlX, tlY - 12);
+
+// ---- DIMENSION LINES ----
+ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+ctx.fillStyle = 'rgba(255,255,255,0.5)';
+ctx.lineWidth = 1;
+ctx.font = '10px Arial';
+
+// Width
+const dimY = FV_Y + FV_H + 25;
+ctx.beginPath(); ctx.moveTo(FV_X, dimY); ctx.lineTo(FV_X + FV_W, dimY); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(FV_X, dimY-5); ctx.lineTo(FV_X, dimY+5); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(FV_X+FV_W, dimY-5); ctx.lineTo(FV_X+FV_W, dimY+5); ctx.stroke();
+ctx.textAlign = 'center';
+ctx.fillText('48" (4 ft)', FV_X + FV_W/2, dimY + 15);
+
+// Height
+const dimX = FV_X - 25;
+ctx.beginPath(); ctx.moveTo(dimX, FV_Y); ctx.lineTo(dimX, FV_Y+FV_H); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(dimX-5, FV_Y); ctx.lineTo(dimX+5, FV_Y); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(dimX-5, FV_Y+FV_H); ctx.lineTo(dimX+5, FV_Y+FV_H); ctx.stroke();
+ctx.save();
+ctx.translate(dimX - 10, FV_Y + FV_H/2);
+ctx.rotate(-Math.PI/2);
+ctx.textAlign = 'center';
+ctx.fillText('60" (5 ft)', 0, 0);
+ctx.restore();
+
+// ============================================================
+// TOP-DOWN VIEW (right side — shows the DUEL dynamic)
+// ============================================================
+const TV_X = 660;
+const TV_Y = 120;
+const TV_W = 480;
+const TV_H = 350;
+
+ctx.fillStyle = WHITE;
+ctx.font = 'bold 18px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('TOP-DOWN VIEW (The Duel Dynamic)', TV_X + TV_W/2, TV_Y - 15);
+
+// Playing field (top-down = width × depth)
+const boardTopX = TV_X + 100;
+const boardTopY = TV_Y + 120;
+const boardTopW = TV_W - 200; // 48" width
+const boardTopD = 40;         // 4" depth (exaggerated)
+
+// Player zones
+// Red player (top/near)
+ctx.fillStyle = 'rgba(219,0,50,0.08)';
+ctx.fillRect(TV_X + 40, TV_Y + 10, TV_W - 80, 100);
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.font = 'bold 14px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('RED PLAYER ZONE', TV_X + TV_W/2, TV_Y + 30);
+
+// Black player (bottom/far)
+ctx.fillStyle = 'rgba(150,150,150,0.08)';
+ctx.fillRect(TV_X + 40, TV_Y + 200, TV_W - 80, 100);
+ctx.fillStyle = '#AAA';
+ctx.font = 'bold 14px Arial';
+ctx.fillText('BLACK PLAYER ZONE', TV_X + TV_W/2, TV_Y + 280);
+
+// The board (top-down — thin rectangle)
+ctx.fillStyle = '#2a2015';
+ctx.fillRect(boardTopX, boardTopY, boardTopW, boardTopD);
+// Mesh pattern on board
+ctx.strokeStyle = MESH_LINE;
+ctx.lineWidth = 0.5;
+for (let mx = boardTopX; mx <= boardTopX + boardTopW; mx += 8) {
+  ctx.beginPath();
+  ctx.moveTo(mx, boardTopY); ctx.lineTo(mx, boardTopY + boardTopD);
+  ctx.stroke();
+}
+ctx.strokeStyle = MILWAUKEE_RED;
+ctx.lineWidth = 3;
+ctx.strokeRect(boardTopX, boardTopY, boardTopW, boardTopD);
+
+ctx.fillStyle = WHITE;
+ctx.font = 'bold 10px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('BOARD (OPEN MESH)', TV_X + TV_W/2, boardTopY + boardTopD/2 + 4);
+
+// Pegs shown as dots (top-down)
+for (let px = boardTopX + 20; px < boardTopX + boardTopW; px += 35) {
+  ctx.beginPath();
+  ctx.arc(px, boardTopY + boardTopD/2, 3, 0, Math.PI*2);
+  ctx.fillStyle = PEG_COLOR;
+  ctx.fill();
+}
+
+// Air ports (shown as openings in the board frame sides)
+// Left ports
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.fillRect(boardTopX - 8, boardTopY + 5, 8, 12);
+ctx.fillRect(boardTopX - 8, boardTopY + boardTopD - 17, 8, 12);
+// Right ports
+ctx.fillStyle = '#555';
+ctx.fillRect(boardTopX + boardTopW, boardTopY + 5, 8, 12);
+ctx.fillRect(boardTopX + boardTopW, boardTopY + boardTopD - 17, 8, 12);
+
+// ---- THE THREE BLAST OPTIONS (top-down) ----
+
+// Option 1: Red player blasts through port → steers own ball
+ctx.save();
+ctx.globalAlpha = 0.35;
+const opt1Grad = ctx.createLinearGradient(boardTopX - 30, boardTopY + 10, boardTopX + boardTopW * 0.4, boardTopY + 10);
+opt1Grad.addColorStop(0, MILWAUKEE_RED);
+opt1Grad.addColorStop(1, 'rgba(219,0,50,0)');
+ctx.fillStyle = opt1Grad;
+ctx.beginPath();
+ctx.moveTo(boardTopX - 30, boardTopY + 6);
+ctx.lineTo(boardTopX + boardTopW * 0.4, boardTopY);
+ctx.lineTo(boardTopX + boardTopW * 0.4, boardTopY + boardTopD);
+ctx.lineTo(boardTopX - 30, boardTopY + 20);
+ctx.closePath();
+ctx.fill();
+ctx.restore();
+
+// Label
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.font = 'bold 10px Arial';
+ctx.textAlign = 'right';
+ctx.fillText('① STEER', boardTopX - 35, boardTopY + 10);
+ctx.fillStyle = 'rgba(255,100,100,0.7)';
+ctx.font = '9px Arial';
+ctx.fillText('(Air port → own ball)', boardTopX - 35, boardTopY + 22);
+
+// Option 2: Red player blasts THROUGH MESH → hits opponent's ball
+ctx.save();
+ctx.globalAlpha = 0.25;
+const opt2Grad = ctx.createLinearGradient(boardTopX + boardTopW * 0.3, boardTopY + boardTopD, boardTopX + boardTopW * 0.3, boardTopY + boardTopD + 80);
+opt2Grad.addColorStop(0, CYAN);
+opt2Grad.addColorStop(1, 'rgba(68,204,238,0)');
+ctx.fillStyle = opt2Grad;
+ctx.beginPath();
+ctx.moveTo(boardTopX + boardTopW * 0.25, boardTopY + boardTopD);
+ctx.lineTo(boardTopX + boardTopW * 0.15, boardTopY + boardTopD + 80);
+ctx.lineTo(boardTopX + boardTopW * 0.45, boardTopY + boardTopD + 80);
+ctx.lineTo(boardTopX + boardTopW * 0.35, boardTopY + boardTopD);
+ctx.closePath();
+ctx.fill();
+ctx.restore();
+
+// Red ball in the board
+ctx.beginPath();
+ctx.arc(boardTopX + boardTopW * 0.3, boardTopY + boardTopD/2, 5, 0, Math.PI*2);
+ctx.fillStyle = BALL_RED; ctx.fill();
+
+// Black ball being pushed on opponent's side
+ctx.beginPath();
+ctx.arc(boardTopX + boardTopW * 0.3, boardTopY + boardTopD + 50, 5, 0, Math.PI*2);
+ctx.fillStyle = BALL_BLACK; ctx.fill();
+// Ghost of black ball before push
+ctx.save();
+ctx.globalAlpha = 0.3;
+ctx.beginPath();
+ctx.arc(boardTopX + boardTopW * 0.32, boardTopY + boardTopD + 30, 5, 0, Math.PI*2);
+ctx.fillStyle = BALL_BLACK; ctx.fill();
+ctx.restore();
+
+// Label for option 2
+ctx.fillStyle = CYAN;
+ctx.font = 'bold 10px Arial';
+ctx.textAlign = 'left';
+ctx.fillText('② SABOTAGE', boardTopX + boardTopW * 0.47, boardTopY + boardTopD + 45);
+ctx.fillStyle = 'rgba(68,204,238,0.7)';
+ctx.font = '9px Arial';
+ctx.fillText('(Through mesh → opponent\'s ball)', boardTopX + boardTopW * 0.47, boardTopY + boardTopD + 57);
+
+// Option 3: FACE BLAST — arc over the top
+ctx.save();
+ctx.setLineDash([6, 4]);
+ctx.strokeStyle = ORANGE;
+ctx.lineWidth = 3;
+ctx.globalAlpha = 0.7;
+ctx.beginPath();
+// Red player position (above board) arcing over to black player
+ctx.moveTo(boardTopX + boardTopW * 0.7, boardTopY - 50);
+ctx.quadraticCurveTo(boardTopX + boardTopW * 0.7, boardTopY + boardTopD/2, boardTopX + boardTopW * 0.7, boardTopY + boardTopD + 70);
+ctx.stroke();
+ctx.setLineDash([]);
+ctx.restore();
+
+// Arrow at end
+ctx.fillStyle = ORANGE;
+ctx.beginPath();
+ctx.moveTo(boardTopX + boardTopW * 0.7, boardTopY + boardTopD + 70);
+ctx.lineTo(boardTopX + boardTopW * 0.7 - 5, boardTopY + boardTopD + 60);
+ctx.lineTo(boardTopX + boardTopW * 0.7 + 5, boardTopY + boardTopD + 60);
+ctx.closePath();
+ctx.fill();
+
+// Face blast label
+ctx.fillStyle = ORANGE;
+ctx.font = 'bold 10px Arial';
+ctx.textAlign = 'left';
+ctx.fillText('③ FACE BLAST', boardTopX + boardTopW * 0.73, boardTopY + boardTopD + 70);
+ctx.fillStyle = 'rgba(255,150,50,0.7)';
+ctx.font = '9px Arial';
+ctx.fillText('(Over board → opponent\'s FACE!)', boardTopX + boardTopW * 0.73, boardTopY + boardTopD + 82);
+
+// Stick figures in top-down (circles for heads)
+// Red player
+ctx.beginPath();
+ctx.arc(TV_X + TV_W/2 - 40, TV_Y + 75, 12, 0, Math.PI*2);
+ctx.strokeStyle = MILWAUKEE_RED; ctx.lineWidth = 2; ctx.stroke();
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.font = '8px Arial'; ctx.textAlign = 'center';
+ctx.fillText('HEAD', TV_X + TV_W/2 - 40, TV_Y + 79);
+
+// Black player
+ctx.beginPath();
+ctx.arc(TV_X + TV_W/2 + 40, TV_Y + 240, 12, 0, Math.PI*2);
+ctx.strokeStyle = '#AAA'; ctx.lineWidth = 2; ctx.stroke();
+ctx.fillStyle = '#AAA';
+ctx.font = '8px Arial';
+ctx.fillText('HEAD', TV_X + TV_W/2 + 40, TV_Y + 244);
+
+// Distance annotation
+ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+ctx.lineWidth = 1;
+const distX = TV_X + TV_W - 55;
+ctx.beginPath();
+ctx.moveTo(distX, TV_Y + 75); ctx.lineTo(distX, TV_Y + 240);
+ctx.stroke();
+ctx.beginPath(); ctx.moveTo(distX-4, TV_Y+75); ctx.lineTo(distX+4, TV_Y+75); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(distX-4, TV_Y+240); ctx.lineTo(distX+4, TV_Y+240); ctx.stroke();
+ctx.fillStyle = 'rgba(255,255,255,0.5)';
+ctx.font = '10px Arial';
+ctx.textAlign = 'center';
+ctx.save();
+ctx.translate(distX + 12, TV_Y + 157);
+ctx.rotate(-Math.PI/2);
+ctx.fillText('~36" (3 ft) apart', 0, 0);
+ctx.restore();
+
+// ============================================================
+// SIDE CROSS-SECTION (below top-down, right side)
+// ============================================================
+const SV_X = 700;
+const SV_Y = 510;
+const SV_W = 130;
+const SV_H = 400;
+
+ctx.fillStyle = WHITE;
+ctx.font = 'bold 18px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('SIDE CROSS-SECTION', SV_X + SV_W/2 + 40, SV_Y - 15);
+
+// Red player side mesh (left)
+ctx.fillStyle = MESH_GREEN;
+ctx.fillRect(SV_X, SV_Y, 10, SV_H);
+ctx.strokeStyle = MESH_LINE;
+ctx.lineWidth = 1;
+ctx.strokeRect(SV_X, SV_Y, 10, SV_H);
+
+ctx.fillStyle = 'rgba(100,200,100,0.7)';
+ctx.font = '9px Arial';
+ctx.textAlign = 'right';
+ctx.fillText('MESH + NET', SV_X - 5, SV_Y + 25);
+ctx.fillText('(Red side)', SV_X - 5, SV_Y + 37);
+
+// Black player side mesh (right)
+ctx.fillStyle = MESH_GREEN;
+ctx.fillRect(SV_X + SV_W - 10, SV_Y, 10, SV_H);
+ctx.strokeStyle = MESH_LINE;
+ctx.lineWidth = 1;
+ctx.strokeRect(SV_X + SV_W - 10, SV_Y, 10, SV_H);
+
+ctx.fillStyle = 'rgba(100,200,100,0.7)';
+ctx.font = '9px Arial';
+ctx.textAlign = 'left';
+ctx.fillText('MESH + NET', SV_X + SV_W + 5, SV_Y + 25);
+ctx.fillText('(Black side)', SV_X + SV_W + 5, SV_Y + 37);
+
+// Air gap between mesh panels
+ctx.fillStyle = '#0d1220';
+ctx.fillRect(SV_X + 10, SV_Y, SV_W - 20, SV_H);
+
+// Pegs spanning the gap (cross-section)
+const pegCSPositions = [SV_Y + 80, SV_Y + 140, SV_Y + 200, SV_Y + 260, SV_Y + 320];
+pegCSPositions.forEach(py => {
+  ctx.fillStyle = PEG_COLOR;
+  ctx.fillRect(SV_X + 8, py - 3, SV_W - 16, 6);
+  ctx.beginPath();
+  ctx.arc(SV_X + 8, py, 4, 0, Math.PI*2);
+  ctx.arc(SV_X + SV_W - 8, py, 4, 0, Math.PI*2);
+  ctx.fill();
+});
+
+ctx.fillStyle = 'rgba(255,255,255,0.4)';
+ctx.font = '9px Arial';
+ctx.textAlign = 'left';
+ctx.fillText('DOWEL PEGS', SV_X + SV_W + 5, SV_Y + 143);
+ctx.fillText('(mesh-to-mesh)', SV_X + SV_W + 5, SV_Y + 155);
+
+// Air port in cross-section
+const apCSY = SV_Y + SV_H * 0.42;
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.fillRect(SV_X - 20, apCSY - 18, 30, 36);
+ctx.fillStyle = DARK_GRAY;
+ctx.fillRect(SV_X - 15, apCSY - 8, 25, 16);
+
+// Air flow arrow through the mesh
+ctx.strokeStyle = 'rgba(219,0,50,0.5)';
+ctx.lineWidth = 2;
+ctx.setLineDash([4, 3]);
+ctx.beginPath();
+ctx.moveTo(SV_X - 15, apCSY);
+ctx.lineTo(SV_X + SV_W + 10, apCSY);
+ctx.stroke();
+ctx.setLineDash([]);
+ctx.fillStyle = 'rgba(219,0,50,0.5)';
+ctx.beginPath();
+ctx.moveTo(SV_X + SV_W + 10, apCSY);
+ctx.lineTo(SV_X + SV_W, apCSY - 5);
+ctx.lineTo(SV_X + SV_W, apCSY + 5);
+ctx.closePath();
+ctx.fill();
+
+ctx.fillStyle = 'rgba(219,0,50,0.7)';
+ctx.font = '9px Arial';
+ctx.textAlign = 'right';
+ctx.fillText('AIR PORT', SV_X - 25, apCSY - 6);
+ctx.fillText('→ AIR PASSES', SV_X - 25, apCSY + 6);
+ctx.fillText('THROUGH MESH →', SV_X - 25, apCSY + 18);
+
+// Blower nozzle
+ctx.fillStyle = '#333';
+ctx.fillRect(SV_X - 55, apCSY - 5, 35, 10);
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.fillRect(SV_X - 90, apCSY - 12, 38, 24);
+ctx.fillStyle = WHITE;
+ctx.font = 'bold 7px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('M18', SV_X - 71, apCSY + 3);
+
+// Depth dimension
+const depthDimY = SV_Y + SV_H + 20;
+ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+ctx.fillStyle = 'rgba(255,255,255,0.5)';
+ctx.lineWidth = 1;
+ctx.font = '10px Arial';
+ctx.beginPath(); ctx.moveTo(SV_X, depthDimY); ctx.lineTo(SV_X + SV_W, depthDimY); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(SV_X, depthDimY-5); ctx.lineTo(SV_X, depthDimY+5); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(SV_X+SV_W, depthDimY-5); ctx.lineTo(SV_X+SV_W, depthDimY+5); ctx.stroke();
+ctx.textAlign = 'center';
+ctx.fillText('4" depth', SV_X + SV_W/2, depthDimY + 15);
+
+// Frame (2x4 border)
+ctx.strokeStyle = MILWAUKEE_RED;
+ctx.lineWidth = 5;
+ctx.strokeRect(SV_X - 2, SV_Y, SV_W + 4, SV_H);
+
+// Base feet (cross-section)
+ctx.strokeStyle = '#8B7355';
+ctx.lineWidth = 4;
+ctx.beginPath();
+ctx.moveTo(SV_X - 2, SV_Y + SV_H);
+ctx.lineTo(SV_X - 30, SV_Y + SV_H + 45);
+ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(SV_X + SV_W + 2, SV_Y + SV_H);
+ctx.lineTo(SV_X + SV_W + 30, SV_Y + SV_H + 45);
+ctx.stroke();
+// Rubber feet
+ctx.fillStyle = '#444';
+ctx.fillRect(SV_X - 36, SV_Y + SV_H + 40, 14, 8);
+ctx.fillRect(SV_X + SV_W + 24, SV_Y + SV_H + 40, 14, 8);
+
+// Sandbag
+ctx.fillStyle = '#5a4a30';
+ctx.beginPath();
+ctx.ellipse(SV_X - 22, SV_Y + SV_H + 52, 18, 8, 0, 0, Math.PI*2);
+ctx.fill();
+ctx.fillStyle = 'rgba(255,255,255,0.4)';
+ctx.font = '8px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('SANDBAG', SV_X - 22, SV_Y + SV_H + 65);
+
+ctx.fillStyle = 'rgba(255,255,255,0.4)';
+ctx.font = '9px Arial';
+ctx.textAlign = 'left';
+ctx.fillText('L-BRACKET FEET', SV_X + SV_W + 40, SV_Y + SV_H + 35);
+ctx.fillText('(HINGED, FOLD FLAT)', SV_X + SV_W + 40, SV_Y + SV_H + 47);
+
+// Ball in cross-section
+ctx.beginPath();
+ctx.arc(SV_X + SV_W/2, SV_Y + SV_H * 0.55, 9, 0, Math.PI*2);
+const ballGrad = ctx.createRadialGradient(SV_X + SV_W/2 - 2, SV_Y + SV_H * 0.55 - 2, 2, SV_X + SV_W/2, SV_Y + SV_H * 0.55, 9);
+ballGrad.addColorStop(0, '#FF5566');
+ballGrad.addColorStop(1, BALL_RED);
+ctx.fillStyle = ballGrad;
+ctx.fill();
+
+// Scoring pocket cross-section at bottom
+const spCSY = SV_Y + SV_H - 55;
+ctx.fillStyle = '#555';
+ctx.fillRect(SV_X + 25, spCSY, 3, 35);
+ctx.fillRect(SV_X + 55, spCSY, 3, 35);
+ctx.fillRect(SV_X + 80, spCSY, 3, 35);
+ctx.fillRect(SV_X + SV_W - 25, spCSY, 3, 35);
+
+// Trap door
+ctx.strokeStyle = '#886644';
+ctx.lineWidth = 2;
+ctx.setLineDash([3, 2]);
+ctx.beginPath();
+ctx.moveTo(SV_X + 10, SV_Y + SV_H - 18);
+ctx.lineTo(SV_X + SV_W - 10, SV_Y + SV_H - 18);
+ctx.stroke();
+ctx.setLineDash([]);
+ctx.fillStyle = 'rgba(255,255,255,0.3)';
+ctx.font = '8px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('TRAP DOOR', SV_X + SV_W/2, SV_Y + SV_H - 6);
+ctx.fillText('(BALL RELEASE)', SV_X + SV_W/2, SV_Y + SV_H + 4);
+
+// ============================================================
+// STRATEGIC DECISION TREE (bottom section)
+// ============================================================
+const DT_Y = 1000;
+ctx.fillStyle = WHITE;
+ctx.font = 'bold 20px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('THE BLOWER DECISION — Every Drop, Every Second', 600, DT_Y);
+
+// Central decision node
+const decX = 600;
+const decY = DT_Y + 70;
+ctx.beginPath();
+ctx.arc(decX, decY, 35, 0, Math.PI*2);
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.fill();
+ctx.fillStyle = WHITE;
+ctx.font = 'bold 14px Arial';
+ctx.fillText('BALL', decX, decY - 4);
+ctx.fillText('DROPS', decX, decY + 12);
+
+// Three branches
+const branches = [
+  {
+    x: 250, y: DT_Y + 185,
+    label: '① STEER', sublabel: 'Blast your air port',
+    desc: 'Guide YOUR ball\ntoward high scores',
+    risk: 'RISK: Opponent is\nundefended',
+    color: MILWAUKEE_RED, icon: '🎯'
+  },
+  {
+    x: 600, y: DT_Y + 185,
+    label: '② SABOTAGE', sublabel: 'Blast through mesh',
+    desc: 'Push THEIR ball\ninto the gutter',
+    risk: 'RISK: Your ball\nfalls unguided',
+    color: CYAN, icon: '💨'
+  },
+  {
+    x: 950, y: DT_Y + 185,
+    label: '③ FACE BLAST', sublabel: 'Aim over the board',
+    desc: 'Blast opponent\'s FACE\nThey can\'t aim!',
+    risk: 'RISK: Your ball\nfalls unguided',
+    color: ORANGE, icon: '😂'
+  }
+];
+
+branches.forEach(b => {
+  // Connection line from center
+  ctx.strokeStyle = b.color;
+  ctx.lineWidth = 3;
+  ctx.globalAlpha = 0.5;
+  ctx.beginPath();
+  ctx.moveTo(decX, decY + 35);
+  ctx.lineTo(b.x, b.y - 40);
+  ctx.stroke();
+  ctx.globalAlpha = 1.0;
+
+  // Branch box
+  ctx.strokeStyle = b.color;
+  ctx.lineWidth = 3;
+  ctx.strokeRect(b.x - 120, b.y - 40, 240, 120);
+  ctx.fillStyle = b.color;
+  ctx.globalAlpha = 0.08;
+  ctx.fillRect(b.x - 120, b.y - 40, 240, 120);
+  ctx.globalAlpha = 1.0;
+
+  // Label
+  ctx.fillStyle = b.color;
+  ctx.font = 'bold 16px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText(b.label, b.x, b.y - 18);
+  ctx.fillStyle = LIGHT_GRAY;
+  ctx.font = '11px Arial';
+  ctx.fillText(b.sublabel, b.x, b.y - 3);
+
+  // Description
+  ctx.fillStyle = WHITE;
+  ctx.font = '12px Arial';
+  const descLines = b.desc.split('\n');
+  descLines.forEach((line, i) => {
+    ctx.fillText(line, b.x, b.y + 18 + i * 15);
+  });
+
+  // Risk
+  ctx.fillStyle = 'rgba(255,100,100,0.6)';
+  ctx.font = 'italic 10px Arial';
+  const riskLines = b.risk.split('\n');
+  riskLines.forEach((line, i) => {
+    ctx.fillText(line, b.x, b.y + 55 + i * 13);
+  });
+});
+
+// ============================================================
+// GAMEPLAY FLOW (below decision tree)
+// ============================================================
+const GF_Y = 1325;
+ctx.fillStyle = WHITE;
+ctx.font = 'bold 18px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('GAMEPLAY FLOW — SIMULTANEOUS PLAY', 600, GF_Y);
+
+const steps = [
+  { icon: '1', label: 'DROP', desc: 'Choose slot\ndrop ball', color: '#4488CC' },
+  { icon: '2', label: 'DECIDE', desc: 'Steer? Sabotage?\nFace blast?', color: ORANGE },
+  { icon: '3', label: 'BLAST', desc: 'Aim M18 blower\npull trigger', color: MILWAUKEE_RED },
+  { icon: '4', label: 'CHAOS', desc: 'Crosswinds!\nHair flying!', color: GOLD },
+  { icon: '5', label: 'SCORE', desc: 'Ball lands in\nscoring pocket', color: '#44DD88' },
+];
+
+const stepW = 175;
+const stepStartX = 600 - (steps.length * stepW) / 2;
+
+steps.forEach((s, i) => {
+  const sx = stepStartX + i * stepW + stepW/2;
+  const sy = GF_Y + 40;
+  ctx.beginPath();
+  ctx.arc(sx, sy, 22, 0, Math.PI*2);
+  ctx.fillStyle = s.color;
+  ctx.fill();
+  ctx.fillStyle = WHITE;
+  ctx.font = 'bold 16px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText(s.icon, sx, sy + 6);
+  ctx.fillStyle = s.color;
+  ctx.font = 'bold 12px Arial';
+  ctx.fillText(s.label, sx, sy + 42);
+  ctx.fillStyle = LIGHT_GRAY;
+  ctx.font = '10px Arial';
+  const lines = s.desc.split('\n');
+  lines.forEach((line, li) => {
+    ctx.fillText(line, sx, sy + 56 + li * 13);
+  });
+  if (i < steps.length - 1) {
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(sx + 28, sy); ctx.lineTo(sx + stepW - 28, sy);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(sx + stepW - 28, sy);
+    ctx.lineTo(sx + stepW - 35, sy - 5);
+    ctx.moveTo(sx + stepW - 28, sy);
+    ctx.lineTo(sx + stepW - 35, sy + 5);
+    ctx.stroke();
+  }
+});
+
+// ============================================================
+// LEGEND + KEY SPECS
+// ============================================================
+const LG_Y = 1500;
+ctx.fillStyle = WHITE;
+ctx.font = 'bold 16px Arial';
+ctx.textAlign = 'left';
+ctx.fillText('LEGEND', 80, LG_Y);
+
+const legendItems = [
+  { color: MILWAUKEE_RED, label: 'Milwaukee Red — Frame, air ports (Red side), blowers' },
+  { color: '#444444', label: 'Black/Gray — Air ports (Black player side)' },
+  { color: PEG_COLOR, label: 'Brown — Wooden dowel pegs (span full gap)' },
+  { color: 'rgba(100,200,100,0.7)', label: 'Green — Hardware cloth mesh + batting cage netting (air-permeable)' },
+  { color: BALL_RED, label: 'Red balls — Red player\'s whiffle balls' },
+  { color: ORANGE, label: 'Orange — Face blast zone / disruption mechanics' },
+  { color: CYAN, label: 'Cyan — Sabotage (through-mesh) attacks' },
+  { color: GOLD, label: 'Gold — Scoring zones, jackpot' },
+];
+
+legendItems.forEach((item, i) => {
+  const ly = LG_Y + 22 + i * 22;
+  ctx.fillStyle = item.color;
+  ctx.fillRect(80, ly - 8, 16, 16);
+  ctx.fillStyle = LIGHT_GRAY;
+  ctx.font = '12px Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText(item.label, 104, ly + 4);
+});
+
+// Key specs
+const KS_X = 620;
+ctx.fillStyle = WHITE;
+ctx.font = 'bold 16px Arial';
+ctx.textAlign = 'left';
+ctx.fillText('KEY SPECS', KS_X, LG_Y);
+
+const specs = [
+  ['Board Size', '48"W × 60"H × 4"D'],
+  ['Orientation', 'Vertical (no tilt)'],
+  ['Panel Material', 'Hardware cloth + netting (air passes through)'],
+  ['Player Spacing', '~36" (3 ft) apart — face to face'],
+  ['Air Ports', '4 total (2 per side, LOW + HIGH)'],
+  ['Scoring Pockets', '9 zones (center jackpot + 8)'],
+  ['Balls per Player', '5 whiffle balls'],
+  ['Power', 'M18 batteries (no outlet)'],
+  ['Play Mode', 'SIMULTANEOUS (real-time chaos)'],
+  ['Build Cost', '~$290 (excl. M18 tools)'],
+];
+
+specs.forEach((s, i) => {
+  const sy = LG_Y + 22 + i * 22;
+  ctx.fillStyle = GRAY;
+  ctx.font = '11px Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText(s[0], KS_X, sy + 4);
+  ctx.fillStyle = WHITE;
+  ctx.font = '12px Arial';
+  ctx.fillText(s[1], KS_X + 120, sy + 4);
+});
+
+// ============================================================
+// M18 TOOL INTEGRATION
+// ============================================================
+const TL_Y = 1730;
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.font = 'bold 18px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('M18 TOOL INTEGRATION', 600, TL_Y);
+
+const tools = [
+  { name: 'M18 FUEL\nCompact Blower', role: 'THE WEAPON\n(×2)', primary: true },
+  { name: 'M18 XC5.0\nBattery', role: 'POWER SOURCE\n(×4-6)', primary: true },
+  { name: 'M18 Tower\nLight', role: 'BOOTH BEACON\n(×1)', primary: false },
+  { name: 'M18 Bluetooth\nSpeaker', role: 'HYPE MUSIC\n(×1)', primary: false },
+];
+
+const toolW = 250;
+const toolStartX = 600 - (tools.length * toolW) / 2;
+
+tools.forEach((t, i) => {
+  const tx = toolStartX + i * toolW + toolW/2;
+  const ty = TL_Y + 25;
+  ctx.strokeStyle = t.primary ? MILWAUKEE_RED : GRAY;
+  ctx.lineWidth = t.primary ? 3 : 1.5;
+  ctx.strokeRect(tx - 100, ty, 200, 70);
+  if (t.primary) {
+    ctx.fillStyle = 'rgba(219,0,50,0.1)';
+    ctx.fillRect(tx - 100, ty, 200, 70);
+  }
+  ctx.fillStyle = WHITE;
+  ctx.font = 'bold 12px Arial';
+  ctx.textAlign = 'center';
+  const nameLines = t.name.split('\n');
+  nameLines.forEach((line, li) => {
+    ctx.fillText(line, tx, ty + 20 + li * 15);
+  });
+  ctx.fillStyle = t.primary ? MILWAUKEE_RED : GRAY;
+  ctx.font = '10px Arial';
+  const roleLines = t.role.split('\n');
+  roleLines.forEach((line, li) => {
+    ctx.fillText(line, tx, ty + 52 + li * 12);
+  });
+});
+
+// ============================================================
+// FOOTER
+// ============================================================
+ctx.fillStyle = 'rgba(255,255,255,0.25)';
+ctx.font = '11px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('BLOWER DUEL PLINKO — Score or Sabotage. The Choice is Yours.', 600, 1880);
+
+</script>
+</body>
+</html>
