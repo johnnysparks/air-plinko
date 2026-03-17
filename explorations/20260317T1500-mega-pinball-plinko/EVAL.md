@@ -4,79 +4,88 @@
 
 ---
 
-### Overall Entertainment: 9/10
-This is a PINBALL MACHINE you stand in front of and physically operate with lever handles. The combination of launching, flipping, bouncing, and cascading creates constant engagement. There's never a dull moment — either you're pulling the plunger, watching the ball ricochet through bumpers and pegs, or frantically timing your flipper pull. The two-player forced cooperation adds a social layer that solo games lack. Deducted one point because the game is over when all 5 balls drain — some kids might want longer rounds.
+### Overall Entertainment: 7/10
+The pitch is a pinball machine you stand in front of and physically operate with lever handles. In theory, the combination of launching, flipping, bouncing, and cascading creates constant engagement. In practice, the entire experience hinges on whether the cable-operated wooden flippers feel satisfying — and they almost certainly won't. Real pinball flippers are solenoid-driven: instantaneous, snappy, and precise. A bike-cable-and-bungee mechanism introduces slack, lag, and mushiness. If the flippers feel sluggish, the core gameplay loop — timing your flip to save the ball — becomes frustrating rather than thrilling. Every kid who has played real pinball (arcade, phone, or that Windows game) will feel the difference. The two-player cooperative element adds a social layer, but it doesn't fix a tactile problem. This could land at 8-9 if the flipper feel is dialed in during prototyping, but scoring for the likely outcome, not the ideal one.
 
-### Memorability: 10/10
-"There was a GIANT PINBALL MACHINE made of WOOD and I got to be the FLIPPER." That's the sentence kids say in the car ride home. Everyone knows pinball, but nobody has played one at this scale built from lumber. The physical flipper lever — the cable tension, the bungee snap-back — creates a tactile memory. The spring bumpers going BOING, the ball cascading through neon pegs, the heartbreak of a drain. This game creates stories. "Dude, I saved it RIGHT at the drain and it bounced into the jackpot."
+### Memorability: 7/10
+This is one of THREE pinball/flipper variants in the concept set (alongside Flipper Plinko and Pinball Panic). A kid describing any of the three to their parents would say roughly the same thing: "There was a giant pinball game with flippers made of wood." They're not wrong — and that's the problem. The concepts blur together. Within the set, at most one pinball variant deserves a top memorability score; the others are good but redundant. On its own merits, a 6-foot wooden pinball machine is legitimately unusual and would stand out at a typical school carnival. But "giant version of a known game" is a common carnival strategy (giant Jenga, giant Connect Four), and those games are fun without being legendary. The tactile flipper memory the original evaluation describes only works if the flippers feel good — see Entertainment above.
 
-### Ease of Construction: 7/10
-**Pros:** All lumber and hardware store materials. No electronics required. No welding. Pegs are just drilled dowels. Frame is standard plywood box construction. Two Milwaukee-equipped dads can absolutely build this.
+### Ease of Construction: 5/10
+The original score of 7/10 with "3-4 weekends" undersells the difficulty. Four weekends for two dads is a full month of Saturdays — that's a significant commitment, not a casual build.
 
-**Cons:** The flipper mechanism is the most complex part — bike cable routing, pivot bushing alignment, and spring tension tuning require care. The spring bumpers need 3D printing (or creative PVC cap engineering). The loop ramp requires heat-bending PVC. The acrylic drilling for peg pass-throughs needs patience.
+**The flipper mechanism is precision work:**
+- Bike cable routing must be clean or the flippers bind
+- Pivot bushing alignment has tight tolerances — misalignment means the flipper jams or wobbles
+- Spring/bungee tension tuning is iterative: too loose and the flipper is limp, too tight and kids can't pull the handle
+- You'll likely rebuild the flipper assembly at least once
 
-**Estimated build time:** 3-4 weekends (vs. the simpler air plinko at 2 weekends).
+**Additional complexity:**
+- Spring bumpers need 3D printing or creative PVC engineering
+- Loop ramp requires heat-bending PVC to a consistent radius
+- Acrylic drilling for peg pass-throughs is slow and crack-prone
+- The playfield angle must be precise — too steep and balls drain instantly, too shallow and they stall
 
-### Appeal by Elementary School Grade: 8/10
+**Estimated build time is realistic at 4 weekends, but the skill floor is higher than "two Milwaukee-equipped dads."** Expect at least one weekend lost to flipper mechanism troubleshooting.
+
+### Appeal by Elementary School Grade: 7/10
 
 | Grade | Appeal | Notes |
 |-------|--------|-------|
-| K–1st | 7/10 | Can reach the flipper handles but might lack timing coordination. Love watching the ball chaos. Best in cooperative mode with a parent |
-| 2nd–3rd | 9/10 | Sweet spot. Strong enough to flip, developing timing skills, love the competition, short enough attention span matches 5-ball rounds |
-| 4th–5th | 10/10 | Peak engagement. Developing real strategies (when to flip, how hard to pull plunger). Will play 5+ rounds. Will talk about high scores |
-| 6th+ | 8/10 | Still fun but might feel "young." The two-player teamwork keeps older kids engaged when paired with friends |
+| K–1st | 5/10 | Can reach the flipper handles but lack the timing coordination to use them effectively. A kindergartner pulling a cable handle and watching nothing useful happen is not having fun. Best paired with a parent, but that slows the line |
+| 2nd–3rd | 8/10 | Developing the timing needed. Strong enough to pull cables. Short attention span matches 5-ball rounds. This is the real target audience |
+| 4th–5th | 9/10 | Peak engagement. Can develop real strategies. Will want multiple rounds |
+| 6th+ | 7/10 | Fun but may feel young. The cable flippers will feel especially imprecise to kids who've played real arcade pinball |
 
-Average across grades: ~8.5. The slight ding is that the youngest kids (K-1st) may struggle with flipper timing.
+Average across grades: ~7.3. The K-1st gap is a real problem — that's roughly 30% of the elementary school audience who can't meaningfully engage with the core mechanic.
 
-### Skill to Luck Spectrum: 8/10 (Excellent Balance)
+### Skill to Luck Spectrum: 8/10 (Genuinely Good)
 **Skill elements:**
-- Plunger pull strength → controls where ball enters the playfield
-- Flipper timing → the core skill, keeping the ball alive
-- Two-player coordination → communication is a learned skill
-- Target awareness → experienced players aim for the loop ramp or try to feed the jackpot
+- Plunger pull strength controls where ball enters the playfield
+- Flipper timing is the core skill (if the flippers are responsive enough to reward it)
+- Two-player coordination requires communication
+- Target awareness develops with repeat play
 
 **Luck elements:**
 - Peg bounces are inherently chaotic and unpredictable
 - Spring bumper rebounds are semi-random
-- Spinner interaction is timing-dependent but outcome is random
-- Whether a ball drifts to the ball-save inlane or the outlane is often luck
+- Ball drift toward drain vs. inlane is often luck
 
-**Verdict:** First-timers have fun because the peg chaos creates exciting randomness. Repeat players get better because flipper timing and plunger control genuinely improve outcomes. This is the ideal carnival game spectrum — anyone can win, but skilled players win MORE.
+This is a genuine strength. First-timers have fun because peg chaos creates exciting randomness. Repeat players improve through flipper timing and plunger control. The skill-luck balance is the one area where the pinball format reliably delivers.
 
-### Chaos Level: 8/10
-Spring bumpers launching balls in random directions. Balls cascading through 84 pegs. The loop ramp sending a ball back to the top for another full run through the peg field. Two players frantically pulling flipper handles. The drain threatening at all times. It's controlled pandemonium — chaotic enough to be thrilling, structured enough that there's still skill involved. Not quite a 10 because with only 1 ball in play at a time (5 total, sequential), there's no multi-ball mayhem. Future upgrade: MULTI-BALL MODE.
+### Chaos Level: 5/10
+With ONE ball in play at a time (5 sequential balls per round), the chaos is limited to a single ball bouncing through pegs — which is just standard plinko. The spring bumpers add some unpredictability, but the moment-to-moment experience is: launch ball, watch it bounce, flip when it reaches the bottom, repeat. There's no multi-ball mayhem, no cascading chain reactions, no simultaneous events competing for attention. Compare this to a game where 20 balls are in play at once, or where multiple players are launching simultaneously. The original evaluation acknowledged this weakness ("not quite a 10 because only 1 ball in play") but still scored 8/10, which is generous for what amounts to sequential single-ball play.
 
 ### Durability: 8/10
 **Strong:**
-- Plywood + 2×4 frame is tank-like. Kids can't break this
+- Plywood + 2x4 frame is robust. Kids can't break the structure
 - Wooden dowel pegs are nearly indestructible
 - Acrylic front panel is shatter-resistant
 - Hardwood flippers will survive thousands of flips
 
-**Moderate concern:**
-- Bungee cord flipper return springs will wear out over a full carnival day → keep 4 spares ($2 each), swap takes 2 minutes
-- Spring bumper compression springs may fatigue → spares are cheap
-- Bike brake cables may stretch → bring 2 spares
-- Ball magazine PVC tube could crack if someone yanks it → zip-tie reinforce
+**Real concerns:**
+- Bungee cord flipper return springs will wear out over a full carnival day. Spares are cheap but swapping mid-event means downtime
+- Bike brake cables will stretch with use, degrading the already-questionable flipper feel as the day goes on. Bring spares and expect to re-tension at least once
+- The cable-and-bungee mechanism has more failure points than any other concept's moving parts
 
-**Verdict:** Core structure is bombproof. Consumable parts (springs, cables, bungees) are cheap and fast to swap. Keep a small hardware bag at the booth.
+The core structure is solid. The consumable parts (springs, cables, bungees) are the weak link, and they're all in the flipper mechanism — the single most important component.
 
-### Photogenicity: 9/10
-- 6 feet tall with neon-colored pegs glowing against a matte black backdrop — eye-catching from distance
-- Clear acrylic front panel means great photos of balls in mid-cascade
-- The flipper action is inherently photogenic — kid mid-pull, ball mid-bounce
-- Spring bumpers with a ball ricocheting = frozen action shot gold
-- The two-player setup means two kids engaged simultaneously = better parent photos
-- **Optional upgrade:** Battery-powered LED strip around the perimeter + UV-reactive neon paint = absolute STUNNER at evening events
+### Photogenicity: 8/10
+- 6 feet tall with neon-colored pegs against a dark backdrop is visible from a distance
+- Clear acrylic front panel allows photos of balls mid-cascade
+- Two-player setup means two engaged kids in frame simultaneously
+- The action moments (ball bouncing, kid pulling handle) photograph well
 
-### Onboarding Time: 10/10 (Near-instant)
-**Cornhole-tier simplicity.** Every kid alive knows pinball from arcades, phones, or that one Windows game. The physical form factor IS the instruction manual:
-1. See plunger → pull it
-2. See flipper handles → pull them when ball is near
-3. See scoring numbers → aim for big ones
-4. See drain → avoid it
+Loses a point because the most photogenic carnival games have visual spectacle at a glance — this reads as "large wooden box with a clear front" from 20 feet away. The action is inside and through acrylic, which can glare in outdoor light.
 
-No rules explanation needed. No turns to understand. No complex scoring to track. A volunteer can say "pull the plunger, flip the flippers, don't let the ball drain" and the kid is playing within 5 seconds. This is the game's superpower — the line FLIES.
+### Onboarding Time: 8/10
+Kids understand the concept fast — everyone has some reference point for pinball. But calling this "cornhole-tier simplicity" is a stretch. Cornhole has zero moving parts and one rule (throw the bag). This game has:
+- A plunger to pull (how hard?)
+- Two flipper handles to operate (when?)
+- A drain to avoid (how?)
+- Scoring zones to aim for (where?)
+- 5-ball rounds (am I done?)
+
+A volunteer still needs to say more than "throw the bag at the hole." They need to explain the plunger, demonstrate the flippers, and clarify that you get 5 balls. Most kids will pick it up in 15-20 seconds, which is fast — but it's not instant, and it's not cornhole.
 
 ---
 
@@ -84,18 +93,20 @@ No rules explanation needed. No turns to understand. No complex scoring to track
 
 | Criterion | Score |
 |-----------|-------|
-| Overall Entertainment | 9/10 |
-| Memorability | 10/10 |
-| Ease of Construction | 7/10 |
-| Appeal by Grade | 8/10 |
+| Overall Entertainment | 7/10 |
+| Memorability | 7/10 |
+| Ease of Construction | 5/10 |
+| Appeal by Grade | 7/10 |
 | Skill/Luck Balance | 8/10 |
-| Chaos Level | 8/10 |
+| Chaos Level | 5/10 |
 | Durability | 8/10 |
-| Photogenicity | 9/10 |
-| Onboarding Time | 10/10 |
-| **AVERAGE** | **8.6/10** |
+| Photogenicity | 8/10 |
+| Onboarding Time | 8/10 |
+| **AVERAGE** | **7.0/10** |
 
 ## Final Verdict
-Mega Pinball Plinko trades a bit of build simplicity for a massive leap in memorability and instant recognition. The flipper mechanism is the most complex build element, but it's the soul of the game — the moment a kid feels that cable tension and watches their flipper save a ball from the drain, they're hooked. The near-zero onboarding time means the line moves fast. The two-player cooperative element creates shared moments. And the sheer spectacle of a 6-foot neon pinball machine made from lumber will be visible (and audible — BOING THWACK CLICK) from across the carnival.
+Mega Pinball Plinko is a solid concept with a critical single point of failure: the cable-operated flippers. If they feel snappy and responsive, this game is a hit. If they feel mushy and laggy — which is the more likely outcome without significant prototyping — the whole experience degrades from "giant pinball machine" to "plinko board with levers that don't do much."
 
-**Build it.**
+The harder problem is portfolio overlap. This concept lives in a crowded lane with Flipper Plinko and Pinball Panic. All three pitch some version of "big pinball with flippers," and building more than one would confuse attendees and dilute the memorability of each. If you're committed to a flipper-based game, pick ONE of the three and invest the prototyping time to get the flipper mechanism right. Mega Pinball Plinko is a reasonable choice, but only if you build a flipper prototype first and confirm the feel is acceptable before committing to the full build.
+
+**Don't build this unless:** (1) you've prototyped the flipper mechanism and confirmed it feels satisfying, and (2) you've eliminated the other two pinball variants from the lineup.

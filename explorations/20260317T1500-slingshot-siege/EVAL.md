@@ -43,28 +43,28 @@ This is controlled chaos rather than pandemonium. The slingshot mechanic is deli
 
 **The bounce-back reality:** Missed shots ricochet and roll on the ground. The "scramble" to retrieve them is kids picking up whiffle balls off the floor, not a frantic spectacle. With both players firing simultaneously there's some dual-action energy, and the face-to-face format does create genuine social chaos — trash talk, groans, celebrations. But the physical chaos is modest. Balls rolling on the ground and kids bending over to pick them up is not the same as 20 balls flying through the air simultaneously.
 
-### Durability: 9/10
-**Strong points:** The fortress wall is a slab of ¾" plywood with dowel pegs — essentially indestructible. Whiffle balls are too light to damage anything. The acrylic panels are shatter-resistant. The 3D-printed gate arches and decorative elements are cosmetic — if a turret breaks, the game still works perfectly.
+### Durability: 8/10
+**Strong points:** The fortress wall is 3/4" plywood with dowel pegs — sturdy and hard to damage. Whiffle balls are too light to break anything. The acrylic panels are shatter-resistant. 3D-printed decorative elements are cosmetic — if a turret snaps off, the game still functions.
 
-**Wear points:** The slingshot tubing (Theraband Gold) will fatigue after hundreds of shots — budget for replacement tubing ($12 per roll, enough for 4 replacements). The leather pouch may stretch over time — keep spares. The swivel bearing might need lubrication between carnival days.
+**Wear points:** Theraband tubing will fatigue after hundreds of shots and needs periodic replacement ($12 per roll). The leather pouch stretches over time — keep spares. The swivel bearing needs lubrication between events. 3D-printed turrets and arches are brittle under impact and will likely need reprinting after a few carnivals.
 
-**Key advantage over other concepts:** No pneumatics, no bladders, no moving parts beyond the slingshot rotation. Nothing can jam, deflate, or clog. This is the most mechanically robust game in the lineup. If the tubing snaps mid-carnival, swapping it takes 3 minutes.
+**No pneumatics, no bladders, no moving parts beyond the slingshot rotation.** Nothing can jam, deflate, or clog. Tubing replacement takes 3 minutes. This is mechanically simpler to maintain than most concepts in the lineup, though the decorative elements add fragility that a plain board wouldn't have.
 
-### Photogenicity: 9/10
-The castle fortress wall is a **visual landmark**. Turrets, battlements, pennant flags, neon pegs glowing through clear acrylic — this thing looks like a prop from a movie set. The front view (neon peg grid behind acrylic with balls cascading) is Instagram gold. The action shot of a kid pulling back a slingshot with a castle wall behind them is a natural photo moment.
+### Photogenicity: 8/10
+The castle decorations (turrets, pennant flags, painted battlements) give it more visual identity than a plain plinko board. Neon pegs behind clear acrylic are colorful. The action shot of a kid pulling back a slingshot has natural energy. Two kids facing off across a wall is a better photo composition than two kids standing side-by-side.
 
-**Dual spectacle:** Photographers can capture the front view (cascading pegs) or the top-down dynamic (two kids facing off across the wall). Both are compelling shots.
+**Dual angles:** Front view (peg grid with cascading balls) and side view (two players facing off) both work as photos.
 
-**The miss:** Like Stomp Rockets, the game is vertically oriented, so capturing both the player AND the wall in one shot requires a wide angle or stepping back. But the castle aesthetic is so strong that even a close-up of just the wall (pegs, gates, turrets) makes a great photo.
+**Limitations:** The vertical orientation makes it hard to capture both the player and the wall in a single shot without stepping back or using a wide angle. The castle theming reads better in close-up photos than from across the carnival — at a distance it's a decorated plywood rectangle.
 
-**Night bonus:** LED strips behind the peg grids (optional) would make this a GLOWING CASTLE at dusk. Combined with the neon pegs, this becomes the carnival's visual centerpiece after sunset.
+**Night bonus:** Optional LED strips behind the peg grids would add visual impact at dusk.
 
-### Onboarding Time: 9/10 (Near-instant)
-**15-second explanation:** "Shoot your slingshot at the castle wall! Aim for the holes — the small ones at the top are worth more. Balls go through and bounce down into the moats. Big number good. You've got 12 balls. Ready? FIRE!"
+### Onboarding Time: 8/10
+**15-second explanation:** "Shoot your slingshot at the castle wall. Aim for the holes — the small ones at the top are worth more. Balls go through and bounce down into the scoring zones. You've got 12 balls. Go!"
 
-Kids see a slingshot and a castle. The affordance is immediate — pull back, aim, release. Every kid has seen or used a slingshot in some form. The gate tier system (big = easy = low value, small = hard = high value) is intuitive risk/reward. The only learning curve is force calibration (how far to pull back) and aim, which takes exactly one shot to start developing.
+The slingshot affordance is immediate — kids understand pull back, aim, release. The gate tier system (big = easy = low value, small = hard = high value) is intuitive risk/reward. Force calibration (how far to pull back) and aim take a few shots to start developing.
 
-**Multiplier subtlety:** The 1×/2×/3× system adds strategic depth that kids discover after a few shots ("wait, the tower gate TRIPLES my score?!"). It's a hidden complexity layer that emerges naturally without needing to be taught.
+**Where onboarding is slower than it looks:** The multiplier system (1x/2x/3x) is not obvious at first. A volunteer needs to explain that different gates multiply the score, or kids discover it partway through their turn. Also, the two-sided board means the scoring happens on the opponent's side — kids need to understand that their successful shot triggers a cascade they can't directly see. This is a conceptual step beyond "throw ball, watch it bounce."
 
 ---
 
