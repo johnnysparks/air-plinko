@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>THE CONTRAPTION — Diagram</title>
+<!-- screenshot: 1200x1800 -->
+<style>
+  body { margin: 0; padding: 20px; background: #0a0a1a; font-family: 'Courier New', monospace; color: #fff; }
+  canvas { display: block; margin: 0 auto; }
+  h1 { text-align: center; color: #ff6600; font-size: 28px; margin: 10px 0 5px; letter-spacing: 3px; }
+  h2 { text-align: center; color: #888; font-size: 14px; margin: 0 0 15px; font-weight: normal; }
+</style>
+</head>
+<body>
+<h1>⚙️ THE CONTRAPTION ⚙️</h1>
+<h2>Rube Goldberg Plinko — 3D Printed Mechanical Madness</h2>
+<canvas id="c" width="1160" height="1680"></canvas>
+<script>
+const c = document.getElementById('c');
+const ctx = c.getContext('2d');
+
+// Colors
+const BG = '#0a0a1a';
+const BOARD = '#1a1a2e';
+const ACRYLIC = 'rgba(150,200,255,0.15)';
+const WOOD = '#8B6914';
+const WOOD_DARK = '#6B4F12';
+const NEON_GREEN = '#39ff14';
+const HOT_PINK = '#ff1493';
+const NEON_ORANGE = '#ff6600';
+const BRIGHT_YELLOW = '#ffee00';
+const SILVER = '#c0c0c0';
+const METAL_BLUE = '#4488ff';
+const RED = '#ff3333';
+const PURPLE_TEAL = '#8844cc';
+const VOLCANO_RED = '#ff4400';
+const GOLD = '#ffd700';
+const WHITE = '#ffffff';
+const GREY = '#888888';
+const DIM = '#444455';
+
+function drawRoundRect(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.roundRect(x, y, w, h, r);
+}
+
+// ============== FRONT VIEW (top portion) ==============
+const FV = { x: 80, y: 30, w: 480, h: 720 };
+// ============== SIDE VIEW (top right) ==============
+const SV = { x: 680, y: 30, w: 200, h: 720 };
+// ============== LEGEND + SPECS (bottom) ==============
+const LG = { x: 40, y: 800 };
+
+// --- FRONT VIEW ---
+// Title
+ctx.fillStyle = '#aaa';
+ctx.font = 'bold 14px Courier New';
+ctx.textAlign = 'center';
+ctx.fillText('FRONT VIEW (Player Perspective)', FV.x + FV.w/2, FV.y);
+
+// Board background
+ctx.fillStyle = BOARD;
+drawRoundRect(FV.x, FV.y + 15, FV.w, FV.h, 4);
+ctx.fill();
+
+// Board border (edge rails)
+ctx.strokeStyle = WOOD;
+ctx.lineWidth = 8;
+drawRoundRect(FV.x, FV.y + 15, FV.w, FV.h, 4);
+ctx.stroke();
+
+// Acrylic overlay hint
+ctx.fillStyle = ACRYLIC;
+drawRoundRect(FV.x + 4, FV.y + 19, FV.w - 8, FV.h - 8, 2);
+ctx.fill();
+
+// Access panel outlines
+ctx.strokeStyle = 'rgba(150,200,255,0.3)';
+ctx.lineWidth = 1;
+ctx.setLineDash([4, 4]);
+ctx.strokeRect(FV.x + 30, FV.y + 300, 100, 100);
+ctx.strokeRect(FV.x + FV.w - 130, FV.y + 300, 100, 100);
+ctx.setLineDash([]);
+ctx.fillStyle = 'rgba(150,200,255,0.4)';
+ctx.font = '8px Courier New';
+ctx.textAlign = 'center';
+ctx.fillText('ACCESS', FV.x + 80, FV.y + 355);
+ctx.fillText('PANEL', FV.x + 80, FV.y + 365);
+ctx.fillText('ACCESS', FV.x + FV.w - 80, FV.y + 355);
+ctx.fillText('PANEL', FV.x + FV.w - 80, FV.y + 365);
+
+// Mounting grid dots
+ctx.fillStyle = 'rgba(100,100,120,0.3)';
+for (let col = 0; col < 7; col++) {
+  for (let row = 0; row < 11; row++) {
+    const gx = FV.x + 40 + col * 68;
+    const gy = FV.y + 55 + row * 62;
+    ctx.beginPath();
+    ctx.arc(gx, gy, 2, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+// --- DRAW MECHANISMS on the front view ---
+
+// Helper: draw a spinning wheel
+function drawSpinningWheel(cx, cy, label) {
+  ctx.strokeStyle = NEON_GREEN;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 20, 0, Math.PI * 2);
+  ctx.stroke();
+  // Paddles
+  for (let i = 0; i < 4; i++) {
+    const a = (i * Math.PI / 2) + 0.3;
+    ctx.beginPath();
+    ctx.moveTo(cx + Math.cos(a) * 8, cy + Math.sin(a) * 8);
+    ctx.lineTo(cx + Math.cos(a) * 20, cy + Math.sin(a) * 20);
+    ctx.stroke();
+  }
+  // Center bearing
+  ctx.fillStyle = NEON_GREEN;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+  ctx.fill();
+  if (label) {
+    ctx.fillStyle = NEON_GREEN;
+    ctx.font = '7px Courier New';
+    ctx.textAlign = 'center';
+    ctx.fillText(label, cx, cy + 30);
+  }
+}
+
+// Helper: draw a bumper mushroom
+function drawMushroom(cx, cy) {
+  ctx.fillStyle = HOT_PINK;
+  // Stem
+  ctx.fillRect(cx - 3, cy, 6, 10);
+  // Cap
+  ctx.beginPath();
+  ctx.arc(cx, cy, 10, Math.PI, 0);
+  ctx.fill();
+}
+
+// Helper: draw a funnel spiral
+function drawFunnel(cx, cy, label) {
+  ctx.strokeStyle = '#9944ff';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(cx - 18, cy - 12);
+  ctx.quadraticCurveTo(cx - 22, cy + 15, cx - 6, cy + 18);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(cx + 18, cy - 12);
+  ctx.quadraticCurveTo(cx + 22, cy + 15, cx + 6, cy + 18);
+  ctx.stroke();
+  // Spiral hint inside
+  ctx.strokeStyle = 'rgba(153,68,255,0.5)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.arc(cx, cy + 2, 10, 0.5, Math.PI * 1.8);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(cx, cy + 5, 6, 0, Math.PI * 1.5);
+  ctx.stroke();
+  if (label) {
+    ctx.fillStyle = '#9944ff';
+    ctx.font = '7px Courier New';
+    ctx.textAlign = 'center';
+    ctx.fillText(label, cx, cy + 30);
+  }
+}
+
+// Helper: draw a helix drop
+function drawHelix(cx, cy) {
+  ctx.strokeStyle = NEON_ORANGE;
+  ctx.lineWidth = 2;
+  for (let i = 0; i < 5; i++) {
+    const yy = cy - 16 + i * 8;
+    ctx.beginPath();
+    ctx.moveTo(cx - 8, yy);
+    ctx.quadraticCurveTo(cx + 8, yy + 2, cx - 8, yy + 8);
+    ctx.stroke();
+  }
+  ctx.fillStyle = NEON_ORANGE;
+  ctx.font = '7px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('HELIX', cx, cy + 30);
+}
+
+// Helper: draw pendulum gate
+function drawPendulum(cx, cy) {
+  ctx.strokeStyle = SILVER;
+  ctx.lineWidth = 2;
+  // Pivot
+  ctx.fillStyle = SILVER;
+  ctx.beginPath();
+  ctx.arc(cx, cy - 8, 4, 0, Math.PI * 2);
+  ctx.fill();
+  // Arm (angled)
+  ctx.beginPath();
+  ctx.moveTo(cx, cy - 8);
+  ctx.lineTo(cx + 15, cy + 14);
+  ctx.stroke();
+  // Weight
+  ctx.beginPath();
+  ctx.arc(cx + 15, cy + 14, 5, 0, Math.PI * 2);
+  ctx.fill();
+  // Path indicators
+  ctx.strokeStyle = 'rgba(192,192,192,0.3)';
+  ctx.setLineDash([2, 2]);
+  ctx.beginPath();
+  ctx.moveTo(cx, cy - 8);
+  ctx.lineTo(cx - 15, cy + 14);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = SILVER;
+  ctx.font = '7px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('PENDULUM', cx, cy + 28);
+}
+
+// Helper: draw see-saw catapult
+function drawSeeSaw(cx, cy) {
+  ctx.strokeStyle = BRIGHT_YELLOW;
+  ctx.lineWidth = 2;
+  // Pivot triangle
+  ctx.beginPath();
+  ctx.moveTo(cx - 5, cy + 5);
+  ctx.lineTo(cx + 5, cy + 5);
+  ctx.lineTo(cx, cy - 2);
+  ctx.closePath();
+  ctx.stroke();
+  // Beam (tilted)
+  ctx.beginPath();
+  ctx.moveTo(cx - 22, cy - 6);
+  ctx.lineTo(cx + 22, cy + 2);
+  ctx.stroke();
+  // Cups
+  ctx.beginPath();
+  ctx.arc(cx - 22, cy - 6, 5, Math.PI, 0);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(cx + 22, cy + 2, 5, Math.PI, 0);
+  ctx.stroke();
+  // Ball on loaded side
+  ctx.fillStyle = 'rgba(255,238,0,0.6)';
+  ctx.beginPath();
+  ctx.arc(cx - 22, cy - 10, 4, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = BRIGHT_YELLOW;
+  ctx.font = '7px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('SEE-SAW', cx, cy + 18);
+}
+
+// Helper: draw gear ratchet
+function drawGearRatchet(cx, cy) {
+  ctx.strokeStyle = METAL_BLUE;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 18, 0, Math.PI * 2);
+  ctx.stroke();
+  // Gear teeth
+  for (let i = 0; i < 6; i++) {
+    const a = i * Math.PI / 3;
+    ctx.beginPath();
+    ctx.moveTo(cx + Math.cos(a) * 15, cy + Math.sin(a) * 15);
+    ctx.lineTo(cx + Math.cos(a) * 20, cy + Math.sin(a) * 20);
+    ctx.stroke();
+    // Bucket arc
+    const a1 = a - 0.3;
+    const a2 = a + 0.3;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 12, a1, a2);
+    ctx.stroke();
+  }
+  ctx.fillStyle = METAL_BLUE;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.font = '7px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('GEAR', cx, cy + 28);
+}
+
+// Helper: draw trap door
+function drawTrapDoor(cx, cy) {
+  ctx.strokeStyle = RED;
+  ctx.lineWidth = 2;
+  // Platform
+  ctx.beginPath();
+  ctx.moveTo(cx - 15, cy);
+  ctx.lineTo(cx + 15, cy);
+  ctx.stroke();
+  // Hinge
+  ctx.fillStyle = RED;
+  ctx.beginPath();
+  ctx.arc(cx - 15, cy, 3, 0, Math.PI * 2);
+  ctx.fill();
+  // Trigger arm
+  ctx.strokeStyle = 'rgba(255,51,51,0.5)';
+  ctx.beginPath();
+  ctx.moveTo(cx + 12, cy);
+  ctx.lineTo(cx + 18, cy - 12);
+  ctx.stroke();
+  // Arrow showing drop
+  ctx.strokeStyle = RED;
+  ctx.setLineDash([2, 2]);
+  ctx.beginPath();
+  ctx.moveTo(cx, cy + 2);
+  ctx.lineTo(cx, cy + 14);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  // Arrowhead
+  ctx.beginPath();
+  ctx.moveTo(cx - 3, cy + 11);
+  ctx.lineTo(cx, cy + 14);
+  ctx.lineTo(cx + 3, cy + 11);
+  ctx.stroke();
+  ctx.fillStyle = RED;
+  ctx.font = '7px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('TRAP', cx, cy + 24);
+}
+
+// ---- THE VOLCANO (top center) ----
+function drawVolcano(cx, cy) {
+  // Cone
+  const grad = ctx.createLinearGradient(cx, cy - 40, cx, cy + 30);
+  grad.addColorStop(0, '#ff2200');
+  grad.addColorStop(0.5, '#ff6600');
+  grad.addColorStop(1, '#ff4400');
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.moveTo(cx - 30, cy + 30);
+  ctx.lineTo(cx - 10, cy - 40);
+  ctx.lineTo(cx + 10, cy - 40);
+  ctx.lineTo(cx + 30, cy + 30);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = '#ff8800';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  // Caldera opening
+  ctx.fillStyle = '#330000';
+  ctx.beginPath();
+  ctx.ellipse(cx, cy - 38, 10, 4, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#ff4400';
+  ctx.stroke();
+  // Spiral ramp hint
+  ctx.strokeStyle = 'rgba(255,136,0,0.5)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([3, 3]);
+  ctx.beginPath();
+  ctx.moveTo(cx + 28, cy + 25);
+  ctx.quadraticCurveTo(cx + 35, cy, cx + 20, cy - 15);
+  ctx.quadraticCurveTo(cx + 5, cy - 30, cx - 5, cy - 35);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  // Exit chutes arrows
+  ctx.strokeStyle = '#ff6600';
+  ctx.lineWidth = 1;
+  for (let i = -1; i <= 1; i++) {
+    ctx.beginPath();
+    ctx.moveTo(cx + i * 18, cy + 30);
+    ctx.lineTo(cx + i * 25, cy + 42);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx + i * 25 - 2, cy + 39);
+    ctx.lineTo(cx + i * 25, cy + 42);
+    ctx.lineTo(cx + i * 25 + 2, cy + 39);
+    ctx.fill();
+  }
+  // Label
+  ctx.fillStyle = VOLCANO_RED;
+  ctx.font = 'bold 9px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('🌋 THE VOLCANO', cx, cy + 55);
+  ctx.font = '7px Courier New';
+  ctx.fillStyle = '#ff8800';
+  ctx.fillText('3 random exits', cx, cy + 64);
+}
+
+// ---- THE OCTOPUS (center) ----
+function drawOctopus(cx, cy) {
+  // Hub
+  const grad = ctx.createRadialGradient(cx, cy, 5, cx, cy, 28);
+  grad.addColorStop(0, '#aa66ff');
+  grad.addColorStop(1, '#2288aa');
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 28, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#aa66ff';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  // Arms (8 directions)
+  for (let i = 0; i < 8; i++) {
+    const a = i * Math.PI / 4 + 0.15;
+    const armLen = 35;
+    const ex = cx + Math.cos(a) * armLen;
+    const ey = cy + Math.sin(a) * armLen;
+    // Arm channel
+    ctx.strokeStyle = 'rgba(170,102,255,0.7)';
+    ctx.lineWidth = 6;
+    ctx.beginPath();
+    ctx.moveTo(cx + Math.cos(a) * 25, cy + Math.sin(a) * 25);
+    ctx.lineTo(ex, ey);
+    ctx.stroke();
+    // Arm tip
+    ctx.fillStyle = '#44ccaa';
+    ctx.beginPath();
+    ctx.arc(ex, ey, 4, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  // Center eye
+  ctx.fillStyle = '#fff';
+  ctx.beginPath();
+  ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#220044';
+  ctx.beginPath();
+  ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+  ctx.fill();
+  // Label
+  ctx.fillStyle = PURPLE_TEAL;
+  ctx.font = 'bold 9px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('🐙 THE OCTOPUS', cx, cy + 48);
+  ctx.font = '7px Courier New';
+  ctx.fillStyle = '#44ccaa';
+  ctx.fillText('8 pivoting arms', cx, cy + 57);
+}
+
+// Place mechanisms on the front view board
+const bx = FV.x;
+const by = FV.y + 15;
+
+// Volcano - top center
+drawVolcano(bx + FV.w/2, by + 80);
+
+// Spinning wheels
+drawSpinningWheel(bx + 80, by + 120, 'SPIN');
+drawSpinningWheel(bx + FV.w - 80, by + 120, 'SPIN');
+drawSpinningWheel(bx + 130, by + 350, 'SPIN');
+drawSpinningWheel(bx + FV.w - 130, by + 350, 'SPIN');
+
+// Funnels
+drawFunnel(bx + 160, by + 180, 'FUNNEL');
+drawFunnel(bx + FV.w - 160, by + 180, 'FUNNEL');
+drawFunnel(bx + FV.w/2, by + 240, 'FUNNEL');
+
+// Helix drops
+drawHelix(bx + 70, by + 260);
+drawHelix(bx + FV.w - 70, by + 260);
+
+// Octopus - center
+drawOctopus(bx + FV.w/2, by + 370);
+
+// Pendulum gates
+drawPendulum(bx + 140, by + 460);
+drawPendulum(bx + FV.w/2, by + 480);
+drawPendulum(bx + FV.w - 140, by + 460);
+
+// See-saw catapults
+drawSeeSaw(bx + 150, by + 540);
+drawSeeSaw(bx + FV.w - 150, by + 540);
+
+// Gear ratchets
+drawGearRatchet(bx + 80, by + 440);
+drawGearRatchet(bx + FV.w - 80, by + 440);
+
+// Trap doors
+drawTrapDoor(bx + 200, by + 510);
+drawTrapDoor(bx + FV.w - 200, by + 510);
+drawTrapDoor(bx + FV.w/2, by + 560);
+
+// Bumper mushrooms - fill gaps
+const mushroomPositions = [
+  [100, 170], [FV.w - 100, 170],
+  [200, 290], [FV.w - 200, 290],
+  [FV.w/2 - 60, 300], [FV.w/2 + 60, 300],
+];
+mushroomPositions.forEach(([mx, my]) => drawMushroom(bx + mx, by + my));
+
+// ---- SCORING BUCKETS at bottom ----
+const bucketY = by + FV.h - 65;
+const buckets = [
+  { label: 'PIT\n0', w: 16, color: WHITE, x: 0 },
+  { label: 'MEH\n25', w: 48, color: GREY, x: 16 },
+  { label: 'NICE\n100', w: 40, color: NEON_GREEN, x: 64 },
+  { label: 'GREAT\n200', w: 32, color: BRIGHT_YELLOW, x: 104 },
+  { label: 'MEGA\n500', w: 24, color: NEON_ORANGE, x: 136 },
+  { label: 'JACKPOT\n1000', w: 20, color: GOLD, x: 160 },
+  { label: 'MEGA\n500', w: 24, color: NEON_ORANGE, x: 180 },
+  { label: 'GREAT\n200', w: 32, color: BRIGHT_YELLOW, x: 204 },
+  { label: 'NICE\n100', w: 40, color: NEON_GREEN, x: 236 },
+  { label: 'MEH\n25', w: 48, color: GREY, x: 276 },
+  { label: 'PIT\n0', w: 16, color: WHITE, x: 324 },
+];
+
+// Scale buckets to fit board width
+const totalBW = 340;
+const scale = (FV.w - 16) / totalBW;
+const bucketsStart = bx + 8;
+
+buckets.forEach(b => {
+  const bkx = bucketsStart + b.x * scale;
+  const bkw = b.w * scale;
+  ctx.fillStyle = b.color;
+  ctx.globalAlpha = 0.3;
+  ctx.fillRect(bkx, bucketY, bkw, 45);
+  ctx.globalAlpha = 1;
+  ctx.strokeStyle = b.color;
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(bkx, bucketY, bkw, 45);
+  // Label
+  ctx.fillStyle = b.color;
+  ctx.font = 'bold 7px Courier New';
+  ctx.textAlign = 'center';
+  const lines = b.label.split('\n');
+  ctx.fillText(lines[0], bkx + bkw/2, bucketY + 18);
+  ctx.font = '9px Courier New';
+  ctx.fillText(lines[1], bkx + bkw/2, bucketY + 32);
+});
+
+// ---- ARCHIMEDES CRANK LAUNCHERS ----
+function drawCrankLauncher(cx, cy, playerColor, playerLabel) {
+  // Tube
+  ctx.strokeStyle = 'rgba(150,200,255,0.4)';
+  ctx.lineWidth = 14;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy);
+  ctx.lineTo(cx, cy - 90);
+  ctx.stroke();
+  // Tube outline
+  ctx.strokeStyle = 'rgba(150,200,255,0.6)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(cx - 7, cy);
+  ctx.lineTo(cx - 7, cy - 90);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(cx + 7, cy);
+  ctx.lineTo(cx + 7, cy - 90);
+  ctx.stroke();
+  // Screw helix inside tube
+  ctx.strokeStyle = GOLD;
+  ctx.lineWidth = 1.5;
+  for (let i = 0; i < 8; i++) {
+    const yy = cy - 5 - i * 10;
+    ctx.beginPath();
+    ctx.moveTo(cx - 6, yy);
+    ctx.quadraticCurveTo(cx, yy - 5, cx + 6, yy);
+    ctx.stroke();
+  }
+  // Crank handle
+  ctx.strokeStyle = playerColor;
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy);
+  ctx.lineTo(cx + 20, cy + 5);
+  ctx.stroke();
+  ctx.fillStyle = playerColor;
+  ctx.beginPath();
+  ctx.arc(cx + 20, cy + 5, 5, 0, Math.PI * 2);
+  ctx.fill();
+  // Ball being lifted
+  ctx.fillStyle = playerColor;
+  ctx.globalAlpha = 0.7;
+  ctx.beginPath();
+  ctx.arc(cx, cy - 45, 5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  // Arrow showing lift direction
+  ctx.strokeStyle = playerColor;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(cx + 12, cy - 30);
+  ctx.lineTo(cx + 12, cy - 60);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(cx + 9, cy - 57);
+  ctx.lineTo(cx + 12, cy - 60);
+  ctx.lineTo(cx + 15, cy - 57);
+  ctx.fill();
+  // Label
+  ctx.fillStyle = playerColor;
+  ctx.font = 'bold 8px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText(playerLabel, cx, cy + 20);
+  ctx.font = '7px Courier New';
+  ctx.fillText('CRANK', cx, cy + 30);
+}
+
+// Launchers at bottom corners
+drawCrankLauncher(bx + 35, by + FV.h - 20, '#ff4444', 'P1 (RED)');
+drawCrankLauncher(bx + FV.w - 35, by + FV.h - 20, '#4488ff', 'P2 (BLUE)');
+
+// ---- BALL TRAJECTORIES (showing gameplay) ----
+ctx.setLineDash([4, 4]);
+ctx.lineWidth = 1.5;
+
+// Red ball trajectory
+ctx.strokeStyle = 'rgba(255,68,68,0.5)';
+ctx.beginPath();
+ctx.moveTo(bx + 35, by + FV.h - 110);
+ctx.quadraticCurveTo(bx + 100, by + 140, bx + 160, by + 180);
+ctx.stroke();
+// Ball at position
+ctx.fillStyle = '#ff4444';
+ctx.beginPath();
+ctx.arc(bx + 120, by + 155, 6, 0, Math.PI * 2);
+ctx.fill();
+ctx.strokeStyle = '#ff4444';
+ctx.lineWidth = 1;
+ctx.stroke();
+
+// Blue ball trajectory
+ctx.strokeStyle = 'rgba(68,136,255,0.5)';
+ctx.lineWidth = 1.5;
+ctx.beginPath();
+ctx.moveTo(bx + FV.w - 35, by + FV.h - 110);
+ctx.quadraticCurveTo(bx + FV.w - 120, by + 200, bx + FV.w/2 + 20, by + 350);
+ctx.stroke();
+// Ball at position
+ctx.fillStyle = '#4488ff';
+ctx.beginPath();
+ctx.arc(bx + FV.w/2 + 20, by + 340, 6, 0, Math.PI * 2);
+ctx.fill();
+ctx.strokeStyle = '#4488ff';
+ctx.lineWidth = 1;
+ctx.stroke();
+
+ctx.setLineDash([]);
+
+// ---- DIMENSION LINES ----
+ctx.strokeStyle = '#666';
+ctx.fillStyle = '#888';
+ctx.lineWidth = 1;
+ctx.font = '10px Courier New';
+ctx.textAlign = 'center';
+
+// Width dimension
+ctx.beginPath();
+ctx.moveTo(FV.x, by + FV.h + 20);
+ctx.lineTo(FV.x + FV.w, by + FV.h + 20);
+ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(FV.x, by + FV.h + 15);
+ctx.lineTo(FV.x, by + FV.h + 25);
+ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(FV.x + FV.w, by + FV.h + 15);
+ctx.lineTo(FV.x + FV.w, by + FV.h + 25);
+ctx.stroke();
+ctx.fillText('48" (4 ft)', FV.x + FV.w/2, by + FV.h + 35);
+
+// Height dimension
+ctx.beginPath();
+ctx.moveTo(FV.x - 20, by);
+ctx.lineTo(FV.x - 20, by + FV.h);
+ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(FV.x - 25, by);
+ctx.lineTo(FV.x - 15, by);
+ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(FV.x - 25, by + FV.h);
+ctx.lineTo(FV.x - 15, by + FV.h);
+ctx.stroke();
+ctx.save();
+ctx.translate(FV.x - 35, by + FV.h/2);
+ctx.rotate(-Math.PI/2);
+ctx.fillText('72" (6 ft)', 0, 0);
+ctx.restore();
+
+// ============== SIDE VIEW ==============
+ctx.fillStyle = '#aaa';
+ctx.font = 'bold 14px Courier New';
+ctx.textAlign = 'center';
+ctx.fillText('SIDE VIEW', SV.x + SV.w/2, SV.y);
+
+// Ground line
+ctx.strokeStyle = '#444';
+ctx.lineWidth = 1;
+ctx.beginPath();
+ctx.moveTo(SV.x, SV.y + SV.h + 15);
+ctx.lineTo(SV.x + SV.w, SV.y + SV.h + 15);
+ctx.stroke();
+
+// Board (tilted, side profile)
+const boardTop = SV.y + 30;
+const boardBot = SV.y + SV.h;
+const boardFrontX = SV.x + 50;
+const boardBackX = SV.x + 65;  // board thickness
+const tiltOffset = 50; // how far forward the bottom sticks out
+
+// Back panel (plywood)
+ctx.fillStyle = WOOD_DARK;
+ctx.beginPath();
+ctx.moveTo(boardBackX, boardTop);
+ctx.lineTo(boardBackX + tiltOffset, boardBot);
+ctx.lineTo(boardBackX + tiltOffset + 6, boardBot);
+ctx.lineTo(boardBackX + 6, boardTop);
+ctx.closePath();
+ctx.fill();
+
+// Gap (playing field)
+ctx.fillStyle = 'rgba(30,30,50,0.8)';
+ctx.beginPath();
+ctx.moveTo(boardFrontX, boardTop);
+ctx.lineTo(boardFrontX + tiltOffset, boardBot);
+ctx.lineTo(boardBackX + tiltOffset, boardBot);
+ctx.lineTo(boardBackX, boardTop);
+ctx.closePath();
+ctx.fill();
+
+// Front panel (acrylic)
+ctx.fillStyle = 'rgba(150,200,255,0.2)';
+ctx.strokeStyle = 'rgba(150,200,255,0.5)';
+ctx.lineWidth = 2;
+ctx.beginPath();
+ctx.moveTo(boardFrontX, boardTop);
+ctx.lineTo(boardFrontX + tiltOffset, boardBot);
+ctx.lineTo(boardFrontX + tiltOffset - 3, boardBot);
+ctx.lineTo(boardFrontX - 3, boardTop);
+ctx.closePath();
+ctx.fill();
+ctx.stroke();
+
+// Mechanisms poking out from board in side view
+const mechPositions = [0.15, 0.3, 0.45, 0.55, 0.7, 0.85];
+mechPositions.forEach((frac, i) => {
+  const my = boardTop + (boardBot - boardTop) * frac;
+  const mx = boardFrontX + tiltOffset * frac + 3;
+  const colors = [VOLCANO_RED, NEON_GREEN, '#9944ff', PURPLE_TEAL, SILVER, BRIGHT_YELLOW];
+  ctx.fillStyle = colors[i];
+  ctx.fillRect(mx, my - 4, 10, 8);
+  ctx.strokeStyle = colors[i];
+  ctx.lineWidth = 1;
+  ctx.strokeRect(mx, my - 4, 10, 8);
+});
+
+// Rear legs
+ctx.strokeStyle = WOOD;
+ctx.lineWidth = 4;
+// Back leg
+ctx.beginPath();
+ctx.moveTo(boardBackX + 6, boardTop + 20);
+ctx.lineTo(SV.x + SV.w - 20, boardBot + 15);
+ctx.stroke();
+// Cross brace
+ctx.lineWidth = 3;
+ctx.beginPath();
+const braceY = boardBot - 200;
+ctx.moveTo(boardBackX + 30, braceY);
+ctx.lineTo(SV.x + SV.w - 40, braceY + 50);
+ctx.stroke();
+
+// Chain/angle limiter
+ctx.strokeStyle = '#888';
+ctx.lineWidth = 1;
+ctx.setLineDash([3, 3]);
+ctx.beginPath();
+ctx.moveTo(boardBackX + 20, boardTop + 200);
+ctx.lineTo(SV.x + SV.w - 50, boardBot - 100);
+ctx.stroke();
+ctx.setLineDash([]);
+ctx.fillStyle = '#888';
+ctx.font = '7px Courier New';
+ctx.fillText('CHAIN', SV.x + 130, boardBot - 120);
+
+// Archimedes crank tube on side
+const tubeBot = boardBot - 10;
+const tubeTop = tubeBot - 80;
+ctx.strokeStyle = 'rgba(150,200,255,0.5)';
+ctx.lineWidth = 8;
+ctx.beginPath();
+ctx.moveTo(boardFrontX + tiltOffset - 10, tubeBot);
+ctx.lineTo(boardFrontX + tiltOffset - 25, tubeTop);
+ctx.stroke();
+ctx.fillStyle = GOLD;
+ctx.font = '7px Courier New';
+ctx.textAlign = 'left';
+ctx.fillText('CRANK', boardFrontX + tiltOffset - 40, tubeBot + 15);
+ctx.fillText('LIFT', boardFrontX + tiltOffset - 40, tubeBot + 24);
+
+// Collection chute behind board
+ctx.strokeStyle = '#666';
+ctx.lineWidth = 2;
+ctx.setLineDash([4, 3]);
+ctx.beginPath();
+ctx.moveTo(boardBackX + 10, boardTop + 50);
+ctx.lineTo(boardBackX + tiltOffset + 10, boardBot - 10);
+ctx.stroke();
+ctx.setLineDash([]);
+ctx.fillStyle = '#666';
+ctx.font = '7px Courier New';
+ctx.textAlign = 'right';
+ctx.fillText('BALL', boardBackX - 2, boardTop + 300);
+ctx.fillText('RETURN', boardBackX - 2, boardTop + 309);
+ctx.fillText('CHUTE', boardBackX - 2, boardTop + 318);
+
+// Side view labels
+ctx.fillStyle = 'rgba(150,200,255,0.7)';
+ctx.font = '8px Courier New';
+ctx.textAlign = 'left';
+ctx.fillText('ACRYLIC', boardFrontX - 30, boardTop + 80);
+ctx.fillText('FRONT', boardFrontX - 30, boardTop + 90);
+
+ctx.fillStyle = WOOD;
+ctx.fillText('PLYWOOD', boardBackX + 10, boardTop + 80);
+ctx.fillText('BACK', boardBackX + 10, boardTop + 90);
+
+// Gap dimension
+ctx.strokeStyle = '#888';
+ctx.lineWidth = 1;
+ctx.beginPath();
+ctx.moveTo(boardFrontX - 2, boardTop - 10);
+ctx.lineTo(boardBackX + 7, boardTop - 10);
+ctx.stroke();
+ctx.fillStyle = '#888';
+ctx.font = '9px Courier New';
+ctx.textAlign = 'center';
+ctx.fillText('6"', (boardFrontX + boardBackX) / 2 + 2, boardTop - 15);
+
+// Tilt angle arc
+ctx.strokeStyle = '#888';
+ctx.lineWidth = 1;
+ctx.beginPath();
+ctx.arc(boardFrontX + tiltOffset, boardBot, 40, -Math.PI/2 - 0.35, -Math.PI/2);
+ctx.stroke();
+ctx.fillStyle = '#888';
+ctx.font = '9px Courier New';
+ctx.fillText('20°', boardFrontX + tiltOffset + 15, boardBot - 35);
+
+// Side height dimension
+ctx.strokeStyle = '#666';
+ctx.lineWidth = 1;
+ctx.beginPath();
+ctx.moveTo(SV.x + SV.w - 5, boardTop);
+ctx.lineTo(SV.x + SV.w - 5, boardBot + 15);
+ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(SV.x + SV.w - 10, boardTop);
+ctx.lineTo(SV.x + SV.w, boardTop);
+ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(SV.x + SV.w - 10, boardBot + 15);
+ctx.lineTo(SV.x + SV.w, boardBot + 15);
+ctx.stroke();
+ctx.fillStyle = '#888';
+ctx.save();
+ctx.translate(SV.x + SV.w + 8, (boardTop + boardBot) / 2 + 8);
+ctx.rotate(-Math.PI/2);
+ctx.font = '9px Courier New';
+ctx.textAlign = 'center';
+ctx.fillText('84" (7ft peak)', 0, 0);
+ctx.restore();
+
+// Player silhouette
+const playerX = boardFrontX + tiltOffset - 30;
+const playerY = boardBot + 15;
+ctx.fillStyle = 'rgba(255,255,255,0.15)';
+// Head
+ctx.beginPath();
+ctx.arc(playerX - 15, playerY - 55, 8, 0, Math.PI * 2);
+ctx.fill();
+// Body
+ctx.fillRect(playerX - 20, playerY - 47, 10, 25);
+// Arms reaching to crank
+ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+ctx.lineWidth = 3;
+ctx.beginPath();
+ctx.moveTo(playerX - 15, playerY - 40);
+ctx.lineTo(boardFrontX + tiltOffset - 10, tubeBot);
+ctx.stroke();
+// Legs
+ctx.beginPath();
+ctx.moveTo(playerX - 20, playerY - 22);
+ctx.lineTo(playerX - 25, playerY);
+ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(playerX - 12, playerY - 22);
+ctx.lineTo(playerX - 8, playerY);
+ctx.stroke();
+
+ctx.fillStyle = 'rgba(255,255,255,0.3)';
+ctx.font = '8px Courier New';
+ctx.textAlign = 'center';
+ctx.fillText('PLAYER', playerX - 15, playerY + 12);
+
+// ============== MECHANISM LEGEND ==============
+const lgY = 810;
+ctx.fillStyle = '#ccc';
+ctx.font = 'bold 16px Courier New';
+ctx.textAlign = 'left';
+ctx.fillText('MECHANISM CATALOG', 50, lgY);
+
+ctx.font = '10px Courier New';
+ctx.fillStyle = '#888';
+ctx.fillText('Standard mount: 4× M6 bolts, 4" square pattern | All rotating parts: 608ZZ bearings', 50, lgY + 18);
+
+// Legend grid
+const legendItems = [
+  { color: NEON_GREEN, name: 'SPINNING WHEEL ×4', desc: 'Free-spin paddle, random deflection', tier: 'T1', time: '2h' },
+  { color: '#9944ff', name: 'FUNNEL SPIRAL ×3', desc: 'Ball spirals inside cone, random exit', tier: 'T1', time: '3h' },
+  { color: HOT_PINK, name: 'BUMPER MUSHROOM ×6', desc: 'Dome cap, classic wild ricochet', tier: 'T1', time: '1.5h' },
+  { color: NEON_ORANGE, name: 'HELIX DROP ×2', desc: 'Corkscrew chute, lateral exit', tier: 'T1', time: '3h' },
+  { color: SILVER, name: 'PENDULUM GATE ×3', desc: 'Alternates L/R path each ball', tier: 'T2', time: '6h' },
+  { color: BRIGHT_YELLOW, name: 'SEE-SAW CATAPULT ×2', desc: 'Ball loads one side, next ball launches it', tier: 'T2', time: '8h' },
+  { color: METAL_BLUE, name: 'GEAR RATCHET ×2', desc: '6-bucket wheel, 3-ball delay', tier: 'T2', time: '8h' },
+  { color: RED, name: 'TRAP DOOR ×3', desc: 'Trigger pin drops platform ball', tier: 'T2', time: '5h' },
+  { color: PURPLE_TEAL, name: 'THE OCTOPUS ×1', desc: '8 pivoting arms, reconfigures each ball', tier: 'T3', time: '20h' },
+  { color: VOLCANO_RED, name: 'THE VOLCANO ×1', desc: 'Spiral ramp up, 3 random exits down', tier: 'T3', time: '15h' },
+  { color: GOLD, name: 'ARCHIMEDES CRANK ×2', desc: 'Helical screw lift, hand-cranked', tier: 'T3', time: '12h' },
+];
+
+const colW = 370;
+legendItems.forEach((item, i) => {
+  const col = i < 6 ? 0 : 1;
+  const row = i < 6 ? i : i - 6;
+  const lx = 50 + col * (colW + 40);
+  const ly = lgY + 40 + row * 52;
+
+  // Color swatch
+  ctx.fillStyle = item.color;
+  ctx.fillRect(lx, ly, 16, 16);
+
+  // Tier badge
+  ctx.fillStyle = item.tier === 'T3' ? '#ff6600' : item.tier === 'T2' ? '#ffaa00' : '#44aa44';
+  ctx.font = 'bold 8px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText(item.tier, lx + 30, ly + 12);
+
+  // Name
+  ctx.fillStyle = item.color;
+  ctx.font = 'bold 10px Courier New';
+  ctx.textAlign = 'left';
+  ctx.fillText(item.name, lx + 44, ly + 10);
+
+  // Description
+  ctx.fillStyle = '#888';
+  ctx.font = '9px Courier New';
+  ctx.fillText(item.desc, lx + 44, ly + 24);
+
+  // Print time
+  ctx.fillStyle = '#666';
+  ctx.font = '8px Courier New';
+  ctx.fillText('Print: ' + item.time, lx + 44, ly + 36);
+});
+
+// ============== PRINT SCHEDULE SUMMARY ==============
+const psY = lgY + 365;
+ctx.fillStyle = '#ccc';
+ctx.font = 'bold 16px Courier New';
+ctx.textAlign = 'left';
+ctx.fillText('PRINT SCHEDULE (2 Bambu Labs × 8 weeks)', 50, psY);
+
+const schedule = [
+  { week: 'Wk 1-2', items: 'Tier 1: Wheels, Funnels, Mushrooms, Helixes', hrs: '~32h', bar: 0.16 },
+  { week: 'Wk 3-4', items: 'Tier 2: Pendulums, See-saws, Gears, Traps', hrs: '~65h', bar: 0.33 },
+  { week: 'Wk 5-6', items: 'Tier 3: Octopus, Volcano, Cranks + Buckets', hrs: '~81h', bar: 0.41 },
+  { week: 'Wk 7-8', items: 'Spares, iteration, decorative elements', hrs: '~40h', bar: 0.20 },
+];
+
+schedule.forEach((s, i) => {
+  const sy = psY + 25 + i * 35;
+  // Week label
+  ctx.fillStyle = '#aaa';
+  ctx.font = 'bold 10px Courier New';
+  ctx.textAlign = 'left';
+  ctx.fillText(s.week, 50, sy + 10);
+  // Bar
+  ctx.fillStyle = i === 3 ? '#555' : `hsl(${30 + i * 40}, 80%, 50%)`;
+  ctx.fillRect(130, sy, s.bar * 500, 18);
+  // Items
+  ctx.fillStyle = '#ccc';
+  ctx.font = '9px Courier New';
+  ctx.fillText(s.items + '  (' + s.hrs + ')', 135, sy + 12);
+});
+
+// Total
+ctx.fillStyle = GOLD;
+ctx.font = 'bold 11px Courier New';
+ctx.textAlign = 'left';
+ctx.fillText('TOTAL: ~218h print time | ~109h per printer | PLENTY of margin for iteration', 50, psY + 170);
+
+// ============== SCORING ZONE DIAGRAM ==============
+const szY = psY + 200;
+ctx.fillStyle = '#ccc';
+ctx.font = 'bold 16px Courier New';
+ctx.textAlign = 'left';
+ctx.fillText('SCORING BUCKETS (bottom of board, player POV)', 50, szY);
+
+const szBuckets = [
+  { label: '🚽 PIT', pts: '0', w: 30, color: WHITE },
+  { label: 'MEH', pts: '25', w: 70, color: GREY },
+  { label: 'NICE', pts: '100', w: 80, color: NEON_GREEN },
+  { label: 'GREAT', pts: '200', w: 65, color: BRIGHT_YELLOW },
+  { label: '🔥 MEGA', pts: '500', w: 50, color: NEON_ORANGE },
+  { label: '👑 JACKPOT', pts: '1000', w: 35, color: GOLD },
+  { label: '🔥 MEGA', pts: '500', w: 50, color: NEON_ORANGE },
+  { label: 'GREAT', pts: '200', w: 65, color: BRIGHT_YELLOW },
+  { label: 'NICE', pts: '100', w: 80, color: NEON_GREEN },
+  { label: 'MEH', pts: '25', w: 70, color: GREY },
+  { label: '🚽 PIT', pts: '0', w: 30, color: WHITE },
+];
+
+let szX = 80;
+szBuckets.forEach(b => {
+  const by2 = szY + 18;
+  ctx.fillStyle = b.color;
+  ctx.globalAlpha = 0.25;
+  ctx.fillRect(szX, by2, b.w, 55);
+  ctx.globalAlpha = 1;
+  ctx.strokeStyle = b.color;
+  ctx.lineWidth = 2;
+  ctx.strokeRect(szX, by2, b.w, 55);
+  ctx.fillStyle = b.color;
+  ctx.font = 'bold 9px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText(b.label, szX + b.w/2, by2 + 22);
+  ctx.font = 'bold 14px Courier New';
+  ctx.fillText(b.pts, szX + b.w/2, by2 + 42);
+  szX += b.w + 4;
+});
+
+// ============== KEY SPECS TABLE ==============
+const ksY = szY + 105;
+ctx.fillStyle = '#ccc';
+ctx.font = 'bold 16px Courier New';
+ctx.textAlign = 'left';
+ctx.fillText('KEY SPECS', 50, ksY);
+
+const specs = [
+  ['Board', '48"W × 72"H × 6"D, tilted 20°'],
+  ['Frame Height', '84" (7 ft) at peak'],
+  ['Mechanisms', '28 total (15 passive + 10 stateful + 3 showstoppers)'],
+  ['Bearings', '608ZZ (skateboard standard) × 30'],
+  ['Mount Pattern', '4× M6 bolts on 4" square — universal, hot-swappable'],
+  ['Launcher', 'Archimedes screw crank × 2 (3D printed, 18" tall)'],
+  ['Balls', '24 whiffle balls (12 red, 12 blue, 2.75" dia)'],
+  ['Round Time', '60 seconds — crank & launch as fast as you can'],
+  ['Print Time', '~218 hrs total (~109 hrs per printer)'],
+  ['Build Time', '4 weekends (lumber + assembly) + 8 weeks printing'],
+  ['Est. Cost', '$550–650 (incl. $238 filament for 12 colors)'],
+];
+
+specs.forEach((s, i) => {
+  const sy = ksY + 18 + i * 20;
+  ctx.fillStyle = '#ff6600';
+  ctx.font = 'bold 10px Courier New';
+  ctx.textAlign = 'right';
+  ctx.fillText(s[0], 200, sy);
+  ctx.fillStyle = '#ccc';
+  ctx.font = '10px Courier New';
+  ctx.textAlign = 'left';
+  ctx.fillText(s[1], 215, sy);
+});
+
+// Footer
+ctx.fillStyle = '#444';
+ctx.font = '9px Courier New';
+ctx.textAlign = 'center';
+ctx.fillText('THE CONTRAPTION — Where every peg is a machine and every run tells a different story', c.width/2, c.height - 10);
+</script>
+</body>
+</html>
