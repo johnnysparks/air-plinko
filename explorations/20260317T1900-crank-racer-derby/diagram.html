@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Great Crank Derby — Diagram</title>
+<!-- screenshot: 1200x1900 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #1a1a2e;
+    color: #eee;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 1900px;
+  }
+  h1 {
+    text-align: center;
+    padding: 18px 0 4px;
+    font-size: 28px;
+    color: #ffd700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 13px;
+    color: #aaa;
+    margin-bottom: 12px;
+  }
+  .views {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding: 0 20px;
+  }
+  .view-label {
+    text-align: center;
+    font-size: 14px;
+    color: #ffd700;
+    font-weight: bold;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  canvas { display: block; }
+  .legend {
+    max-width: 1160px;
+    margin: 16px auto;
+    padding: 14px 20px;
+    background: #16213e;
+    border-radius: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    font-size: 12px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .legend-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    border: 1px solid #444;
+  }
+  .specs {
+    max-width: 1160px;
+    margin: 12px auto 20px;
+    padding: 14px 20px;
+    background: #16213e;
+    border-radius: 8px;
+    font-size: 12px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  .spec-item { display: flex; flex-direction: column; }
+  .spec-label { color: #888; font-size: 10px; text-transform: uppercase; }
+  .spec-value { color: #ffd700; font-size: 14px; font-weight: bold; }
+  .sequence {
+    max-width: 1160px;
+    margin: 0 auto 20px;
+    padding: 14px 20px;
+    background: #16213e;
+    border-radius: 8px;
+  }
+  .sequence h3 {
+    color: #ffd700;
+    font-size: 13px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .seq-steps {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .seq-step {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .seq-circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #e94560;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 13px;
+  }
+  .seq-text { font-size: 11px; color: #ccc; }
+  .seq-arrow { color: #555; font-size: 18px; }
+</style>
+</head>
+<body>
+
+<h1>🏁 The Great Crank Derby 🏁</h1>
+<p class="subtitle">Head-to-Head Hand-Crank Racing — No Balls, No Pegs, Pure Speed</p>
+
+<div class="views">
+  <div>
+    <div class="view-label">Front View (Player Perspective)</div>
+    <canvas id="front" width="700" height="900"></canvas>
+  </div>
+  <div>
+    <div class="view-label">Side Cross-Section</div>
+    <canvas id="side" width="400" height="900"></canvas>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-swatch" style="background:#e94560"></div>Red Track / Car</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#4ea8de"></div>Blue Track / Car</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#c8a96e"></div>Plywood Board</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#888"></div>Pulleys</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#ffd700"></div>Bell / Flag</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#66bb6a"></div>Crank Station</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:rgba(255,255,255,0.2)"></div>Nylon String</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#8d6e63"></div>2×4 Structure</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:rgba(255,215,0,0.15)"></div>Terrain Zones</div>
+</div>
+
+<div class="specs">
+  <div class="spec-item"><span class="spec-label">Board Size</span><span class="spec-value">48" × 84"</span></div>
+  <div class="spec-item"><span class="spec-label">Total Height</span><span class="spec-value">88"</span></div>
+  <div class="spec-item"><span class="spec-label">Lean Angle</span><span class="spec-value">5°</span></div>
+  <div class="spec-item"><span class="spec-label">Crank Height</span><span class="spec-value">30"</span></div>
+  <div class="spec-item"><span class="spec-label">Track Zones</span><span class="spec-value">4</span></div>
+  <div class="spec-item"><span class="spec-label">Pulleys</span><span class="spec-value">16 total</span></div>
+  <div class="spec-item"><span class="spec-label">Est. Cost</span><span class="spec-value">$250–300</span></div>
+  <div class="spec-item"><span class="spec-label">Game Time</span><span class="spec-value">~30 sec</span></div>
+</div>
+
+<div class="sequence">
+  <h3>Gameplay Sequence</h3>
+  <div class="seq-steps">
+    <div class="seq-step"><div class="seq-circle">1</div><span class="seq-text">Step Up</span></div>
+    <span class="seq-arrow">→</span>
+    <div class="seq-step"><div class="seq-circle">2</div><span class="seq-text">Grab Crank</span></div>
+    <span class="seq-arrow">→</span>
+    <div class="seq-step"><div class="seq-circle">3</div><span class="seq-text">GO!</span></div>
+    <span class="seq-arrow">→</span>
+    <div class="seq-step"><div class="seq-circle">4</div><span class="seq-text">Crank Furiously</span></div>
+    <span class="seq-arrow">→</span>
+    <div class="seq-step"><div class="seq-circle">5</div><span class="seq-text">Car Climbs</span></div>
+    <span class="seq-arrow">→</span>
+    <div class="seq-step"><div class="seq-circle">6</div><span class="seq-text">DING! Bell!</span></div>
+    <span class="seq-arrow">→</span>
+    <div class="seq-step"><div class="seq-circle">7</div><span class="seq-text">Flag Pops</span></div>
+    <span class="seq-arrow">→</span>
+    <div class="seq-step"><div class="seq-circle">8</div><span class="seq-text">Reset (5s)</span></div>
+  </div>
+</div>
+
+<script>
+// ============ FRONT VIEW ============
+(function() {
+  const c = document.getElementById('front');
+  const ctx = c.getContext('2d');
+  const W = c.width, H = c.height;
+
+  // Background
+  ctx.fillStyle = '#0f0f23';
+  ctx.fillRect(0, 0, W, H);
+
+  // Board dimensions in canvas coords
+  const boardL = 80, boardR = 620, boardT = 40, boardB = 780;
+  const boardW = boardR - boardL;
+  const boardH = boardB - boardT;
+  const midX = (boardL + boardR) / 2;
+
+  // Draw board (plywood)
+  ctx.fillStyle = '#c8a96e';
+  ctx.fillRect(boardL, boardT, boardW, boardH);
+
+  // Board border
+  ctx.strokeStyle = '#8d6e63';
+  ctx.lineWidth = 4;
+  ctx.strokeRect(boardL, boardT, boardW, boardH);
+
+  // Terrain zone backgrounds
+  const zones = [
+    { name: 'THE FLATS', y0: 0.71, y1: 1.0, color: 'rgba(102,187,106,0.12)' },
+    { name: 'SWITCHBACKS', y0: 0.43, y1: 0.71, color: 'rgba(255,167,38,0.12)' },
+    { name: "DEAD MAN'S HILL", y0: 0.21, y1: 0.43, color: 'rgba(233,69,96,0.12)' },
+    { name: 'GLORY RUN', y0: 0.0, y1: 0.21, color: 'rgba(255,215,0,0.15)' },
+  ];
+
+  // Zone sidebar labels
+  zones.forEach(z => {
+    const y0 = boardT + z.y0 * boardH;
+    const y1 = boardT + z.y1 * boardH;
+    ctx.fillStyle = z.color;
+    ctx.fillRect(boardL, y0, boardW, y1 - y0);
+
+    // Zone label on left sidebar
+    ctx.save();
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 9px sans-serif';
+    ctx.textAlign = 'center';
+    const labelY = (y0 + y1) / 2;
+    ctx.translate(boardL - 14, labelY);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText(z.name, 0, 0);
+    ctx.restore();
+
+    // Zone divider line
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(boardL, y1);
+    ctx.lineTo(boardR, y1);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  });
+
+  // Track path function - S-curve with switchbacks
+  function getTrackPoints(side) {
+    // side: -1 = left (red), 1 = right (blue)
+    const cx = midX + side * 100; // track center offset
+    const pts = [];
+
+    // THE FLATS (bottom, gentle curve)
+    for (let t = 0; t <= 1; t += 0.02) {
+      const y = boardB - t * boardH * 0.29;
+      const x = cx + side * Math.sin(t * Math.PI * 0.5) * 30;
+      pts.push({x, y});
+    }
+
+    // SWITCHBACKS (two hairpins)
+    const swY0 = boardB - boardH * 0.29;
+    const swY1 = boardB - boardH * 0.57;
+    const swH = swY0 - swY1;
+    for (let t = 0; t <= 1; t += 0.01) {
+      const y = swY0 - t * swH;
+      const x = cx + Math.sin(t * Math.PI * 4) * 60 * side;
+      pts.push({x, y});
+    }
+
+    // DEAD MAN'S HILL (steep straight)
+    const dmY0 = boardB - boardH * 0.57;
+    const dmY1 = boardB - boardH * 0.79;
+    for (let t = 0.02; t <= 1; t += 0.02) {
+      const y = dmY0 - t * (dmY0 - dmY1);
+      const x = cx + side * 10;
+      pts.push({x, y});
+    }
+
+    // GLORY RUN (sweep inward toward center)
+    const grY0 = boardB - boardH * 0.79;
+    const grY1 = boardT + 20;
+    for (let t = 0.02; t <= 1; t += 0.02) {
+      const y = grY0 - t * (grY0 - grY1);
+      const x = cx + side * 10 - side * t * 60;
+      pts.push({x, y});
+    }
+
+    return pts;
+  }
+
+  // Draw tracks
+  function drawTrack(pts, color) {
+    // Track groove (wider, darker)
+    ctx.strokeStyle = 'rgba(0,0,0,0.4)';
+    ctx.lineWidth = 12;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+    ctx.stroke();
+
+    // Track color
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 8;
+    ctx.beginPath();
+    pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+    ctx.stroke();
+
+    // White lane lines
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+    ctx.stroke();
+  }
+
+  const redPts = getTrackPoints(-1);
+  const bluePts = getTrackPoints(1);
+  drawTrack(redPts, '#e94560');
+  drawTrack(bluePts, '#4ea8de');
+
+  // Pulleys - at key direction changes
+  function drawPulley(x, y) {
+    ctx.fillStyle = '#888';
+    ctx.strokeStyle = '#666';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(x, y, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    // Axle dot
+    ctx.fillStyle = '#444';
+    ctx.beginPath();
+    ctx.arc(x, y, 2, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Place pulleys at track turns
+  [redPts, bluePts].forEach(pts => {
+    // Bottom entry
+    drawPulley(pts[0].x, pts[0].y);
+    // Switchback peaks
+    const sw1 = Math.floor(pts.length * 0.35);
+    const sw2 = Math.floor(pts.length * 0.42);
+    const sw3 = Math.floor(pts.length * 0.48);
+    const sw4 = Math.floor(pts.length * 0.55);
+    drawPulley(pts[sw1].x, pts[sw1].y);
+    drawPulley(pts[sw2].x, pts[sw2].y);
+    drawPulley(pts[sw3].x, pts[sw3].y);
+    drawPulley(pts[sw4].x, pts[sw4].y);
+    // Dead Man's Hill top
+    const dmt = Math.floor(pts.length * 0.78);
+    drawPulley(pts[dmt].x, pts[dmt].y);
+    // Glory Run mid
+    const grm = Math.floor(pts.length * 0.88);
+    drawPulley(pts[grm].x, pts[grm].y);
+    // Top
+    drawPulley(pts[pts.length - 1].x, pts[pts.length - 1].y);
+  });
+
+  // Nylon string (show as thin dashed line following track)
+  [redPts, bluePts].forEach((pts, i) => {
+    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 5]);
+    ctx.beginPath();
+    // String from bottom of board down to crank station
+    const bot = pts[0];
+    ctx.moveTo(bot.x, bot.y);
+    ctx.lineTo(bot.x + (i === 0 ? -40 : 40), boardB + 60);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  });
+
+  // Race cars on track (one at flats, one at switchbacks to show racing)
+  function drawCar(pts, index, color, label) {
+    const p = pts[index];
+    // Next point for angle
+    const p2 = pts[Math.min(index + 3, pts.length - 1)];
+    const angle = Math.atan2(p2.y - p.y, p2.x - p.x);
+
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(angle);
+
+    // Car body
+    ctx.fillStyle = color;
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 8;
+    ctx.fillRect(-12, -7, 24, 14);
+    ctx.shadowBlur = 0;
+
+    // Windshield
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.fillRect(4, -5, 6, 10);
+
+    // Wheels
+    ctx.fillStyle = '#333';
+    ctx.fillRect(-10, -9, 6, 3);
+    ctx.fillRect(-10, 6, 6, 3);
+    ctx.fillRect(4, -9, 6, 3);
+    ctx.fillRect(4, 6, 6, 3);
+
+    ctx.restore();
+
+    // Label
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 9px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(label, p.x, p.y - 16);
+  }
+
+  // Red car further ahead (at switchbacks), blue car at flats (showing race in progress)
+  drawCar(redPts, Math.floor(redPts.length * 0.45), '#e94560', 'RED');
+  drawCar(bluePts, Math.floor(bluePts.length * 0.35), '#4ea8de', 'BLUE');
+
+  // Bells at top of each track
+  function drawBell(x, y, flagSide) {
+    // Bell base
+    ctx.fillStyle = '#ffd700';
+    ctx.beginPath();
+    ctx.arc(x, y, 10, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#b8860b';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Bell ding lines
+    ctx.strokeStyle = '#ffd700';
+    ctx.lineWidth = 1.5;
+    for (let a = -0.6; a <= 0.6; a += 0.3) {
+      ctx.beginPath();
+      ctx.arc(x, y, 16, a - 0.15, a + 0.15);
+      ctx.stroke();
+    }
+
+    // Label
+    ctx.fillStyle = '#ffd700';
+    ctx.font = 'bold 9px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('BELL', x, y - 18);
+
+    // Victory flag (shown as ghost/ready position)
+    ctx.save();
+    ctx.globalAlpha = 0.5;
+    ctx.fillStyle = '#ffd700';
+    // Flag pole
+    ctx.fillRect(x + flagSide * 15, y - 25, 2, 30);
+    // Flag
+    ctx.beginPath();
+    ctx.moveTo(x + flagSide * 17, y - 25);
+    ctx.lineTo(x + flagSide * 35, y - 18);
+    ctx.lineTo(x + flagSide * 17, y - 11);
+    ctx.closePath();
+    ctx.fill();
+    ctx.globalAlpha = 1;
+
+    ctx.fillStyle = 'rgba(255,215,0,0.6)';
+    ctx.font = '7px sans-serif';
+    ctx.fillText('FLAG', x + flagSide * 25, y - 30);
+    ctx.restore();
+  }
+
+  const redTop = redPts[redPts.length - 1];
+  const blueTop = bluePts[bluePts.length - 1];
+  drawBell(redTop.x, redTop.y - 5, -1);
+  drawBell(blueTop.x, blueTop.y - 5, 1);
+
+  // Header sign
+  ctx.fillStyle = '#8d6e63';
+  ctx.fillRect(boardL - 5, boardT - 30, boardW + 10, 28);
+  ctx.fillStyle = '#ffd700';
+  ctx.font = 'bold 14px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('THE GREAT CRANK DERBY', midX, boardT - 12);
+
+  // Start line
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(boardL + 20, boardB - 15);
+  ctx.lineTo(boardR - 20, boardB - 15);
+  ctx.stroke();
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 11px sans-serif';
+  ctx.fillText('START', midX, boardB - 4);
+
+  // Checkered pattern at top (Glory Run zone)
+  const checkY = boardT;
+  const checkH = boardH * 0.1;
+  const checkSize = 10;
+  for (let row = 0; row < checkH / checkSize; row++) {
+    for (let col = 0; col < boardW / checkSize; col++) {
+      if ((row + col) % 2 === 0) {
+        ctx.fillStyle = 'rgba(255,255,255,0.08)';
+        ctx.fillRect(boardL + col * checkSize, checkY + row * checkSize, checkSize, checkSize);
+      }
+    }
+  }
+
+  // Crank stations at bottom
+  function drawCrankStation(x, color, label) {
+    const baseY = boardB + 20;
+
+    // Post (2x4)
+    ctx.fillStyle = '#8d6e63';
+    ctx.fillRect(x - 8, baseY, 16, 80);
+
+    // Racing stripe on post
+    ctx.fillStyle = color;
+    ctx.globalAlpha = 0.5;
+    ctx.fillRect(x - 8, baseY, 4, 80);
+    ctx.globalAlpha = 1;
+
+    // Base frame
+    ctx.fillStyle = '#6d4c41';
+    ctx.fillRect(x - 35, baseY + 80, 70, 8);
+
+    // Crank arm
+    ctx.strokeStyle = '#66bb6a';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(x, baseY + 30);
+    ctx.lineTo(x + 30, baseY + 20);
+    ctx.stroke();
+
+    // Crank handle
+    ctx.fillStyle = '#66bb6a';
+    ctx.beginPath();
+    ctx.arc(x + 30, baseY + 20, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#388e3c';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Spool (shown as circle on post)
+    ctx.fillStyle = '#555';
+    ctx.beginPath();
+    ctx.arc(x, baseY + 30, 8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#777';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // String wrapping on spool
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = 0.5;
+    ctx.beginPath();
+    ctx.arc(x, baseY + 30, 5, 0, Math.PI * 1.5);
+    ctx.stroke();
+
+    // Label
+    ctx.fillStyle = color;
+    ctx.font = 'bold 10px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(label, x, baseY + 105);
+
+    // Ratchet label
+    ctx.fillStyle = '#aaa';
+    ctx.font = '7px sans-serif';
+    ctx.fillText('RATCHET', x, baseY + 45);
+    ctx.fillText('SPOOL', x, baseY + 20);
+  }
+
+  drawCrankStation(midX - 120, '#e94560', 'RED CRANK');
+  drawCrankStation(midX + 120, '#4ea8de', 'BLUE CRANK');
+
+  // Dimension lines
+  ctx.strokeStyle = '#666';
+  ctx.fillStyle = '#999';
+  ctx.lineWidth = 1;
+  ctx.font = '9px sans-serif';
+  ctx.textAlign = 'center';
+
+  // Width dimension
+  ctx.beginPath();
+  ctx.moveTo(boardL, boardB + 115);
+  ctx.lineTo(boardR, boardB + 115);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(boardL, boardB + 110);
+  ctx.lineTo(boardL, boardB + 120);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(boardR, boardB + 110);
+  ctx.lineTo(boardR, boardB + 120);
+  ctx.stroke();
+  ctx.fillText('48" (4 ft)', midX, boardB + 112);
+
+  // Height dimension
+  ctx.beginPath();
+  ctx.moveTo(boardR + 25, boardT);
+  ctx.lineTo(boardR + 25, boardB);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(boardR + 20, boardT);
+  ctx.lineTo(boardR + 30, boardT);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(boardR + 20, boardB);
+  ctx.lineTo(boardR + 30, boardB);
+  ctx.stroke();
+  ctx.save();
+  ctx.translate(boardR + 35, (boardT + boardB) / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText('84" (7 ft)', 0, 0);
+  ctx.restore();
+
+  // Stick figures (players)
+  function drawStickFigure(x, baseY) {
+    ctx.strokeStyle = '#ddd';
+    ctx.lineWidth = 2;
+    ctx.fillStyle = '#ddd';
+
+    // Head
+    ctx.beginPath();
+    ctx.arc(x, baseY - 50, 7, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Body
+    ctx.beginPath();
+    ctx.moveTo(x, baseY - 43);
+    ctx.lineTo(x, baseY - 15);
+    ctx.stroke();
+
+    // Legs
+    ctx.beginPath();
+    ctx.moveTo(x, baseY - 15);
+    ctx.lineTo(x - 10, baseY);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x, baseY - 15);
+    ctx.lineTo(x + 10, baseY);
+    ctx.stroke();
+
+    // Arms reaching for crank
+    ctx.beginPath();
+    ctx.moveTo(x, baseY - 35);
+    ctx.lineTo(x + 20, baseY - 28);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x, baseY - 35);
+    ctx.lineTo(x + 18, baseY - 22);
+    ctx.stroke();
+  }
+
+  drawStickFigure(midX - 155, boardB + 100);
+  drawStickFigure(midX + 85, boardB + 100);
+
+})();
+
+// ============ SIDE VIEW ============
+(function() {
+  const c = document.getElementById('side');
+  const ctx = c.getContext('2d');
+  const W = c.width, H = c.height;
+
+  ctx.fillStyle = '#0f0f23';
+  ctx.fillRect(0, 0, W, H);
+
+  // Side view shows the lean angle and structure
+  const boardBottom = 780;
+  const boardTop = 40;
+  const boardH = boardBottom - boardTop;
+
+  // Board (angled 5° from vertical)
+  const leanAngle = 5 * Math.PI / 180;
+  const boardThick = 12;
+
+  // Board face (front edge) - leaning backward slightly
+  const topX = 200;
+  const botX = topX + Math.sin(leanAngle) * boardH;
+
+  // Draw board as angled rectangle
+  ctx.fillStyle = '#c8a96e';
+  ctx.beginPath();
+  ctx.moveTo(topX, boardTop);
+  ctx.lineTo(topX + boardThick, boardTop);
+  ctx.lineTo(botX + boardThick, boardBottom);
+  ctx.lineTo(botX, boardBottom);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = '#8d6e63';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Label: "¾\" Plywood"
+  ctx.fillStyle = '#aaa';
+  ctx.font = '8px sans-serif';
+  ctx.save();
+  ctx.translate(topX + 25, (boardTop + boardBottom) / 2);
+  ctx.rotate(-Math.PI / 2 + leanAngle);
+  ctx.textAlign = 'center';
+  ctx.fillText('¾" PLYWOOD BOARD', 0, 0);
+  ctx.restore();
+
+  // Track rail (raised strip on board face)
+  const railCount = 5;
+  for (let i = 0; i < railCount; i++) {
+    const frac = (i + 0.5) / railCount;
+    const y = boardTop + frac * boardH;
+    const x = topX + Math.sin(leanAngle) * frac * boardH;
+    ctx.fillStyle = '#a0522d';
+    ctx.fillRect(x - 4, y - 1, 5, 3);
+  }
+
+  // Track rail label
+  ctx.fillStyle = '#888';
+  ctx.font = '7px sans-serif';
+  ctx.textAlign = 'left';
+  const railLabelY = boardTop + boardH * 0.3;
+  const railLabelX = topX + Math.sin(leanAngle) * boardH * 0.3;
+  ctx.fillText('TRACK RAIL', railLabelX - 55, railLabelY);
+  ctx.strokeStyle = '#666';
+  ctx.lineWidth = 0.5;
+  ctx.beginPath();
+  ctx.moveTo(railLabelX - 55, railLabelY + 3);
+  ctx.lineTo(railLabelX - 3, railLabelY + 1);
+  ctx.stroke();
+
+  // Car on rail (side view)
+  const carY = boardTop + boardH * 0.5;
+  const carX = topX + Math.sin(leanAngle) * boardH * 0.5 - 6;
+  ctx.fillStyle = '#e94560';
+  ctx.shadowColor = '#e94560';
+  ctx.shadowBlur = 6;
+  ctx.fillRect(carX - 8, carY - 5, 16, 10);
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = '#333';
+  ctx.fillRect(carX - 6, carY + 5, 4, 3);
+  ctx.fillRect(carX + 2, carY + 5, 4, 3);
+  ctx.fillStyle = '#fff';
+  ctx.font = '7px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('CAR', carX, carY - 10);
+
+  // String from car going up
+  ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([3, 4]);
+  ctx.beginPath();
+  ctx.moveTo(carX - 8, carY);
+  ctx.lineTo(topX - 2, boardTop + 30);
+  ctx.stroke();
+  // String going down to crank
+  ctx.beginPath();
+  ctx.moveTo(carX + 8, carY);
+  ctx.lineTo(botX + 20, boardBottom + 30);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Pulley at top
+  ctx.fillStyle = '#888';
+  ctx.beginPath();
+  ctx.arc(topX - 2, boardTop + 30, 5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#aaa';
+  ctx.font = '7px sans-serif';
+  ctx.fillText('PULLEY', topX - 30, boardTop + 25);
+
+  // Back support legs (angled)
+  ctx.strokeStyle = '#8d6e63';
+  ctx.lineWidth = 6;
+  ctx.beginPath();
+  const legTopY = boardTop + 30;
+  const legTopX = topX + boardThick + Math.sin(leanAngle) * (legTopY - boardTop);
+  ctx.moveTo(legTopX, legTopY);
+  ctx.lineTo(legTopX + 80, boardBottom + 20);
+  ctx.stroke();
+
+  // Hinge at top
+  ctx.fillStyle = '#777';
+  ctx.beginPath();
+  ctx.arc(legTopX, legTopY, 4, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#aaa';
+  ctx.font = '7px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('HINGE', legTopX + 8, legTopY - 3);
+
+  // Chain angle limiter
+  ctx.strokeStyle = '#ffd700';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([3, 2]);
+  const chainBoardY = boardTop + boardH * 0.5;
+  const chainBoardX = topX + boardThick + Math.sin(leanAngle) * (chainBoardY - boardTop);
+  const chainLegFrac = (chainBoardY - legTopY) / (boardBottom + 20 - legTopY);
+  const chainLegX = legTopX + chainLegFrac * 80;
+  ctx.beginPath();
+  ctx.moveTo(chainBoardX, chainBoardY);
+  ctx.lineTo(chainLegX, chainBoardY + 10);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#ffd700';
+  ctx.font = '7px sans-serif';
+  ctx.fillText('CHAIN', chainLegX + 5, chainBoardY + 5);
+
+  // Cross brace on legs
+  const braceY = boardBottom - 100;
+  const braceFrac = (braceY - legTopY) / (boardBottom + 20 - legTopY);
+  const braceX = legTopX + braceFrac * 80;
+  ctx.strokeStyle = '#8d6e63';
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(braceX - 10, braceY);
+  ctx.lineTo(braceX + 25, braceY);
+  ctx.stroke();
+  ctx.fillStyle = '#aaa';
+  ctx.font = '7px sans-serif';
+  ctx.fillText('CROSS BRACE', braceX + 28, braceY + 3);
+
+  // Sandbag on cross brace
+  ctx.fillStyle = '#5d4037';
+  ctx.fillRect(braceX - 5, braceY + 5, 20, 12);
+  ctx.fillStyle = '#aaa';
+  ctx.font = '7px sans-serif';
+  ctx.fillText('SANDBAG', braceX + 20, braceY + 15);
+
+  // Crank station (side view)
+  const crankX = botX + 20;
+  const crankBaseY = boardBottom + 80;
+
+  // Post
+  ctx.fillStyle = '#8d6e63';
+  ctx.fillRect(crankX - 5, boardBottom, 10, 80);
+
+  // Base
+  ctx.fillStyle = '#6d4c41';
+  ctx.fillRect(crankX - 25, crankBaseY, 50, 6);
+
+  // Spool
+  ctx.fillStyle = '#555';
+  ctx.beginPath();
+  ctx.arc(crankX, boardBottom + 30, 8, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#777';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // Crank arm (pointing toward viewer, foreshortened)
+  ctx.fillStyle = '#66bb6a';
+  ctx.beginPath();
+  ctx.arc(crankX, boardBottom + 30, 5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(crankX - 8, boardBottom + 22, 4, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#66bb6a';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(crankX, boardBottom + 30);
+  ctx.lineTo(crankX - 8, boardBottom + 22);
+  ctx.stroke();
+
+  // Labels
+  ctx.fillStyle = '#66bb6a';
+  ctx.font = 'bold 9px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('CRANK', crankX, boardBottom + 55);
+  ctx.fillText('STATION', crankX, boardBottom + 65);
+
+  // Ratchet arrow
+  ctx.fillStyle = '#888';
+  ctx.font = '7px sans-serif';
+  ctx.fillText('RATCHET', crankX + 25, boardBottom + 25);
+  ctx.strokeStyle = '#888';
+  ctx.lineWidth = 0.5;
+  ctx.beginPath();
+  ctx.moveTo(crankX + 12, boardBottom + 28);
+  ctx.lineTo(crankX + 8, boardBottom + 30);
+  ctx.stroke();
+
+  // Stick figure (side view)
+  const figX = crankX - 50;
+  const figBaseY = crankBaseY + 6;
+  ctx.strokeStyle = '#ddd';
+  ctx.lineWidth = 2;
+
+  // Head
+  ctx.beginPath();
+  ctx.arc(figX, figBaseY - 55, 7, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // Body
+  ctx.beginPath();
+  ctx.moveTo(figX, figBaseY - 48);
+  ctx.lineTo(figX + 5, figBaseY - 18);
+  ctx.stroke();
+
+  // Legs
+  ctx.beginPath();
+  ctx.moveTo(figX + 5, figBaseY - 18);
+  ctx.lineTo(figX - 5, figBaseY);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(figX + 5, figBaseY - 18);
+  ctx.lineTo(figX + 15, figBaseY);
+  ctx.stroke();
+
+  // Arms reaching forward to crank
+  ctx.beginPath();
+  ctx.moveTo(figX, figBaseY - 40);
+  ctx.lineTo(crankX - 8, boardBottom + 22);
+  ctx.stroke();
+
+  // Height label for kid
+  ctx.fillStyle = '#aaa';
+  ctx.font = '8px sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText('~4 ft kid', figX - 10, figBaseY - 25);
+
+  // Crank height dimension
+  ctx.strokeStyle = '#666';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(crankX + 50, boardBottom + 30);
+  ctx.lineTo(crankX + 50, crankBaseY + 6);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(crankX + 45, boardBottom + 30);
+  ctx.lineTo(crankX + 55, boardBottom + 30);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(crankX + 45, crankBaseY + 6);
+  ctx.lineTo(crankX + 55, crankBaseY + 6);
+  ctx.stroke();
+  ctx.fillStyle = '#999';
+  ctx.font = '8px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('30"', crankX + 55, boardBottom + 55);
+
+  // Bell at top
+  ctx.fillStyle = '#ffd700';
+  ctx.beginPath();
+  ctx.arc(topX, boardTop + 10, 8, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#b8860b';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  ctx.fillStyle = '#ffd700';
+  ctx.font = 'bold 8px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('BELL', topX, boardTop);
+
+  // 5° angle indicator
+  ctx.strokeStyle = '#999';
+  ctx.lineWidth = 1;
+  // Vertical reference line
+  ctx.setLineDash([2, 3]);
+  ctx.beginPath();
+  ctx.moveTo(botX, boardBottom);
+  ctx.lineTo(botX, boardBottom - 120);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  // Angle arc
+  ctx.beginPath();
+  ctx.arc(botX, boardBottom, 60, -Math.PI / 2 - leanAngle, -Math.PI / 2, false);
+  ctx.stroke();
+  ctx.fillStyle = '#999';
+  ctx.font = '9px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('5°', botX + 5, boardBottom - 65);
+
+  // Ground line
+  ctx.strokeStyle = '#444';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(20, crankBaseY + 6);
+  ctx.lineTo(W - 20, crankBaseY + 6);
+  ctx.stroke();
+  ctx.fillStyle = '#555';
+  ctx.font = '8px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('GROUND', W / 2, crankBaseY + 20);
+
+})();
+</script>
+</body>
+</html>
