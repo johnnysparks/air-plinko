@@ -1,0 +1,872 @@
+<!-- screenshot: 900x1600 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Popsicle Plinko — Concept Diagram</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1a0f0a; color: #e0e0e0; font-family: 'Courier New', monospace; padding: 20px; }
+  h1 { text-align: center; color: #ff9933; margin-bottom: 4px; font-size: 28px; letter-spacing: 4px; text-shadow: 0 0 10px #ff9933; }
+  .subtitle { text-align: center; color: #a08060; margin-bottom: 30px; font-size: 14px; }
+  .views { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; }
+  .view { background: #2a1f15; border: 1px solid #5a4030; border-radius: 8px; padding: 20px; }
+  .view h2 { color: #ff9933; margin-bottom: 16px; font-size: 16px; text-align: center; }
+  canvas { display: block; }
+  .legend { margin-top: 30px; max-width: 860px; margin-left: auto; margin-right: auto; }
+  .legend h3 { color: #ff9933; margin-bottom: 10px; }
+  .legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; }
+  .legend-item { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; font-size: 13px; }
+  .legend-swatch { width: 16px; height: 16px; border-radius: 3px; flex-shrink: 0; }
+  .specs { margin-top: 30px; max-width: 860px; margin-left: auto; margin-right: auto; background: #2a1f15; border: 1px solid #5a4030; border-radius: 8px; padding: 20px; }
+  .specs h3 { color: #ff9933; margin-bottom: 10px; }
+  .specs table { width: 100%; font-size: 13px; }
+  .specs td { padding: 3px 8px; }
+  .specs td:first-child { color: #a08060; }
+  .craft-kit { margin-top: 30px; max-width: 860px; margin-left: auto; margin-right: auto; background: #1a2a15; border: 1px solid #3a5a30; border-radius: 8px; padding: 20px; }
+  .craft-kit h3 { color: #66cc44; margin-bottom: 10px; }
+  .craft-kit p { font-size: 13px; line-height: 1.6; color: #a0c0a0; }
+</style>
+</head>
+<body>
+
+<h1>POPSICLE PLINKO</h1>
+<p class="subtitle">clothespin launchers × pushpin pegs × rubber band bumpers × craft-cup scoring — every kid takes home a mini kit</p>
+
+<div class="views">
+  <div class="view">
+    <h2>FRONT VIEW</h2>
+    <canvas id="front" width="520" height="620"></canvas>
+  </div>
+  <div class="view">
+    <h2>SIDE CROSS-SECTION</h2>
+    <canvas id="side" width="300" height="620"></canvas>
+  </div>
+</div>
+
+<div class="legend">
+  <h3>LEGEND</h3>
+  <div class="legend-grid">
+    <div class="legend-item"><div class="legend-swatch" style="background:#c4956a"></div> Kraft-brown back panel (construction paper look)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#deb887"></div> Popsicle-stick edge rails (rounded 1×4)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:rgba(135,206,250,0.3); border:1px solid #87CEFA"></div> Clear acrylic front panel</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#ff4444"></div> Red pushpin pegs</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#4488ff"></div> Blue pushpin pegs</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#44cc44"></div> Green pushpin pegs</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#ffcc00"></div> Yellow pushpin pegs</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#ff4444; border:2px solid #ff4444"></div> Red rubber band bumpers (top row)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#ffcc00; border:2px solid #ffcc00"></div> Yellow rubber band bumpers (mid row)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#4488ff; border:2px solid #4488ff"></div> Blue rubber band bumpers (bottom row)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#ff66aa"></div> Spinning pinwheels (lollipop spiral)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#8B6914"></div> Clothespin launchers (spring-loaded)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#FFD700"></div> Golden cup (100 pts — jackpot)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#C0C0C0"></div> Silver cups (50 pts)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#4488ff"></div> Blue cups (25 pts)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#ff4444"></div> Red cups (10 pts — widest)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#8B4513"></div> Wooden balls (1.5" painted)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#666"></div> 2×4 support frame + hinged legs</div>
+  </div>
+</div>
+
+<div class="specs">
+  <h3>KEY SPECS</h3>
+  <table>
+    <tr><td>Board</td><td>48"W × 60"H × 4" deep, ¾" plywood + ¼" acrylic</td></tr>
+    <tr><td>Tilt</td><td>~20° from vertical, peak at ~64"</td></tr>
+    <tr><td>Pegs</td><td>~80 pushpin-style (3D-printed caps on ¾" dowels), 4 colors</td></tr>
+    <tr><td>Bumpers</td><td>15 rubber band pairs across 3 rows (red/yellow/blue)</td></tr>
+    <tr><td>Pinwheels</td><td>2 × 6" diameter, 3D-printed, free-spinning on bolt axles</td></tr>
+    <tr><td>Launchers</td><td>2 × clothespin-snap (screen door spring, 1×3 lever arm)</td></tr>
+    <tr><td>Scoring</td><td>10 / 25 / 50 / 100 (golden jackpot) — 7 craft-cup funnels</td></tr>
+    <tr><td>Balls</td><td>10 × 1.5" painted wooden balls (5 per player)</td></tr>
+    <tr><td>Est. cost</td><td>~$432 (with 200 take-home craft kits)</td></tr>
+  </table>
+</div>
+
+<div class="craft-kit">
+  <h3>TAKE-HOME CRAFT KIT (~$1.50 each)</h3>
+  <p>Every player walks away with a ziplock bag: 10 popsicle sticks + 3 rubber bands + 6 thumbtacks + 2 marbles + 1 clothespin + illustrated instruction card. Build a working mini plinko on a shoebox lid in 15 minutes. The carnival game IS the craft project — just supersized.</p>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// FRONT VIEW
+// ══════════════════════════════════════════
+const fc = document.getElementById('front').getContext('2d');
+const FW = 520, FH = 620;
+
+// Ground line
+fc.strokeStyle = '#5a4030';
+fc.lineWidth = 1;
+fc.beginPath();
+fc.moveTo(20, 560);
+fc.lineTo(500, 560);
+fc.stroke();
+
+// ── Support Frame (legs) ──
+fc.strokeStyle = '#666';
+fc.lineWidth = 5;
+// Left legs
+fc.beginPath(); fc.moveTo(75, 55); fc.lineTo(60, 560); fc.stroke();
+fc.beginPath(); fc.moveTo(105, 55); fc.lineTo(90, 560); fc.stroke();
+// Right legs
+fc.beginPath(); fc.moveTo(415, 55); fc.lineTo(430, 560); fc.stroke();
+fc.beginPath(); fc.moveTo(445, 55); fc.lineTo(460, 560); fc.stroke();
+// Cross brace
+fc.lineWidth = 4;
+fc.beginPath(); fc.moveTo(72, 320); fc.lineTo(442, 320); fc.stroke();
+
+// Rubber feet
+fc.fillStyle = '#8B4513';
+[56, 86, 426, 456].forEach(x => fc.fillRect(x, 558, 12, 5));
+
+// ── Plinko Board ──
+const bx = 80, by = 35, bw = 360, bh = 440;
+
+// Board back panel — kraft brown construction paper look
+fc.fillStyle = '#c4956a';
+fc.fillRect(bx, by, bw, bh);
+
+// Subtle grid lines (construction paper texture)
+fc.strokeStyle = 'rgba(160,120,80,0.3)';
+fc.lineWidth = 0.5;
+for (let gx = bx + 30; gx < bx + bw; gx += 30) {
+  fc.beginPath(); fc.moveTo(gx, by); fc.lineTo(gx, by + bh); fc.stroke();
+}
+for (let gy = by + 30; gy < by + bh; gy += 30) {
+  fc.beginPath(); fc.moveTo(bx, gy); fc.lineTo(bx + bw, gy); fc.stroke();
+}
+
+// ── Popsicle Stick Edge Rails ──
+// Draw rounded-end rails on all four sides
+fc.fillStyle = '#deb887';
+fc.strokeStyle = '#b8860b';
+fc.lineWidth = 1.5;
+
+// Top rail
+fc.beginPath();
+fc.roundRect(bx - 6, by - 8, bw + 12, 14, 7);
+fc.fill(); fc.stroke();
+// Bottom rail
+fc.beginPath();
+fc.roundRect(bx - 6, by + bh - 6, bw + 12, 14, 7);
+fc.fill(); fc.stroke();
+// Left rail
+fc.beginPath();
+fc.roundRect(bx - 8, by - 6, 14, bh + 12, 7);
+fc.fill(); fc.stroke();
+// Right rail
+fc.beginPath();
+fc.roundRect(bx + bw - 6, by - 6, 14, bh + 12, 7);
+fc.fill(); fc.stroke();
+
+// Grain lines on rails
+fc.strokeStyle = 'rgba(139,105,20,0.25)';
+fc.lineWidth = 0.5;
+// Top grain
+for (let i = 0; i < 5; i++) {
+  fc.beginPath(); fc.moveTo(bx + 10, by - 5 + i*3); fc.lineTo(bx + bw - 10, by - 5 + i*3); fc.stroke();
+}
+
+// ── Pushpin Pegs ──
+const pegColors = ['#ff4444', '#4488ff', '#44cc44', '#ffcc00'];
+const pegRows = 10;
+const pegCols = 8;
+const pegStartY = by + 50;
+const pegEndY = by + bh - 90;
+const pegSpacingX = bw / (pegCols + 1);
+const pegSpacingY = (pegEndY - pegStartY) / (pegRows - 1);
+let pegIdx = 0;
+
+// Skip pegs that would overlap with rubber band bumpers or pinwheels
+const bumperRows = [2, 5, 8]; // which peg rows have bumpers near them
+const pinwheelPegSkips = []; // will check dynamically
+
+for (let row = 0; row < pegRows; row++) {
+  const offset = (row % 2 === 0) ? 0 : pegSpacingX / 2;
+  const cols = (row % 2 === 0) ? pegCols : pegCols - 1;
+  for (let col = 0; col < cols; col++) {
+    const px = bx + pegSpacingX + col * pegSpacingX + offset;
+    const py = pegStartY + row * pegSpacingY;
+    const color = pegColors[pegIdx % 4];
+    pegIdx++;
+
+    // Pushpin stem
+    fc.fillStyle = '#888';
+    fc.fillRect(px - 1, py + 4, 2, 6);
+
+    // Pushpin head (colored dome)
+    fc.fillStyle = color;
+    fc.beginPath();
+    fc.arc(px, py, 6, 0, Math.PI * 2);
+    fc.fill();
+
+    // Highlight dot (3D dome effect)
+    fc.fillStyle = 'rgba(255,255,255,0.35)';
+    fc.beginPath();
+    fc.arc(px - 2, py - 2, 2, 0, Math.PI * 2);
+    fc.fill();
+  }
+}
+
+// ── Rubber Band Bumper Zones (3 rows) ──
+const bandColors = ['#ff4444', '#ffcc00', '#4488ff'];
+const bandRowYs = [pegStartY + pegSpacingY * 2.5, pegStartY + pegSpacingY * 5.5, pegStartY + pegSpacingY * 7.5];
+
+bandRowYs.forEach((rowY, ri) => {
+  const bandColor = bandColors[ri];
+  // 5 bumper pairs per row, staggered
+  for (let bi = 0; bi < 5; bi++) {
+    const bxStart = bx + 25 + bi * 70 + (ri % 2 === 0 ? 0 : 35);
+    const bxEnd = bxStart + 40;
+    if (bxEnd > bx + bw - 15) continue;
+    if (bxStart < bx + 15) continue;
+
+    // Posts
+    fc.fillStyle = '#8B6914';
+    fc.fillRect(bxStart - 2, rowY - 5, 4, 10);
+    fc.fillRect(bxEnd - 2, rowY - 5, 4, 10);
+
+    // Rubber band (stretched between posts)
+    fc.strokeStyle = bandColor;
+    fc.lineWidth = 3;
+    fc.globalAlpha = 0.8;
+    fc.beginPath();
+    fc.moveTo(bxStart, rowY);
+    // Slight sag in the middle
+    fc.quadraticCurveTo((bxStart + bxEnd) / 2, rowY + 4, bxEnd, rowY);
+    fc.stroke();
+    fc.globalAlpha = 1;
+  }
+});
+
+// Row labels on right side
+fc.font = '7px Courier New';
+fc.textAlign = 'left';
+bandRowYs.forEach((rowY, ri) => {
+  fc.fillStyle = bandColors[ri];
+  const labels = ['RED BANDS', 'YELLOW BANDS', 'BLUE BANDS'];
+  fc.fillText(labels[ri], bx + bw + 12, rowY + 3);
+});
+
+// ── Spinning Pinwheels (×2) ──
+function drawPinwheel(cx, cy, radius) {
+  const bladeColors = ['#ff66aa', '#ff99cc', '#ff3388', '#ffaadd'];
+  for (let i = 0; i < 4; i++) {
+    const angle = (i * Math.PI / 2) - 0.2;
+    fc.fillStyle = bladeColors[i];
+    fc.globalAlpha = 0.85;
+    fc.beginPath();
+    fc.moveTo(cx, cy);
+    fc.arc(cx, cy, radius, angle, angle + Math.PI / 4);
+    fc.closePath();
+    fc.fill();
+  }
+  fc.globalAlpha = 1;
+
+  // Center bolt
+  fc.fillStyle = '#666';
+  fc.beginPath();
+  fc.arc(cx, cy, 3, 0, Math.PI * 2);
+  fc.fill();
+
+  // Outline
+  fc.strokeStyle = '#ff66aa';
+  fc.lineWidth = 1.5;
+  fc.beginPath();
+  fc.arc(cx, cy, radius, 0, Math.PI * 2);
+  fc.stroke();
+
+  // Spin arrow
+  fc.strokeStyle = '#ff66aa';
+  fc.lineWidth = 1;
+  fc.globalAlpha = 0.6;
+  fc.beginPath();
+  fc.arc(cx, cy, radius + 6, -0.3, 0.8);
+  fc.stroke();
+  // arrowhead
+  const ax = cx + (radius + 6) * Math.cos(0.8);
+  const ay = cy + (radius + 6) * Math.sin(0.8);
+  fc.fillStyle = '#ff66aa';
+  fc.beginPath();
+  fc.moveTo(ax, ay);
+  fc.lineTo(ax - 4, ay - 4);
+  fc.lineTo(ax + 2, ay - 5);
+  fc.closePath();
+  fc.fill();
+  fc.globalAlpha = 1;
+}
+
+// Pinwheel positions: mid-board, one in each player half
+drawPinwheel(bx + bw * 0.3, pegStartY + pegSpacingY * 4, 18);
+drawPinwheel(bx + bw * 0.7, pegStartY + pegSpacingY * 6, 18);
+
+// Labels
+fc.fillStyle = '#ff66aa';
+fc.font = '7px Courier New';
+fc.textAlign = 'center';
+fc.fillText('PINWHEEL', bx + bw * 0.3, pegStartY + pegSpacingY * 4 + 28);
+fc.fillText('PINWHEEL', bx + bw * 0.7, pegStartY + pegSpacingY * 6 + 28);
+
+// ── Clothespin Launchers at Top (×2) ──
+function drawClothespinLauncher(cx, y, label) {
+  // Base block
+  fc.fillStyle = '#8B6914';
+  fc.fillRect(cx - 15, y - 5, 30, 12);
+  fc.strokeStyle = '#5a4010';
+  fc.lineWidth = 1;
+  fc.strokeRect(cx - 15, y - 5, 30, 12);
+
+  // Lever arm (pulled back position — angled up)
+  fc.strokeStyle = '#b8860b';
+  fc.lineWidth = 4;
+  fc.beginPath();
+  fc.moveTo(cx - 12, y);
+  fc.lineTo(cx + 18, y - 22);
+  fc.stroke();
+
+  // Spring coil (between arm and base)
+  fc.strokeStyle = '#999';
+  fc.lineWidth = 1.5;
+  fc.beginPath();
+  for (let s = 0; s < 5; s++) {
+    const sx = cx - 5 + s * 4;
+    const sy1 = y - 3 - s * 3;
+    const sy2 = y - 6 - s * 3;
+    fc.moveTo(sx, sy1);
+    fc.lineTo(sx + 2, sy2);
+    fc.lineTo(sx + 4, sy1 + 1);
+  }
+  fc.stroke();
+
+  // Ball in cradle
+  fc.fillStyle = '#8B4513';
+  fc.beginPath();
+  fc.arc(cx + 20, y - 24, 6, 0, Math.PI * 2);
+  fc.fill();
+  fc.fillStyle = 'rgba(255,255,255,0.2)';
+  fc.beginPath();
+  fc.arc(cx + 18, y - 26, 2, 0, Math.PI * 2);
+  fc.fill();
+
+  // SNAP arrow
+  fc.fillStyle = '#ff9933';
+  fc.font = 'bold 9px Courier New';
+  fc.textAlign = 'center';
+  fc.fillText('SNAP!', cx, y - 32);
+  fc.strokeStyle = '#ff9933';
+  fc.lineWidth = 1.5;
+  fc.beginPath();
+  fc.moveTo(cx + 22, y - 30);
+  fc.lineTo(cx + 30, y - 15);
+  fc.stroke();
+  // arrow tip
+  fc.beginPath();
+  fc.moveTo(cx + 30, y - 15);
+  fc.lineTo(cx + 25, y - 18);
+  fc.lineTo(cx + 28, y - 22);
+  fc.closePath();
+  fc.fill();
+
+  // Label
+  fc.fillStyle = '#deb887';
+  fc.font = '7px Courier New';
+  fc.textAlign = 'center';
+  fc.fillText(label, cx, y + 16);
+}
+
+// Gravity feed trays above launchers
+function drawFeedTray(cx, y) {
+  fc.fillStyle = '#8B6914';
+  fc.globalAlpha = 0.6;
+  fc.fillRect(cx - 25, y - 50, 50, 8);
+  fc.globalAlpha = 1;
+  fc.strokeStyle = '#5a4010';
+  fc.lineWidth = 1;
+  fc.strokeRect(cx - 25, y - 50, 50, 8);
+  // Balls waiting in tray
+  for (let i = 0; i < 4; i++) {
+    fc.fillStyle = '#8B4513';
+    fc.beginPath();
+    fc.arc(cx - 15 + i * 10, y - 46, 4, 0, Math.PI * 2);
+    fc.fill();
+  }
+  fc.fillStyle = '#a08060';
+  fc.font = '6px Courier New';
+  fc.textAlign = 'center';
+  fc.fillText('BALL TRAY', cx, y - 55);
+}
+
+const launcherY = by + 18;
+drawFeedTray(bx + 60, launcherY);
+drawFeedTray(bx + bw - 60, launcherY);
+drawClothespinLauncher(bx + 60, launcherY, 'LAUNCHER P1');
+drawClothespinLauncher(bx + bw - 60, launcherY, 'LAUNCHER P2');
+
+// ── Scoring Funnels (7 cups at bottom) ──
+const funnelY = by + bh - 20;
+const funnels = [
+  { label: '10', w: 55, color: '#ff4444', name: 'RED' },
+  { label: '25', w: 48, color: '#4488ff', name: 'BLUE' },
+  { label: '50', w: 42, color: '#C0C0C0', name: 'SILVER' },
+  { label: '100', w: 30, color: '#FFD700', name: 'GOLD' },
+  { label: '50', w: 42, color: '#C0C0C0', name: 'SILVER' },
+  { label: '25', w: 48, color: '#4488ff', name: 'BLUE' },
+  { label: '10', w: 55, color: '#ff4444', name: 'RED' },
+];
+
+const totalFW = funnels.reduce((s, f) => s + f.w, 0);
+const funnelGap = (bw - 16 - totalFW) / (funnels.length + 1);
+let funnelX = bx + 8 + funnelGap;
+
+funnels.forEach(f => {
+  // Cup shape (trapezoid — wider at top, narrower at bottom)
+  fc.fillStyle = f.color;
+  fc.globalAlpha = 0.5;
+  fc.beginPath();
+  fc.moveTo(funnelX, funnelY);
+  fc.lineTo(funnelX + f.w, funnelY);
+  fc.lineTo(funnelX + f.w - 4, funnelY + 28);
+  fc.lineTo(funnelX + 4, funnelY + 28);
+  fc.closePath();
+  fc.fill();
+  fc.globalAlpha = 1;
+  fc.strokeStyle = f.color;
+  fc.lineWidth = 1.5;
+  fc.stroke();
+
+  // Flared ring at top
+  fc.strokeStyle = f.color;
+  fc.lineWidth = 2;
+  fc.beginPath();
+  fc.moveTo(funnelX - 3, funnelY);
+  fc.lineTo(funnelX + f.w + 3, funnelY);
+  fc.stroke();
+
+  // Score label
+  fc.fillStyle = '#fff';
+  fc.font = 'bold 10px Courier New';
+  fc.textAlign = 'center';
+  fc.fillText(f.label, funnelX + f.w/2, funnelY + 15);
+
+  funnelX += f.w + funnelGap;
+});
+
+// ── Ball Trajectory Example ──
+// Ball launching from P1 clothespin, bouncing through pegs
+fc.strokeStyle = '#8B4513';
+fc.lineWidth = 1.5;
+fc.setLineDash([4, 3]);
+fc.globalAlpha = 0.7;
+fc.beginPath();
+fc.moveTo(bx + 80, launcherY - 18);
+fc.quadraticCurveTo(bx + 120, by + 80, bx + 150, by + 120);
+fc.stroke();
+// Continue bouncing down
+fc.beginPath();
+fc.moveTo(bx + 150, by + 120);
+fc.lineTo(bx + 130, by + 170);
+fc.lineTo(bx + 170, by + 220);
+fc.lineTo(bx + 140, by + 270);
+fc.lineTo(bx + 180, by + 320);
+fc.lineTo(bx + 160, by + 370);
+fc.stroke();
+fc.setLineDash([]);
+fc.globalAlpha = 1;
+
+// Ball at a bounce point
+fc.fillStyle = '#8B4513';
+fc.beginPath();
+fc.arc(bx + 160, by + 370, 5, 0, Math.PI * 2);
+fc.fill();
+fc.fillStyle = 'rgba(255,255,255,0.2)';
+fc.beginPath();
+fc.arc(bx + 158, by + 368, 1.5, 0, Math.PI * 2);
+fc.fill();
+
+// Trajectory label
+fc.fillStyle = '#8B4513';
+fc.font = 'italic 8px Courier New';
+fc.textAlign = 'left';
+fc.globalAlpha = 0.7;
+fc.fillText('BALL BOUNCES', bx + 185, by + 330);
+fc.fillText('THROUGH PEGS', bx + 185, by + 340);
+fc.fillText('& BANDS!', bx + 185, by + 350);
+fc.globalAlpha = 1;
+
+// ── Booth Sign at very top ──
+fc.fillStyle = '#ff9933';
+fc.font = 'bold 16px Courier New';
+fc.textAlign = 'center';
+fc.fillText('✂ POPSICLE PLINKO ✂', bx + bw/2, by - 25);
+
+// Decorative scissors and glue bottle icons (text-based)
+fc.font = '8px Courier New';
+fc.fillStyle = '#a08060';
+fc.fillText('— every player takes home a craft kit! —', bx + bw/2, by - 14);
+
+// ── Acrylic Front Panel (dashed overlay) ──
+fc.strokeStyle = 'rgba(135, 206, 250, 0.3)';
+fc.lineWidth = 2;
+fc.setLineDash([8, 4]);
+fc.strokeRect(bx + 4, by + 4, bw - 8, bh - 8);
+fc.setLineDash([]);
+fc.fillStyle = 'rgba(135,206,250,0.4)';
+fc.font = '8px Courier New';
+fc.textAlign = 'right';
+fc.fillText('ACRYLIC FRONT', bx + bw - 10, by + 16);
+
+// ── Dimensions ──
+fc.fillStyle = '#5a4030';
+fc.font = '10px Courier New';
+fc.textAlign = 'center';
+// Width
+fc.fillText('48"', bx + bw/2, by - 38);
+fc.strokeStyle = '#5a4030';
+fc.lineWidth = 1;
+fc.beginPath(); fc.moveTo(bx, by - 32); fc.lineTo(bx + bw, by - 32); fc.stroke();
+fc.beginPath(); fc.moveTo(bx, by - 36); fc.lineTo(bx, by - 28); fc.stroke();
+fc.beginPath(); fc.moveTo(bx + bw, by - 36); fc.lineTo(bx + bw, by - 28); fc.stroke();
+
+// Height
+fc.save();
+fc.translate(bx - 24, by + bh/2);
+fc.rotate(-Math.PI/2);
+fc.fillText('60"', 0, 0);
+fc.restore();
+fc.strokeStyle = '#5a4030';
+fc.beginPath(); fc.moveTo(bx - 16, by); fc.lineTo(bx - 16, by + bh); fc.stroke();
+fc.beginPath(); fc.moveTo(bx - 20, by); fc.lineTo(bx - 12, by); fc.stroke();
+fc.beginPath(); fc.moveTo(bx - 20, by + bh); fc.lineTo(bx - 12, by + bh); fc.stroke();
+
+// ── Craft Kit Callout (bottom right) ──
+fc.fillStyle = '#66cc44';
+fc.font = 'bold 9px Courier New';
+fc.textAlign = 'left';
+fc.fillText('TAKE-HOME KIT:', 320, 500);
+fc.font = '8px Courier New';
+fc.fillStyle = '#a0c0a0';
+fc.fillText('• popsicle sticks', 320, 512);
+fc.fillText('• rubber bands', 320, 522);
+fc.fillText('• thumbtacks (pegs)', 320, 532);
+fc.fillText('• marbles + clothespin', 320, 542);
+fc.fillText('• instruction card', 320, 552);
+
+// Section label
+fc.fillStyle = '#5a4030';
+fc.font = '10px Courier New';
+fc.textAlign = 'center';
+fc.fillText('FRONT VIEW — PLAYER PERSPECTIVE', FW/2, 600);
+
+
+// ══════════════════════════════════════════
+// SIDE CROSS-SECTION
+// ══════════════════════════════════════════
+const sc = document.getElementById('side').getContext('2d');
+const SW = 300, SH = 620;
+
+// Ground line
+sc.strokeStyle = '#5a4030';
+sc.lineWidth = 1;
+sc.beginPath();
+sc.moveTo(20, 560);
+sc.lineTo(280, 560);
+sc.stroke();
+
+// ── Board (tilted ~20° from vertical) ──
+const boardBottom = 490;
+const boardTop = 70;
+const boardFrontBottom = 140;
+const boardBackBottom = 155;
+const boardFrontTop = 105;
+const boardBackTop = 120;
+
+// Back panel (kraft brown plywood)
+sc.fillStyle = '#c4956a';
+sc.beginPath();
+sc.moveTo(boardBackTop, boardTop);
+sc.lineTo(boardBackBottom, boardBottom);
+sc.lineTo(boardBackBottom + 5, boardBottom);
+sc.lineTo(boardBackTop + 5, boardTop);
+sc.closePath();
+sc.fill();
+sc.strokeStyle = '#8B6914';
+sc.lineWidth = 1;
+sc.stroke();
+
+// Playing field gap
+sc.fillStyle = '#0a0a08';
+sc.beginPath();
+sc.moveTo(boardFrontTop, boardTop);
+sc.lineTo(boardFrontBottom, boardBottom);
+sc.lineTo(boardBackBottom, boardBottom);
+sc.lineTo(boardBackTop, boardTop);
+sc.closePath();
+sc.fill();
+
+// Front panel (acrylic)
+sc.strokeStyle = 'rgba(135, 206, 250, 0.5)';
+sc.lineWidth = 3;
+sc.beginPath();
+sc.moveTo(boardFrontTop, boardTop);
+sc.lineTo(boardFrontBottom, boardBottom);
+sc.stroke();
+
+// ── Popsicle Stick Edge Rails (side view — rounded ends visible at top and bottom) ──
+sc.fillStyle = '#deb887';
+sc.strokeStyle = '#b8860b';
+sc.lineWidth = 1;
+// Top rail (rounded end visible)
+sc.beginPath();
+sc.arc((boardFrontTop + boardBackTop + 5)/2, boardTop - 4, 10, 0, Math.PI * 2);
+sc.fill(); sc.stroke();
+// Bottom rail
+sc.beginPath();
+sc.arc((boardFrontBottom + boardBackBottom + 5)/2, boardBottom + 4, 10, 0, Math.PI * 2);
+sc.fill(); sc.stroke();
+
+// ── Pegs inside (side view — small colored dots) ──
+for (let i = 0; i < 8; i++) {
+  const t = (i + 1) / 9;
+  const py = boardTop + (boardBottom - boardTop) * t;
+  const px = boardFrontTop + (boardFrontBottom - boardFrontTop) * t + 12;
+  sc.fillStyle = pegColors[i % 4];
+  sc.globalAlpha = 0.7;
+  sc.beginPath();
+  sc.arc(px, py, 4, 0, Math.PI * 2);
+  sc.fill();
+  sc.globalAlpha = 1;
+}
+
+// ── Rubber bands visible in cross-section (side view — colored lines between posts) ──
+[0.25, 0.5, 0.75].forEach((frac, i) => {
+  const ry = boardTop + (boardBottom - boardTop) * frac;
+  const rx = boardFrontTop + (boardFrontBottom - boardFrontTop) * frac + 5;
+  sc.strokeStyle = bandColors[i];
+  sc.lineWidth = 2;
+  sc.globalAlpha = 0.7;
+  sc.beginPath();
+  sc.moveTo(rx, ry - 3);
+  sc.lineTo(rx + 8, ry - 3);
+  sc.stroke();
+  sc.globalAlpha = 1;
+  // Posts
+  sc.fillStyle = '#8B6914';
+  sc.fillRect(rx - 1, ry - 6, 2, 6);
+  sc.fillRect(rx + 7, ry - 6, 2, 6);
+});
+
+// ── Clothespin Launcher (side view, at top of board) ──
+const launcherSideY = boardTop + 15;
+const launcherSideX = boardFrontTop + 5;
+
+// Base block
+sc.fillStyle = '#8B6914';
+sc.fillRect(launcherSideX - 10, launcherSideY - 5, 20, 10);
+sc.strokeStyle = '#5a4010';
+sc.lineWidth = 1;
+sc.strokeRect(launcherSideX - 10, launcherSideY - 5, 20, 10);
+
+// Lever arm (side view — pointing outward/up)
+sc.strokeStyle = '#b8860b';
+sc.lineWidth = 3;
+sc.beginPath();
+sc.moveTo(launcherSideX - 8, launcherSideY);
+sc.lineTo(launcherSideX - 25, launcherSideY - 20);
+sc.stroke();
+
+// Spring
+sc.strokeStyle = '#999';
+sc.lineWidth = 1;
+sc.beginPath();
+for (let s = 0; s < 3; s++) {
+  const sx = launcherSideX - 12 - s * 3;
+  sc.moveTo(sx, launcherSideY - 2 - s * 4);
+  sc.lineTo(sx - 2, launcherSideY - 5 - s * 4);
+}
+sc.stroke();
+
+// Ball
+sc.fillStyle = '#8B4513';
+sc.beginPath();
+sc.arc(launcherSideX - 27, launcherSideY - 22, 4, 0, Math.PI * 2);
+sc.fill();
+
+// Label
+sc.fillStyle = '#deb887';
+sc.font = '7px Courier New';
+sc.textAlign = 'left';
+sc.fillText('CLOTHESPIN', launcherSideX - 55, launcherSideY - 30);
+sc.fillText('LAUNCHER', launcherSideX - 55, launcherSideY - 22);
+
+// Snap direction arrow
+sc.strokeStyle = '#ff9933';
+sc.lineWidth = 1.5;
+sc.beginPath();
+sc.moveTo(launcherSideX - 20, launcherSideY - 16);
+sc.lineTo(launcherSideX + 5, launcherSideY + 8);
+sc.stroke();
+sc.fillStyle = '#ff9933';
+sc.font = 'bold 7px Courier New';
+sc.fillText('SNAP!', launcherSideX + 8, launcherSideY + 12);
+
+// ── Scoring Funnels at Bottom (side view) ──
+sc.fillStyle = '#FFD700';
+sc.globalAlpha = 0.6;
+sc.fillRect(boardFrontBottom - 5, boardBottom, 25, 15);
+sc.globalAlpha = 1;
+sc.strokeStyle = '#FFD700';
+sc.lineWidth = 1;
+sc.strokeRect(boardFrontBottom - 5, boardBottom, 25, 15);
+sc.fillStyle = '#FFD700';
+sc.font = '7px Courier New';
+sc.textAlign = 'left';
+sc.fillText('SCORING', boardFrontBottom + 22, boardBottom + 6);
+sc.fillText('CUPS', boardFrontBottom + 22, boardBottom + 14);
+
+// ── Ball Collection Behind Board ──
+sc.fillStyle = '#333';
+sc.beginPath();
+sc.moveTo(boardBackBottom + 5, boardBottom + 5);
+sc.lineTo(boardBackBottom + 25, boardBottom + 20);
+sc.lineTo(boardBackBottom + 25, boardBottom + 28);
+sc.lineTo(boardBackBottom + 5, boardBottom + 13);
+sc.closePath();
+sc.fill();
+sc.strokeStyle = '#5a4030';
+sc.lineWidth = 1;
+sc.stroke();
+sc.fillStyle = '#888';
+sc.font = '6px Courier New';
+sc.textAlign = 'left';
+sc.fillText('BALL', boardBackBottom + 28, boardBottom + 20);
+sc.fillText('COLLECT', boardBackBottom + 28, boardBottom + 28);
+
+// ── Support Legs (side view) ──
+sc.strokeStyle = '#666';
+sc.lineWidth = 5;
+// Front leg
+sc.beginPath();
+sc.moveTo(boardFrontBottom, boardBottom);
+sc.lineTo(boardFrontBottom + 45, 560);
+sc.stroke();
+// Rear leg
+sc.beginPath();
+sc.moveTo(boardBackTop + 5, boardTop + 20);
+sc.lineTo(boardBackTop + 35, 560);
+sc.stroke();
+// Cross brace
+sc.lineWidth = 3;
+sc.beginPath();
+sc.moveTo(boardFrontBottom + 22, 530);
+sc.lineTo(boardBackTop + 22, 420);
+sc.stroke();
+
+// Rubber feet
+sc.fillStyle = '#8B4513';
+sc.fillRect(boardFrontBottom + 41, 558, 12, 5);
+sc.fillRect(boardBackTop + 31, 558, 12, 5);
+
+// Leg labels
+sc.fillStyle = '#666';
+sc.font = '7px Courier New';
+sc.textAlign = 'center';
+sc.fillText('FRONT', boardFrontBottom + 47, 575);
+sc.fillText('LEG', boardFrontBottom + 47, 583);
+sc.fillText('REAR', boardBackTop + 37, 575);
+sc.fillText('LEG', boardBackTop + 37, 583);
+
+// ── Dimension Labels ──
+// Gap dimension
+sc.strokeStyle = '#888';
+sc.lineWidth = 1;
+sc.beginPath();
+sc.moveTo(boardFrontTop - 5, boardTop - 20);
+sc.lineTo(boardBackTop + 9, boardTop - 20);
+sc.stroke();
+sc.beginPath(); sc.moveTo(boardFrontTop, boardTop - 24); sc.lineTo(boardFrontTop, boardTop - 16); sc.stroke();
+sc.beginPath(); sc.moveTo(boardBackTop + 5, boardTop - 24); sc.lineTo(boardBackTop + 5, boardTop - 16); sc.stroke();
+sc.fillStyle = '#888';
+sc.font = '8px Courier New';
+sc.textAlign = 'center';
+sc.fillText('4"', (boardFrontTop + boardBackTop + 5) / 2, boardTop - 25);
+
+// Board height
+sc.fillStyle = '#5a4030';
+sc.font = '9px Courier New';
+sc.save();
+sc.translate(boardBackTop + 30, (boardTop + boardBottom) / 2);
+sc.rotate(-Math.PI/2);
+sc.textAlign = 'center';
+sc.fillText('60" BOARD', 0, 0);
+sc.restore();
+
+// Tilt angle indicator
+sc.strokeStyle = '#ff9933';
+sc.lineWidth = 1;
+sc.globalAlpha = 0.5;
+sc.setLineDash([3, 3]);
+sc.beginPath();
+sc.moveTo(boardBackTop + 5, boardTop);
+sc.lineTo(boardBackTop + 5, boardTop + 60);
+sc.stroke();
+sc.setLineDash([]);
+sc.beginPath();
+sc.arc(boardBackTop + 5, boardTop, 30, Math.PI/2, Math.PI/2 + 0.35);
+sc.stroke();
+sc.globalAlpha = 1;
+sc.fillStyle = '#ff9933';
+sc.font = '8px Courier New';
+sc.textAlign = 'left';
+sc.fillText('20°', boardBackTop + 12, boardTop + 38);
+
+// Board material labels
+sc.fillStyle = 'rgba(135,206,250,0.4)';
+sc.font = '7px Courier New';
+sc.textAlign = 'left';
+sc.fillText('ACRYLIC', boardFrontTop - 45, boardTop + 45);
+sc.fillText('FRONT', boardFrontTop - 45, boardTop + 53);
+
+sc.fillStyle = '#8B6914';
+sc.fillText('PLYWOOD', boardBackTop + 12, boardTop + 55);
+sc.fillText('(KRAFT)', boardBackTop + 12, boardTop + 63);
+
+// ── Player Position Indicator ──
+sc.fillStyle = '#a08060';
+sc.font = '7px Courier New';
+sc.textAlign = 'center';
+sc.fillText('PLAYER', 55, 545);
+sc.fillText('STANDS', 55, 553);
+sc.fillText('HERE', 55, 561);
+// Arrow pointing to ground in front of board
+sc.strokeStyle = '#a08060';
+sc.lineWidth = 1;
+sc.beginPath();
+sc.moveTo(55, 535);
+sc.lineTo(55, 530);
+sc.stroke();
+// Stick figure
+sc.strokeStyle = '#a08060';
+sc.lineWidth = 1.5;
+// Head
+sc.beginPath(); sc.arc(55, 510, 6, 0, Math.PI * 2); sc.stroke();
+// Body
+sc.beginPath(); sc.moveTo(55, 516); sc.lineTo(55, 535); sc.stroke();
+// Arms reaching toward launcher
+sc.beginPath(); sc.moveTo(55, 522); sc.lineTo(75, 515); sc.stroke();
+sc.beginPath(); sc.moveTo(55, 522); sc.lineTo(35, 528); sc.stroke();
+// Legs
+sc.beginPath(); sc.moveTo(55, 535); sc.lineTo(45, 555); sc.stroke();
+sc.beginPath(); sc.moveTo(55, 535); sc.lineTo(65, 555); sc.stroke();
+
+// Section label
+sc.fillStyle = '#5a4030';
+sc.font = '10px Courier New';
+sc.textAlign = 'center';
+sc.fillText('SIDE CROSS-SECTION', SW/2, 600);
+
+</script>
+
+</body>
+</html>

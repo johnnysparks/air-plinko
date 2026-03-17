@@ -31,6 +31,10 @@
 - For head-to-head 2-player games, a TOP-DOWN view is essential to communicate the spatial relationship between players. FRONT view shows one side's mechanics, TOP-DOWN shows the competitive dynamic. Both views together tell the full story
 - When a game has pass-through mechanics (balls going through a wall/barrier), show the path crossing the barrier in the top-down view with contrasting player colors to make the interaction clear
 - Estimate total page height carefully — legend + specs below two canvas views can easily push past 1600px. Use `<!-- screenshot: 900xNNNN -->` hints and test at 1900px+ for content-heavy pages
+- Warm color palettes (browns, oranges, golds) work well for craft/wood-themed projects — don't default to dark navy for everything. Match the background to the project's material palette
+- When a game has a distinctive aesthetic (craft supplies, neon, rustic), lean into it in the diagram styling — background colors, border styles, font choices should reinforce the theme
+- Callout boxes for non-structural features (e.g. take-home kits, prize info) can be added as styled HTML sections below the canvas — keeps the diagram clean while communicating the full experience
+- Stick figures in side cross-sections effectively communicate player height and interaction posture — worth the 10 lines of code
 
 ### Rendering intangible/atmospheric elements:
 1. **Fog and mist zones** — Use gradient fills (opaque at source → transparent at edges) rather than solid fills. Add subtle curved stroke "swirl" hints to suggest movement
