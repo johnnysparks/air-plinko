@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>M18 Cyclone Plinko — Diagram</title>
+<!-- screenshot: 1200x1400 -->
+<style>
+  body { margin: 0; padding: 0; background: #0a0e1a; overflow: hidden; }
+  canvas { display: block; }
+</style>
+</head>
+<body>
+<canvas id="c" width="1200" height="1400"></canvas>
+<script>
+const c = document.getElementById('c');
+const ctx = c.getContext('2d');
+
+// Colors
+const BG = '#0a0e1a';
+const MILWAUKEE_RED = '#DB0032';
+const MILWAUKEE_DARK = '#1a1a1a';
+const ACRYLIC_BLUE = 'rgba(120, 200, 255, 0.25)';
+const PEG_COLOR = '#8B7355';
+const GOLD = '#FFD700';
+const ORANGE = '#FF8C00';
+const WHITE = '#FFFFFF';
+const GRAY = '#666666';
+const LIGHT_GRAY = '#AAAAAA';
+const DARK_GRAY = '#333333';
+const YELLOW = '#FFDD44';
+const GREEN = '#44DD88';
+const BALL_RED = '#FF2244';
+const BALL_BLACK = '#222222';
+
+ctx.fillStyle = BG;
+ctx.fillRect(0, 0, 1200, 1400);
+
+// ============================================================
+// TITLE
+// ============================================================
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.font = 'bold 36px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('M18 CYCLONE PLINKO', 600, 45);
+ctx.fillStyle = LIGHT_GRAY;
+ctx.font = '16px Arial';
+ctx.fillText('Milwaukee M18 Blowers as Player Controllers — Front View + Side Cross-Section', 600, 72);
+
+// ============================================================
+// FRONT VIEW (Main — left 2/3 of canvas)
+// ============================================================
+const FV_X = 80;   // left edge of front view board
+const FV_Y = 110;  // top edge
+const FV_W = 520;  // board width (48" = 4ft)
+const FV_H = 680;  // board height (72" = 6ft)
+
+// Label
+ctx.fillStyle = WHITE;
+ctx.font = 'bold 18px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('FRONT VIEW (Player Perspective)', FV_X + FV_W/2, FV_Y - 15);
+
+// Board background (matte black back panel)
+ctx.fillStyle = '#111118';
+ctx.fillRect(FV_X, FV_Y, FV_W, FV_H);
+
+// Edge rails (Milwaukee Red)
+ctx.strokeStyle = MILWAUKEE_RED;
+ctx.lineWidth = 8;
+ctx.strokeRect(FV_X, FV_Y, FV_W, FV_H);
+
+// Zone sidebar annotations (right side of front view)
+const zoneX = FV_X + FV_W + 12;
+// Drop zone: top 1/6
+ctx.fillStyle = 'rgba(100,200,255,0.15)';
+ctx.fillRect(FV_X + 2, FV_Y + 2, FV_W - 4, FV_H * 0.17);
+ctx.fillStyle = 'rgba(100,200,255,0.6)';
+ctx.font = '11px Arial';
+ctx.textAlign = 'left';
+ctx.fillText('DROP ZONE', zoneX, FV_Y + FV_H * 0.09);
+
+// Peg field: middle 60%
+ctx.fillStyle = 'rgba(139,115,85,0.08)';
+ctx.fillRect(FV_X + 2, FV_Y + FV_H * 0.17, FV_W - 4, FV_H * 0.60);
+ctx.fillStyle = 'rgba(139,115,85,0.6)';
+ctx.fillText('PEG FIELD', zoneX, FV_Y + FV_H * 0.47);
+
+// Scoring zone: bottom
+ctx.fillStyle = 'rgba(255,215,0,0.08)';
+ctx.fillRect(FV_X + 2, FV_Y + FV_H * 0.77, FV_W - 4, FV_H * 0.23);
+ctx.fillStyle = 'rgba(255,215,0,0.6)';
+ctx.fillText('SCORING ZONE', zoneX, FV_Y + FV_H * 0.88);
+
+// ---- DROP SLOTS (top) ----
+const dropSlotY = FV_Y - 2;
+const dropSlotH = 22;
+const dropPositions = [FV_X + FV_W * 0.25, FV_X + FV_W * 0.5, FV_X + FV_W * 0.75];
+dropPositions.forEach((dx, i) => {
+  ctx.fillStyle = MILWAUKEE_RED;
+  ctx.fillRect(dx - 16, dropSlotY, 32, dropSlotH);
+  ctx.fillStyle = WHITE;
+  ctx.font = '9px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('DROP ' + (i+1), dx, dropSlotY + 15);
+});
+
+// Ball holder tray
+ctx.strokeStyle = LIGHT_GRAY;
+ctx.lineWidth = 2;
+ctx.setLineDash([4, 3]);
+ctx.strokeRect(FV_X + 30, FV_Y - 30, FV_W - 60, 18);
+ctx.fillStyle = LIGHT_GRAY;
+ctx.font = '10px Arial';
+ctx.fillText('Ball Holder Tray (5 balls per player)', FV_X + FV_W/2, FV_Y - 18);
+ctx.setLineDash([]);
+
+// ---- PEG FIELD ----
+const pegStartY = FV_Y + FV_H * 0.19;
+const pegEndY = FV_Y + FV_H * 0.75;
+const pegRows = 11;
+const pegCols = 8;
+const pegSpacingY = (pegEndY - pegStartY) / (pegRows - 1);
+const pegSpacingX = (FV_W - 80) / (pegCols - 1);
+
+for (let row = 0; row < pegRows; row++) {
+  const offset = (row % 2 === 0) ? 0 : pegSpacingX / 2;
+  const cols = (row % 2 === 0) ? pegCols : pegCols - 1;
+  for (let col = 0; col < cols; col++) {
+    const px = FV_X + 40 + col * pegSpacingX + offset;
+    const py = pegStartY + row * pegSpacingY;
+    ctx.beginPath();
+    ctx.arc(px, py, 5, 0, Math.PI * 2);
+    ctx.fillStyle = PEG_COLOR;
+    ctx.fill();
+    ctx.strokeStyle = '#6B5335';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+}
+
+// ---- AIR PORTS (left side = Red player, right side = Black player) ----
+const portHeights = [
+  { label: 'LOW', y: FV_Y + FV_H * 0.88, h: 8 },
+  { label: 'MID', y: FV_Y + FV_H * 0.60, h: 28 },
+  { label: 'HIGH', y: FV_Y + FV_H * 0.33, h: 48 }
+];
+
+// Left ports (Red player)
+portHeights.forEach(p => {
+  // Port hole
+  ctx.beginPath();
+  ctx.arc(FV_X, p.y, 14, 0, Math.PI * 2);
+  ctx.fillStyle = MILWAUKEE_RED;
+  ctx.fill();
+  ctx.strokeStyle = '#FF4466';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  // Inner hole
+  ctx.beginPath();
+  ctx.arc(FV_X, p.y, 7, 0, Math.PI * 2);
+  ctx.fillStyle = DARK_GRAY;
+  ctx.fill();
+  // Label
+  ctx.fillStyle = MILWAUKEE_RED;
+  ctx.font = 'bold 10px Arial';
+  ctx.textAlign = 'right';
+  ctx.fillText(p.label, FV_X - 20, p.y + 4);
+});
+
+// Right ports (Black player)
+portHeights.forEach(p => {
+  ctx.beginPath();
+  ctx.arc(FV_X + FV_W, p.y, 14, 0, Math.PI * 2);
+  ctx.fillStyle = '#333333';
+  ctx.fill();
+  ctx.strokeStyle = '#555555';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(FV_X + FV_W, p.y, 7, 0, Math.PI * 2);
+  ctx.fillStyle = DARK_GRAY;
+  ctx.fill();
+  ctx.fillStyle = '#888888';
+  ctx.font = 'bold 10px Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText(p.label, FV_X + FV_W + 20, p.y + 4);
+});
+
+// ---- AIR BLAST VISUALIZATION (action!) ----
+// Red player blasting from LEFT MID port
+ctx.save();
+ctx.globalAlpha = 0.3;
+const blastStartX = FV_X + 14;
+const blastY = FV_Y + FV_H * 0.60;
+const grad = ctx.createLinearGradient(blastStartX, blastY, blastStartX + FV_W * 0.6, blastY);
+grad.addColorStop(0, MILWAUKEE_RED);
+grad.addColorStop(1, 'rgba(219,0,50,0)');
+ctx.fillStyle = grad;
+ctx.beginPath();
+ctx.moveTo(blastStartX, blastY - 4);
+ctx.lineTo(blastStartX + FV_W * 0.6, blastY - 25);
+ctx.lineTo(blastStartX + FV_W * 0.6, blastY + 25);
+ctx.lineTo(blastStartX, blastY + 4);
+ctx.closePath();
+ctx.fill();
+ctx.restore();
+
+// Blast label
+ctx.fillStyle = 'rgba(255,100,100,0.7)';
+ctx.font = 'italic 10px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('120 MPH AIR BLAST', blastStartX + FV_W * 0.28, blastY - 18);
+
+// ---- BALL IN ACTION ----
+// Red ball being deflected by air blast
+const ballActionX = FV_X + FV_W * 0.38;
+const ballActionY = blastY + 5;
+// Trail
+ctx.save();
+ctx.globalAlpha = 0.15;
+ctx.beginPath();
+ctx.arc(ballActionX - 18, ballActionY + 14, 9, 0, Math.PI * 2);
+ctx.fillStyle = BALL_RED;
+ctx.fill();
+ctx.globalAlpha = 0.08;
+ctx.beginPath();
+ctx.arc(ballActionX - 32, ballActionY + 22, 9, 0, Math.PI * 2);
+ctx.fillStyle = BALL_RED;
+ctx.fill();
+ctx.restore();
+// Active ball
+ctx.beginPath();
+ctx.arc(ballActionX, ballActionY, 10, 0, Math.PI * 2);
+ctx.fillStyle = BALL_RED;
+ctx.fill();
+ctx.strokeStyle = '#CC0020';
+ctx.lineWidth = 1.5;
+ctx.stroke();
+// Motion arrow
+ctx.strokeStyle = 'rgba(255,100,100,0.6)';
+ctx.lineWidth = 2;
+ctx.beginPath();
+ctx.moveTo(ballActionX + 10, ballActionY - 2);
+ctx.lineTo(ballActionX + 30, ballActionY - 14);
+ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(ballActionX + 30, ballActionY - 14);
+ctx.lineTo(ballActionX + 24, ballActionY - 8);
+ctx.moveTo(ballActionX + 30, ballActionY - 14);
+ctx.lineTo(ballActionX + 24, ballActionY - 18);
+ctx.stroke();
+
+// Black ball falling naturally through pegs
+const bb_x = FV_X + FV_W * 0.68;
+const bb_y = FV_Y + FV_H * 0.42;
+ctx.beginPath();
+ctx.arc(bb_x, bb_y, 10, 0, Math.PI * 2);
+ctx.fillStyle = BALL_BLACK;
+ctx.fill();
+ctx.strokeStyle = '#444';
+ctx.lineWidth = 1.5;
+ctx.stroke();
+// Ghost trail above
+ctx.save();
+ctx.globalAlpha = 0.12;
+ctx.beginPath();
+ctx.arc(bb_x + 8, bb_y - 22, 9, 0, Math.PI * 2);
+ctx.fillStyle = BALL_BLACK;
+ctx.fill();
+ctx.restore();
+
+// ---- SCORING POCKETS (bottom) ----
+const pocketY = FV_Y + FV_H - 65;
+const pocketH = 60;
+const pockets = [
+  { label: '0', w: 0.08, color: '#1a1a1a', textColor: GRAY },
+  { label: '10', w: 0.12, color: '#2a2a3a', textColor: WHITE },
+  { label: '25', w: 0.10, color: '#3a3020', textColor: YELLOW },
+  { label: '50', w: 0.08, color: '#3a2510', textColor: ORANGE },
+  { label: '100', w: 0.06, color: '#4a0015', textColor: MILWAUKEE_RED },
+  { label: '50', w: 0.08, color: '#3a2510', textColor: ORANGE },
+  { label: '25', w: 0.10, color: '#3a3020', textColor: YELLOW },
+  { label: '10', w: 0.12, color: '#2a2a3a', textColor: WHITE },
+  { label: '0', w: 0.08, color: '#1a1a1a', textColor: GRAY },
+];
+
+// Normalize widths
+const totalW = pockets.reduce((s, p) => s + p.w, 0);
+let pocketX = FV_X + 4;
+const usableW = FV_W - 8;
+
+pockets.forEach(p => {
+  const pw = (p.w / totalW) * usableW;
+  // Pocket background
+  ctx.fillStyle = p.color;
+  ctx.fillRect(pocketX, pocketY, pw, pocketH);
+  // Divider
+  ctx.strokeStyle = MILWAUKEE_RED;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(pocketX, pocketY);
+  ctx.lineTo(pocketX, pocketY + pocketH);
+  ctx.stroke();
+  // Points label
+  ctx.fillStyle = p.textColor;
+  ctx.font = 'bold 14px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText(p.label, pocketX + pw/2, pocketY + 25);
+  ctx.font = '9px Arial';
+  ctx.fillText('pts', pocketX + pw/2, pocketY + 38);
+
+  pocketX += pw;
+});
+// Last divider
+ctx.strokeStyle = MILWAUKEE_RED;
+ctx.lineWidth = 2;
+ctx.beginPath();
+ctx.moveTo(pocketX, pocketY);
+ctx.lineTo(pocketX, pocketY + pocketH);
+ctx.stroke();
+
+// JACKPOT label above center pocket
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.font = 'bold 11px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('JACKPOT', FV_X + FV_W/2, pocketY - 6);
+
+// ---- M18 BLOWER (Red player — left side) ----
+const blowerLeftX = FV_X - 95;
+const blowerLeftY = FV_Y + FV_H * 0.52;
+// Blower body
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.save();
+ctx.translate(blowerLeftX, blowerLeftY);
+ctx.rotate(-0.1);
+// Main body
+ctx.fillRect(0, 0, 70, 28);
+// Handle
+ctx.fillStyle = '#222';
+ctx.fillRect(15, 28, 20, 35);
+// Nozzle pointing right
+ctx.fillStyle = '#333';
+ctx.fillRect(70, 5, 30, 18);
+// M18 label
+ctx.fillStyle = WHITE;
+ctx.font = 'bold 8px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('M18', 35, 18);
+ctx.restore();
+
+// Tether line
+ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+ctx.lineWidth = 1.5;
+ctx.setLineDash([6, 4]);
+ctx.beginPath();
+ctx.moveTo(blowerLeftX + 30, blowerLeftY + 60);
+ctx.quadraticCurveTo(blowerLeftX + 10, blowerLeftY + 110, FV_X - 10, FV_Y + FV_H + 30);
+ctx.stroke();
+ctx.setLineDash([]);
+ctx.fillStyle = 'rgba(255,255,255,0.4)';
+ctx.font = '9px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('BUNGEE TETHER', blowerLeftX + 5, blowerLeftY + 95);
+
+// Red player label
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.font = 'bold 12px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('RED PLAYER', blowerLeftX + 40, blowerLeftY - 15);
+
+// ---- M18 BLOWER (Black player — right side) ----
+const blowerRightX = FV_X + FV_W + 30;
+const blowerRightY = FV_Y + FV_H * 0.52;
+ctx.save();
+ctx.translate(blowerRightX + 100, blowerRightY);
+ctx.scale(-1, 1);
+ctx.rotate(-0.1);
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.fillRect(0, 0, 70, 28);
+ctx.fillStyle = '#222';
+ctx.fillRect(15, 28, 20, 35);
+ctx.fillStyle = '#333';
+ctx.fillRect(70, 5, 30, 18);
+ctx.fillStyle = WHITE;
+ctx.font = 'bold 8px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('M18', 35, 18);
+ctx.restore();
+
+ctx.fillStyle = '#888';
+ctx.font = 'bold 12px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('BLACK PLAYER', blowerRightX + 50, blowerRightY - 15);
+
+// ---- TOWER LIGHT (top) ----
+const tlX = FV_X + FV_W/2;
+const tlY = FV_Y - 55;
+// Pole
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.fillRect(tlX - 3, tlY, 6, 40);
+// Light head
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.fillRect(tlX - 12, tlY - 18, 24, 18);
+// Light glow
+ctx.save();
+ctx.globalAlpha = 0.25;
+const glowGrad = ctx.createRadialGradient(tlX, tlY - 9, 5, tlX, tlY - 9, 40);
+glowGrad.addColorStop(0, GOLD);
+glowGrad.addColorStop(1, 'rgba(255,215,0,0)');
+ctx.fillStyle = glowGrad;
+ctx.beginPath();
+ctx.arc(tlX, tlY - 9, 40, 0, Math.PI * 2);
+ctx.fill();
+ctx.restore();
+ctx.fillStyle = GOLD;
+ctx.font = '9px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('M18 TOWER LIGHT', tlX, tlY - 24);
+
+// ---- HEADER TEXT ON BOARD ----
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.font = 'bold 22px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('CYCLONE', FV_X + FV_W/2, FV_Y + 30);
+ctx.fillText('PLINKO', FV_X + FV_W/2, FV_Y + 54);
+
+// ---- DIMENSION LINES (front view) ----
+ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+ctx.fillStyle = 'rgba(255,255,255,0.5)';
+ctx.lineWidth = 1;
+ctx.font = '10px Arial';
+
+// Width dimension (bottom)
+const dimY = FV_Y + FV_H + 25;
+ctx.beginPath();
+ctx.moveTo(FV_X, dimY); ctx.lineTo(FV_X + FV_W, dimY);
+ctx.stroke();
+ctx.beginPath(); ctx.moveTo(FV_X, dimY - 5); ctx.lineTo(FV_X, dimY + 5); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(FV_X + FV_W, dimY - 5); ctx.lineTo(FV_X + FV_W, dimY + 5); ctx.stroke();
+ctx.textAlign = 'center';
+ctx.fillText('48" (4 ft)', FV_X + FV_W/2, dimY + 15);
+
+// Height dimension (left)
+const dimX = FV_X - 30;
+ctx.beginPath();
+ctx.moveTo(dimX, FV_Y); ctx.lineTo(dimX, FV_Y + FV_H);
+ctx.stroke();
+ctx.beginPath(); ctx.moveTo(dimX - 5, FV_Y); ctx.lineTo(dimX + 5, FV_Y); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(dimX - 5, FV_Y + FV_H); ctx.lineTo(dimX + 5, FV_Y + FV_H); ctx.stroke();
+ctx.save();
+ctx.translate(dimX - 10, FV_Y + FV_H/2);
+ctx.rotate(-Math.PI/2);
+ctx.textAlign = 'center';
+ctx.fillText('72" (6 ft)', 0, 0);
+ctx.restore();
+
+// ============================================================
+// SIDE CROSS-SECTION (right 1/3 of canvas)
+// ============================================================
+const SV_X = 740;
+const SV_Y = 110;
+const SV_W = 120;  // exaggerated depth (5" actual)
+const SV_H = 680;  // same height as front view
+
+ctx.fillStyle = WHITE;
+ctx.font = 'bold 18px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('SIDE CROSS-SECTION', SV_X + SV_W/2 + 50, SV_Y - 15);
+
+// Back panel (plywood)
+ctx.fillStyle = '#4a3828';
+ctx.fillRect(SV_X + SV_W - 15, SV_Y, 15, SV_H);
+ctx.fillStyle = 'rgba(255,255,255,0.4)';
+ctx.font = '9px Arial';
+ctx.textAlign = 'left';
+ctx.fillText('¾" PLYWOOD', SV_X + SV_W + 5, SV_Y + 30);
+ctx.fillText('(BACK PANEL)', SV_X + SV_W + 5, SV_Y + 42);
+
+// Air gap (playing field interior)
+ctx.fillStyle = '#0d1220';
+ctx.fillRect(SV_X + 15, SV_Y, SV_W - 30, SV_H);
+
+// Acrylic front panel
+ctx.fillStyle = ACRYLIC_BLUE;
+ctx.fillRect(SV_X, SV_Y, 15, SV_H);
+ctx.strokeStyle = 'rgba(120,200,255,0.5)';
+ctx.lineWidth = 1;
+ctx.strokeRect(SV_X, SV_Y, 15, SV_H);
+ctx.fillStyle = 'rgba(120,200,255,0.6)';
+ctx.font = '9px Arial';
+ctx.textAlign = 'right';
+ctx.fillText('¼" ACRYLIC', SV_X - 5, SV_Y + 30);
+ctx.fillText('(FRONT PANEL)', SV_X - 5, SV_Y + 42);
+
+// Pegs in cross-section (showing how they span the gap)
+const pegCSY_positions = [SV_Y + 200, SV_Y + 280, SV_Y + 360, SV_Y + 440];
+pegCSY_positions.forEach(py => {
+  ctx.fillStyle = PEG_COLOR;
+  ctx.fillRect(SV_X + 12, py - 3, SV_W - 24, 6);
+  ctx.beginPath();
+  ctx.arc(SV_X + 12, py, 4, 0, Math.PI * 2);
+  ctx.arc(SV_X + SV_W - 12, py, 4, 0, Math.PI * 2);
+  ctx.fill();
+});
+ctx.fillStyle = 'rgba(255,255,255,0.4)';
+ctx.font = '9px Arial';
+ctx.textAlign = 'left';
+ctx.fillText('DOWEL PEGS', SV_X + SV_W + 5, SV_Y + 283);
+ctx.fillText('(spacer + deflector)', SV_X + SV_W + 5, SV_Y + 295);
+
+// Air port in cross-section (showing funnel through edge rail)
+const apCSY = SV_Y + SV_H * 0.60;
+// Edge rail
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.fillRect(SV_X - 20, apCSY - 20, 35, 40);
+// Funnel hole through rail
+ctx.fillStyle = DARK_GRAY;
+ctx.fillRect(SV_X - 15, apCSY - 8, 30, 16);
+// Air flow arrow
+ctx.strokeStyle = 'rgba(219,0,50,0.5)';
+ctx.lineWidth = 2;
+ctx.setLineDash([4, 3]);
+ctx.beginPath();
+ctx.moveTo(SV_X - 20, apCSY);
+ctx.lineTo(SV_X + SV_W - 15, apCSY);
+ctx.stroke();
+ctx.setLineDash([]);
+// Arrowhead
+ctx.fillStyle = 'rgba(219,0,50,0.5)';
+ctx.beginPath();
+ctx.moveTo(SV_X + SV_W - 15, apCSY);
+ctx.lineTo(SV_X + SV_W - 25, apCSY - 5);
+ctx.lineTo(SV_X + SV_W - 25, apCSY + 5);
+ctx.closePath();
+ctx.fill();
+
+ctx.fillStyle = 'rgba(219,0,50,0.7)';
+ctx.font = '9px Arial';
+ctx.textAlign = 'right';
+ctx.fillText('AIR PORT', SV_X - 25, apCSY - 8);
+ctx.fillText('(FUNNEL + GASKET)', SV_X - 25, apCSY + 4);
+ctx.fillText('→ AIRFLOW →', SV_X - 25, apCSY + 16);
+
+// Blower nozzle approaching port (side view)
+ctx.fillStyle = '#333';
+ctx.fillRect(SV_X - 55, apCSY - 6, 35, 12);
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.fillRect(SV_X - 90, apCSY - 14, 40, 28);
+ctx.fillStyle = WHITE;
+ctx.font = 'bold 7px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('M18', SV_X - 70, apCSY + 2);
+
+// 5" depth dimension
+const depthDimY = SV_Y + SV_H + 25;
+ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+ctx.fillStyle = 'rgba(255,255,255,0.5)';
+ctx.lineWidth = 1;
+ctx.font = '10px Arial';
+ctx.beginPath();
+ctx.moveTo(SV_X, depthDimY); ctx.lineTo(SV_X + SV_W, depthDimY);
+ctx.stroke();
+ctx.beginPath(); ctx.moveTo(SV_X, depthDimY - 5); ctx.lineTo(SV_X, depthDimY + 5); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(SV_X + SV_W, depthDimY - 5); ctx.lineTo(SV_X + SV_W, depthDimY + 5); ctx.stroke();
+ctx.textAlign = 'center';
+ctx.fillText('5" depth', SV_X + SV_W/2, depthDimY + 15);
+
+// Tilt angle indicator
+ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+ctx.lineWidth = 1;
+ctx.setLineDash([3, 3]);
+// Vertical reference line
+ctx.beginPath();
+ctx.moveTo(SV_X + SV_W + 40, SV_Y); ctx.lineTo(SV_X + SV_W + 40, SV_Y + 80);
+ctx.stroke();
+// Tilted board line
+ctx.beginPath();
+ctx.moveTo(SV_X + SV_W + 40, SV_Y); ctx.lineTo(SV_X + SV_W + 50, SV_Y + 78);
+ctx.stroke();
+ctx.setLineDash([]);
+// Angle arc
+ctx.beginPath();
+ctx.arc(SV_X + SV_W + 40, SV_Y, 30, Math.PI/2, Math.PI/2 + 0.17);
+ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+ctx.stroke();
+ctx.fillStyle = 'rgba(255,255,255,0.5)';
+ctx.font = '10px Arial';
+ctx.textAlign = 'left';
+ctx.fillText('10° tilt', SV_X + SV_W + 55, SV_Y + 45);
+
+// Rear collection chute
+ctx.fillStyle = '#4a3828';
+ctx.beginPath();
+ctx.moveTo(SV_X + SV_W - 5, SV_Y + SV_H);
+ctx.lineTo(SV_X + SV_W + 20, SV_Y + SV_H + 15);
+ctx.lineTo(SV_X + SV_W + 20, SV_Y + SV_H + 25);
+ctx.lineTo(SV_X + SV_W - 5, SV_Y + SV_H + 10);
+ctx.closePath();
+ctx.fill();
+ctx.fillStyle = 'rgba(255,255,255,0.4)';
+ctx.font = '9px Arial';
+ctx.textAlign = 'left';
+ctx.fillText('REAR CHUTE', SV_X + SV_W + 25, SV_Y + SV_H + 20);
+
+// A-frame legs (side view)
+ctx.strokeStyle = '#8B7355';
+ctx.lineWidth = 4;
+ctx.beginPath();
+ctx.moveTo(SV_X + SV_W - 5, SV_Y + SV_H);
+ctx.lineTo(SV_X + SV_W + 30, SV_Y + SV_H + 65);
+ctx.stroke();
+// Rubber foot
+ctx.fillStyle = '#444';
+ctx.fillRect(SV_X + SV_W + 24, SV_Y + SV_H + 60, 12, 8);
+// Cross brace
+ctx.strokeStyle = '#8B7355';
+ctx.lineWidth = 3;
+ctx.beginPath();
+ctx.moveTo(SV_X + SV_W + 10, SV_Y + SV_H + 25);
+ctx.lineTo(SV_X + SV_W + 10, SV_Y + SV_H + 25);
+ctx.stroke();
+
+ctx.fillStyle = 'rgba(255,255,255,0.4)';
+ctx.font = '9px Arial';
+ctx.textAlign = 'left';
+ctx.fillText('A-FRAME LEG', SV_X + SV_W + 40, SV_Y + SV_H + 50);
+ctx.fillText('(HINGED)', SV_X + SV_W + 40, SV_Y + SV_H + 62);
+
+// ---- Scoring pocket cross-section ----
+const spCSY = SV_Y + SV_H - 60;
+// Dividers
+ctx.fillStyle = '#555';
+ctx.fillRect(SV_X + 25, spCSY, 3, 35);
+ctx.fillRect(SV_X + 55, spCSY, 3, 35);
+ctx.fillRect(SV_X + 80, spCSY, 3, 35);
+// Drainage hole
+ctx.fillStyle = '#222';
+ctx.beginPath();
+ctx.arc(SV_X + SV_W - 15, spCSY + 30, 7, 0, Math.PI * 2);
+ctx.fill();
+// Ball in pocket
+ctx.beginPath();
+ctx.arc(SV_X + 40, spCSY + 22, 8, 0, Math.PI * 2);
+ctx.fillStyle = BALL_RED;
+ctx.fill();
+// Arrow showing drainage
+ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+ctx.lineWidth = 1;
+ctx.setLineDash([3, 2]);
+ctx.beginPath();
+ctx.moveTo(SV_X + 48, spCSY + 26);
+ctx.lineTo(SV_X + SV_W - 22, spCSY + 30);
+ctx.stroke();
+ctx.setLineDash([]);
+ctx.fillStyle = 'rgba(255,255,255,0.3)';
+ctx.font = '8px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('DRAIN', SV_X + SV_W - 15, spCSY + 45);
+
+// ============================================================
+// GAMEPLAY FLOW DIAGRAM (bottom section)
+// ============================================================
+const GF_Y = 870;
+ctx.fillStyle = WHITE;
+ctx.font = 'bold 18px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('GAMEPLAY FLOW', 600, GF_Y);
+
+const steps = [
+  { icon: '1', label: 'DROP', desc: 'Choose slot,\ndrop ball', color: '#4488CC' },
+  { icon: '2', label: 'CHAOS', desc: 'Ball cascades\nthrough pegs', color: PEG_COLOR },
+  { icon: '3', label: 'BLAST', desc: 'Jam M18 into\nair port', color: MILWAUKEE_RED },
+  { icon: '4', label: 'STEER', desc: 'Air deflects\nball mid-fall', color: ORANGE },
+  { icon: '5', label: 'SCORE', desc: 'Ball lands in\nscoring pocket', color: GOLD },
+];
+
+const stepW = 160;
+const stepStartX = 600 - (steps.length * stepW) / 2;
+
+steps.forEach((s, i) => {
+  const sx = stepStartX + i * stepW + stepW/2;
+  const sy = GF_Y + 40;
+
+  // Circle
+  ctx.beginPath();
+  ctx.arc(sx, sy, 22, 0, Math.PI * 2);
+  ctx.fillStyle = s.color;
+  ctx.fill();
+  ctx.fillStyle = WHITE;
+  ctx.font = 'bold 16px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText(s.icon, sx, sy + 6);
+
+  // Label
+  ctx.fillStyle = s.color;
+  ctx.font = 'bold 12px Arial';
+  ctx.fillText(s.label, sx, sy + 42);
+
+  // Description
+  ctx.fillStyle = LIGHT_GRAY;
+  ctx.font = '10px Arial';
+  const lines = s.desc.split('\n');
+  lines.forEach((line, li) => {
+    ctx.fillText(line, sx, sy + 56 + li * 13);
+  });
+
+  // Arrow to next
+  if (i < steps.length - 1) {
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(sx + 28, sy);
+    ctx.lineTo(sx + stepW - 28, sy);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(sx + stepW - 28, sy);
+    ctx.lineTo(sx + stepW - 35, sy - 5);
+    ctx.moveTo(sx + stepW - 28, sy);
+    ctx.lineTo(sx + stepW - 35, sy + 5);
+    ctx.stroke();
+  }
+});
+
+// ============================================================
+// M18 TOOL LINEUP (below gameplay flow)
+// ============================================================
+const TL_Y = 1000;
+ctx.fillStyle = MILWAUKEE_RED;
+ctx.font = 'bold 18px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('M18 TOOL INTEGRATION', 600, TL_Y);
+
+const tools = [
+  { name: 'M18 FUEL\nCompact Blower', role: 'PLAYER\nCONTROLLER', qty: '×2', primary: true },
+  { name: 'M18 XC5.0\nBattery', role: 'POWER\nSOURCE', qty: '×4-6', primary: true },
+  { name: 'M18 Tower\nLight', role: 'BOOTH\nBEACON', qty: '×1', primary: false },
+  { name: 'M18 Bluetooth\nSpeaker', role: 'HYPE\nMUSIC', qty: '×1', primary: false },
+  { name: 'M18 Compact\nInflator', role: 'SNIPER\nPORT', qty: '×1', primary: false },
+];
+
+const toolW = 200;
+const toolStartX = 600 - (tools.length * toolW) / 2;
+
+tools.forEach((t, i) => {
+  const tx = toolStartX + i * toolW + toolW/2;
+  const ty = TL_Y + 30;
+
+  // Box
+  ctx.strokeStyle = t.primary ? MILWAUKEE_RED : GRAY;
+  ctx.lineWidth = t.primary ? 3 : 1.5;
+  ctx.strokeRect(tx - 80, ty, 160, 80);
+
+  if (t.primary) {
+    ctx.fillStyle = 'rgba(219,0,50,0.1)';
+    ctx.fillRect(tx - 80, ty, 160, 80);
+  }
+
+  // Tool name
+  ctx.fillStyle = WHITE;
+  ctx.font = 'bold 11px Arial';
+  ctx.textAlign = 'center';
+  const nameLines = t.name.split('\n');
+  nameLines.forEach((line, li) => {
+    ctx.fillText(line, tx, ty + 18 + li * 14);
+  });
+
+  // Role
+  ctx.fillStyle = t.primary ? MILWAUKEE_RED : GRAY;
+  ctx.font = '10px Arial';
+  const roleLines = t.role.split('\n');
+  roleLines.forEach((line, li) => {
+    ctx.fillText(line, tx, ty + 52 + li * 12);
+  });
+
+  // Qty
+  ctx.fillStyle = GOLD;
+  ctx.font = 'bold 12px Arial';
+  ctx.fillText(t.qty, tx + 65, ty + 14);
+});
+
+// ============================================================
+// LEGEND
+// ============================================================
+const LG_Y = 1140;
+ctx.fillStyle = WHITE;
+ctx.font = 'bold 16px Arial';
+ctx.textAlign = 'left';
+ctx.fillText('LEGEND', 80, LG_Y);
+
+const legendItems = [
+  { color: MILWAUKEE_RED, label: 'Milwaukee Red — Edge rails, air ports (Red side), branding' },
+  { color: '#333333', label: 'Black — Air ports (Black player side)' },
+  { color: PEG_COLOR, label: 'Brown — Wooden dowel pegs' },
+  { color: ACRYLIC_BLUE, label: 'Blue (transparent) — ¼" clear acrylic front panel', isAcrylic: true },
+  { color: BALL_RED, label: 'Red ball — Red player\'s whiffle balls' },
+  { color: GOLD, label: 'Gold — Scoring zones, jackpot' },
+  { color: '#4a3828', label: 'Dark Brown — ¾" plywood back panel' },
+];
+
+legendItems.forEach((item, i) => {
+  const ly = LG_Y + 22 + i * 22;
+  if (item.isAcrylic) {
+    ctx.fillStyle = item.color;
+    ctx.fillRect(80, ly - 8, 16, 16);
+    ctx.strokeStyle = 'rgba(120,200,255,0.8)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(80, ly - 8, 16, 16);
+  } else {
+    ctx.fillStyle = item.color;
+    ctx.fillRect(80, ly - 8, 16, 16);
+  }
+  ctx.fillStyle = LIGHT_GRAY;
+  ctx.font = '12px Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText(item.label, 104, ly + 4);
+});
+
+// ============================================================
+// KEY SPECS TABLE
+// ============================================================
+const KS_X = 600;
+const KS_Y = LG_Y;
+ctx.fillStyle = WHITE;
+ctx.font = 'bold 16px Arial';
+ctx.textAlign = 'left';
+ctx.fillText('KEY SPECS', KS_X, KS_Y);
+
+const specs = [
+  ['Board Size', '48"W × 72"H × 5"D'],
+  ['Tilt', '10° from vertical'],
+  ['Air Ports', '6 total (3 per side)'],
+  ['Scoring Pockets', '7 (center jackpot + 6 zones)'],
+  ['Balls per Player', '5 whiffle balls'],
+  ['Power', 'M18 batteries (no outlet)'],
+  ['Blower Output', '~120 MPH / 450 CFM'],
+  ['Build Cost', '~$450 (excl. M18 tools)'],
+  ['Setup Time', '~5 minutes'],
+  ['Players', '2 (head-to-head)'],
+];
+
+specs.forEach((s, i) => {
+  const sy = KS_Y + 22 + i * 22;
+  ctx.fillStyle = GRAY;
+  ctx.font = '11px Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText(s[0], KS_X, sy + 4);
+  ctx.fillStyle = WHITE;
+  ctx.font = '12px Arial';
+  ctx.fillText(s[1], KS_X + 130, sy + 4);
+});
+
+// ============================================================
+// FOOTER
+// ============================================================
+ctx.fillStyle = 'rgba(255,255,255,0.2)';
+ctx.font = '10px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('M18 CYCLONE PLINKO — Where Milwaukee Power Meets Carnival Chaos', 600, 1385);
+
+</script>
+</body>
+</html>
