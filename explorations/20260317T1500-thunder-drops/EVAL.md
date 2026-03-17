@@ -4,49 +4,52 @@
 
 | Heuristic | Score (1–10) | Notes |
 |-----------|:---:|-------|
-| Overall Entertainment | **10** | Five-sense immersion creates an experience, not just a game. Fog, lightning, chimes, mist, candy — every second is happening |
-| Memorability | **10** | "The game that sprays you and rains candy." Smell is the most memory-linked sense — petrichor fog and eucalyptus mist lock this into long-term memory. Kids will describe this to friends for years |
-| Ease of Construction | **5** | Honest assessment: this is a 4-weekend build, not 2. The base plinko board is straightforward, but the five sensory systems (fog, LED/Arduino, chimes, mist/solenoids, candy dispensers) each add a mini-project. Two dads with Milwaukee tools can do it, but they'll earn it |
-| Appeal by Elementary School Grade | **9** | K–1: stomping, spraying, candy, LOUD — pure joy. 2–3: strategy emerges (how many cranks?), competitive mode, candy tiers motivate. 4–5: mastering the crank, chasing the 500-pt jackpot, developing stomp-vs-finesse strategies. Loses one point because the crank mechanism requires some grip strength that the youngest K players might struggle with |
-| Skill to Luck Spectrum | **8** | Skill: crank tension directly controls launch height (3 cranks vs 7). Over-cranking is punished. Experienced players learn the sweet spot. Luck: plinko cascade is pure chaos once the ball enters the peg field — nobody controls which bucket it lands in. The fog zone adds beautiful uncertainty. Ratio: ~40% skill / 60% luck — enough skill for repeat play, enough luck that a kindergartner can beat a 5th grader |
-| Chaos Level | **9** | Balls vanishing into fog then erupting through neon pegs. Wind chimes creating random melodies. Lightning flashing. Mist spraying. Thunder rumbling. Multiple balls cascading simultaneously. This is controlled mayhem — the good kind where the chaos IS the entertainment. Not quite 10 because the crank-and-release is methodical (intentional pacing) |
-| Durability | **7** | The base plinko structure (plywood, cedar pegs, acrylic) is tank-grade — years of reuse. Wind chimes are zip-tied and easily replaced. 3D-printed mushroom caps can be reprinted. Electronics (Arduino, LEDs, solenoids) are the weak point — moisture from mist jets near wiring requires careful sealing. Fog machine and pump sprayer are consumer-grade and may need replacement every 2-3 seasons. Candy system is pure mechanical (gravity + levers) — nearly indestructible |
-| Photogenicity | **10** | This game was born for photos and video. Blacklight neon glow pegs. Fog rolling across the board. LED lightning flashes. Kids getting misted mid-celebration. Glowing UV balls cascading through a neon forest. After dark? This becomes a straight-up light show. Parents will be filming TikToks. The game photographs itself |
-| Onboarding Time | **8** | "Crank the handle. Pull the lever. Watch your ball. Catch your candy." Four sentences. The crank mechanism has a tiny learning curve (how hard to crank?) but the first launch teaches everything. Loses 2 points vs perfect cornhole-simplicity because the crank-pull-release is one step more complex than "throw the thing" |
+| Overall Entertainment | **7** | The core plinko-with-a-crank mechanic is solid, and the candy payoff gives it a real hook. But five layered sensory systems on paper is not five working sensory systems on carnival day. Fog dissipates in outdoor heat, mist is a liability near electronics, and each subsystem is a point of failure a parent volunteer has to troubleshoot. The game that works is a decorated plinko board with candy and wind chimes — which is good, not transcendent |
+| Memorability | **7** | "The game that rains candy" is a strong hook — candy-as-scoring alone makes it stick. The claim that petrichor fog and eucalyptus mist "lock this into long-term memory" is pseudo-neuroscience dressing up a fog machine and a garden sprayer. A plinko board with a fog machine is not a transformative sensory experience. It's a plinko board with a fog machine. The candy angle is genuinely memorable; the rest is set dressing that may or may not be running |
+| Ease of Construction | **4** | The original score of 5 was one of the more honest numbers here, but it still understates the problem. This is a 4-weekend build with 5 subsystems, Arduino programming, waterproofing for mist-near-electronics, conformal coating, and $750–850 in materials — more than double the base concept cost. For a school carnival where the norm is "parent builds a booth in a Saturday," this is a serious barrier. Most carnival committees will not approve this budget or this timeline |
+| Appeal by Elementary School Grade | **8** | K–1: candy + loud noises + stomping = reliable fun. 2–3: competitive candy tiers add motivation. 4–5: crank mastery and jackpot chasing. The grade spread is real. Loses points because the crank mechanism requires grip strength that youngest K players will struggle with, and the sensory spectacle (fog, mist, blacklights) only lands if those systems are actually running — which is not guaranteed |
+| Skill to Luck Spectrum | **8** | Crank tension controlling launch height is a genuine skill input. Plinko cascade is pure chance. ~40/60 skill-to-luck is a good ratio for a carnival game — enough skill for repeat play, enough luck that a kindergartner can beat a 5th grader. This score holds up |
+| Chaos Level | **8** | Wind chimes creating random melodies, multiple balls cascading, candy dispensing — the observable chaos is real and entertaining. Docked from 9 because the fog/lightning/mist chaos only exists when those systems are functioning. The baseline chaos (balls + chimes + candy) is an 8. The aspirational chaos (add fog, LED lightning, mist spray) would be a 9 but cannot be scored for the ideal scenario |
+| Durability | **5** | The base plinko structure (plywood, cedar pegs, acrylic) is sturdy and reusable. But this concept defines itself by its five sensory systems, and three of them have real durability problems. Mist jets near Arduino wiring and LED strips is water-near-electronics at an outdoor school event — conformal coating helps but is not foolproof, and one rain or aggressive mist cycle can kill components. Fog machines are consumer-grade and unreliable after a season. Solenoid valves corrode. The mechanical candy system (gravity + levers) is the one subsystem that will actually last. Scoring for what will realistically survive 2–3 carnival seasons, not the ideal case |
+| Photogenicity | **7** | At night with blacklights, fog, and neon pegs all working: genuinely photogenic, maybe a 9. But score for the likely scenario: daytime, outdoor, fog machine struggling in heat, LEDs washing out in sunlight, mist system maybe running. In that reality it's a colorfully decorated plinko board — nice-looking but not the light show promised. The neon color scheme is visible from a distance and the candy moment photographs well regardless, which saves the score |
+| Onboarding Time | **8** | "Crank the handle. Pull the lever. Watch your ball. Catch your candy." Four sentences. The crank mechanism has a small learning curve, but the first launch teaches everything. This score holds up — onboarding is straightforward |
 
-## Overall Score: **8.4 / 10**
+## Overall Score: **6.9 / 10**
 
 ## Strengths
-1. **Only carnival game that hits all five senses.** This is the differentiator. No other booth smells like rain, sprays you with mist, feeds you candy, AND shakes your ribs with bass. It's not a game — it's a 60-second weather event
-2. **Night mode is a killer feature.** After dark, blacklights + fog + LED lightning + neon glow pegs = the booth draws crowds from across the festival. Most carnival games look the same day and night. This one transforms
-3. **Candy-as-scoring is genius-level incentive design.** Kids don't need a scoreboard. They don't need to count. The candy IS the score. Immediate, tangible, delicious feedback. The full-size jackpot bar is legendary-tier motivation
-4. **The fog zone creates spectator drama.** Ball disappears into clouds → 2 seconds of anticipation → ball erupts into the visible peg field. Every. Single. Launch. Has a reveal moment. Spectators gasp
-5. **The chime cascade is accidental music.** 40 aluminum tubes at varying pitches means every ball run creates a unique descending melody. 5 balls simultaneously = a waterfall of random music. Nothing else at the carnival sounds like this
+1. **Candy-as-scoring is genuinely clever incentive design.** Kids don't need a scoreboard. The candy IS the score — immediate, tangible, and motivating. The full-size jackpot bar is a real draw. This mechanic alone justifies interest in the concept
+2. **The chime cascade is a real differentiator.** 40 aluminum tubes at varying pitches means every ball run sounds different. This is low-cost, durable, zero-failure-risk, and unlike anything else at a carnival. The chimes are the best-designed subsystem in the concept
+3. **Strong grade-range appeal.** The crank-to-plinko-to-candy loop works for K through 5th grade with different appeal at each level. Few carnival games genuinely engage the full elementary range
+4. **The fog reveal moment is a good idea — when it works.** Ball disappears, reappears in the peg field. As a concept it adds real spectator drama. The problem is reliability, not the idea itself
 
 ## Weaknesses
-1. **Build complexity is real.** Five sensory subsystems means five things that can break, five things to test, five things to troubleshoot at 7am on festival morning. Mitigation: each system is independent — if the fog machine dies, the game still works. Degrade gracefully
-2. **Cost is 2× the original concept.** $750–850 vs $350–400. The sensory systems add real cost. Mitigation: most components are reusable year over year. Only candy is consumable (~$55/event)
-3. **Moisture management.** Mist jets + fog machine + outdoor environment = moisture near electronics. Arduino, LED strips, and solenoid connections need waterproofing (conformal coating or sealed enclosures). This is solvable but adds build complexity
-4. **Fog machine regulations.** Some school events restrict fog machines (fire alarm triggers, asthma concerns). Need to verify before committing. Mitigation: the game works without fog — it just loses the "reveal moment"
-5. **Power requirements.** Needs 2 outlets minimum. Most festival booths have one. May need an extension cord run or a small generator. Plan ahead
+1. **Five sensory systems means five points of failure.** Fog machine, Arduino/LED lightning, wind chimes, mist solenoids, candy dispensers. On carnival morning at 7am, a parent volunteer who arrived 10 minutes ago is responsible for all of these. Chimes and candy dispensers are robust. The other three are finicky electronics-plus-moisture systems that each need monitoring. When (not if) the fog machine dies or a solenoid sticks, the game degrades to a decorated plinko board — which is fine, but not what justified the $800 budget
+2. **Cost is a dealbreaker for most school carnivals.** $750–850 is 2× the base concept and 3–4× what most carnival booths cost. School carnival budgets are typically $50–150 per booth. This needs explicit fundraising or sponsorship, and most carnival committees will pick three simpler games over one expensive one. This single factor should disqualify the concept from a default "build it" recommendation
+3. **Water near electronics at an outdoor event.** Mist jets and fog machines produce moisture. Arduino boards, LED strips, and solenoid connections are nearby. Conformal coating and sealed enclosures mitigate this but add build complexity and are not foolproof. One aggressive mist cycle, one unexpected rain, one condensation buildup — and you're debugging dead electronics at a children's event
+4. **Fog machine restrictions and practicality.** Some schools prohibit fog machines (fire alarms, asthma liability). Even where allowed: consumer fog machines overheat, need fluid refills, and produce visible output for ~30 seconds before needing recovery time. At 90°F outdoors the fog dissipates almost instantly. The signature "fog zone" may be more concept than reality
+5. **The 4-weekend build timeline excludes most volunteers.** Two parents with tools and Arduino experience, four weekends, waterproofing, programming, integration testing. This is a hobby project, not a carnival booth build. The typical carnival setup is "buy plywood, cut holes, paint it, done in a weekend"
 
 ## Comparison to Other Explorations
 
 | | Thunder Drops | Stomp Rockets | Tornado Alley |
 |---|:---:|:---:|:---:|
-| Entertainment | 10 | 10 | 9 |
-| Memorability | 10 | 10 | 9 |
-| Ease of Construction | 5 | 7 | 6 |
-| Grade Appeal | 9 | 9 | 8 |
+| Entertainment | 7 | 10 | 9 |
+| Memorability | 7 | 10 | 9 |
+| Ease of Construction | 4 | 7 | 6 |
+| Grade Appeal | 8 | 9 | 8 |
 | Skill/Luck | 8 | 7 | 7 |
-| Chaos | 9 | 9 | 8 |
-| Durability | 7 | 8 | 7 |
-| Photogenicity | 10 | 8 | 8 |
+| Chaos | 8 | 9 | 8 |
+| Durability | 5 | 8 | 7 |
+| Photogenicity | 7 | 8 | 8 |
 | Onboarding | 8 | 9 | 8 |
-| **Average** | **8.4** | **8.6** | **7.8** |
+| **Average** | **6.9** | **8.6** | **7.8** |
 
-Thunder Drops trades ease-of-construction for maximum sensory impact and photogenicity. It's the hardest to build but the most memorable to experience. If the goal is "kids talking about that crazy rad game for years to come," the five-sense immersion gives it the strongest long-term memory formation of any variant.
+Thunder Drops sacrifices buildability, durability, and budget-friendliness for a sensory concept that only delivers its full promise under ideal conditions. The core loop (crank + plinko + candy + chimes) is a 7–8 game. The additional three systems (fog, LEDs, mist) add cost, complexity, and fragility for marginal gain on carnival day.
 
 ## Build-or-Kill Verdict
 
-**BUILD IT.** The sensory systems are individually simple (fog machine = plug in, chimes = zip-tie, mist = garden sprayer, candy = gravity + levers, LEDs = Arduino starter project). The complexity is in the integration, not the components. Two weekenders with a plan can do this. The result is a carnival game that doesn't exist anywhere else — because nobody has built a plinko board that smells like rain and feeds you chocolate.
+**BUILD THE CORE. SKIP THE SPECTACLE.** The candy-dispensing plinko board with wind chimes is a genuinely good carnival game — fun, memorable, buildable in 2 weekends, and under $400. That version scores in the high 7s and is an easy recommendation.
+
+The five-sense version as designed? Don't build it for a school carnival. The $800 budget, 4-weekend timeline, Arduino programming, waterproofing requirements, and five-subsystem fragility put it outside what school carnival volunteers can reliably execute and maintain. It's a cool maker project for someone who wants to build it for its own sake — but a carnival committee should spend that $800 on two simpler games that will definitely work on event day.
+
+If you're committed to the theme, add the fog machine and LED lightning as optional stretch goals after the base game is proven. But don't design around them and don't budget for them up front.

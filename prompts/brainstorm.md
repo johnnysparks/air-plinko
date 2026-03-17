@@ -20,3 +20,4 @@ Perform the following actions to iteratively brainstorm improvements to our carn
     - Durability (or can fragile parts be quickly swapped)
     - Photogenicity
     - Onboarding time - (cornhole vs dungeons and dragons)
+13. After completing the EVAL.md, run the critical evaluation prompt from ./prompts/critical-eval.md against it. Edit the EVAL.md in place — the result should read as an honest assessment, not a hype piece corrected after the fact. Running the critical pass a second time should produce no meaningful changes.

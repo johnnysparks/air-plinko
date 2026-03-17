@@ -5,14 +5,14 @@ Each heuristic scored 1–10 (10 = best possible for a school carnival game).
 
 ---
 
-### Overall Entertainment: 9/10
-The full-body balance mechanic combined with cascading plinko balls is inherently engaging. The cooperative tension — two kids physically trying to balance while screaming instructions — creates organic drama every single round. The gold ball moments add spikes of intensity. Loses one point because there's no competitive mode for kids who want to go head-to-head, though that energy gets redirected into beating score thresholds together.
+### Overall Entertainment: 7/10
+The cooperative balancing mechanic is genuinely novel for a carnival booth. Two kids on a rocker platform, leaning to tilt a plinko board, is something they haven't done before. But the actual player input is low-resolution — you shift your weight slightly left or right and watch balls fall through pegs. Compare this to a game where you physically throw, stomp, or aim something: those create discrete moments of agency. Here, you're making continuous micro-adjustments that produce gentle lateral drift on the board. It's more passive than it sounds on paper. The cooperative-only design also means no head-to-head mode, which is what most carnival kids gravitate toward. The novelty of the platform carries the first 20 seconds; the question is whether "lean and watch" holds attention through a full 60-second round.
 
-### Memorability: 10/10
-This is the "remember that game where we had to stand on the wobbly platform together?" game. The physical sensation of the rocker platform under your feet, the visual of 110 neon pegs with balls cascading through them on a TILTING board, the sound of balls thunking through pegs, the moment you and a stranger both nail the balance for a 500-point jackpot — this is a core memory machine. Kids will talk about "the earthquake game" for years.
+### Memorability: 7/10
+The rocker platform is the memorable part — standing on something that moves at a carnival booth is unusual, and the cooperative element gives it a social dimension most plinko variants lack. But strip away the pitch language and apply the "kid describes it to a friend" test: "We stood on a platform and leaned to tilt a plinko board." That's interesting, not legendary. The visual spectacle is a plinko board that sways gently. The balls still fall through pegs into slots, which is what every plinko board does. The physical novelty of the platform earns this a score above average, but a 10 means best-in-class across all carnival games — this isn't that.
 
-### Ease of Construction: 6/10
-More complex than a standard plinko board. The pivot system (steel axle, pillow block bearings, linkage rods with heim joints) requires metalworking confidence and precise alignment. The rocker beam/fulcrum needs careful balancing. However, all materials are Home Depot-available and the build sequence is designed for two weekends with M18 Milwaukee tools. No welding required (bolted joints throughout). The modular breakdown design means setup/teardown is tool-free. Biggest risk: getting the tilt calibration right (linkage rod length tuning).
+### Ease of Construction: 5/10
+This is substantially harder to build than a standard plinko board. The pivot system calls for a steel axle, pillow block bearings, and linkage rods with heim joints — these are not Home Depot items. They require ordering specialty hardware from McMaster-Carr or similar, and the alignment tolerances are tight. If the pivot axis isn't perfectly parallel to the board face, the tilt will bind or drift. The rocker beam/fulcrum needs careful weight balancing to feel responsive but not sloppy. The claim of "two weekends with Milwaukee tools" assumes a builder who is already comfortable with metal-to-wood mechanical assemblies. A typical parent volunteer with a drill and a circular saw will find this intimidating. Biggest risk: the tilt calibration (linkage rod length) is a tuning problem that can eat an entire build day if it doesn't feel right.
 
 ### Appeal by Elementary School Grade: 8/10
 
@@ -28,8 +28,8 @@ More complex than a standard plinko board. The pivot system (steel axle, pillow 
 
 **Luck component (40%):** Plinko physics are inherently chaotic. Even perfect tilting can send a ball bouncing into a gutter off a bad peg hit. Gold ball timing adds randomness. This ratio is ideal — skill matters enough to feel earned, luck matters enough that a kindergartner can beat a 5th grader sometimes.
 
-### Chaos Level: 8/10
-The board is literally swaying back and forth while 20 balls cascade through neon pegs over 60 seconds. Late in a round, multiple balls are in the peg field simultaneously, the platform is rocking, kids are shouting, the crowd is giving advice, and every gold ball drop triggers a bell. It's controlled pandemonium. Not quite as chaotic as Tornado Alley's vortex cannons (which create true unpredictable air physics), but the VISIBLE motion of the entire board tilting adds a unique kinetic chaos that spectators can feel from across the carnival.
+### Chaos Level: 6/10
+The board tilts a few degrees left and right while balls fall through pegs. That's the actual physical reality — a gently swaying plinko board. The tilt adds some lateral drift to ball paths, but plinko balls already bounce unpredictably off pegs without any tilt at all. The marginal chaos from the sway is modest. Late in a round with multiple balls in play there's visual complexity, but the player's experience is standing on a platform making small weight shifts. Compare to a game with projectiles, wind, or collisions between player-controlled objects — those create genuine moment-to-moment unpredictability. This is closer to "plinko with a slow wobble" than "controlled pandemonium."
 
 ### Durability: 8/10
 - **Plywood + acrylic core:** Battle-tested, handles years of abuse
@@ -40,13 +40,11 @@ The board is literally swaying back and forth while 20 balls cascade through neo
 - **Acrylic front panel:** Wing-nut mounted for easy swap if cracked
 - **Weakest link:** Linkage rod heim joints — small moving parts under repeated load. Carry spares ($5 each)
 
-### Photogenicity: 9/10
-A tilting board covered in 110 neon-colored pegs with balls cascading through them is visually spectacular. The fact that the board is MOVING makes every photo dynamic — slightly tilted, balls mid-bounce, kids leaning on the platform. The dark matte background with neon elements is basically Instagram-ready. Nighttime with the LED jackpot strip? Chef's kiss. Slight deduction because the side-on view (which many spectators will see) is less dramatic than the front — the game looks best head-on.
+### Photogenicity: 7/10
+Neon pegs on a dark background photograph well, and the tilted board adds a dynamic angle that a static plinko board lacks. Kids leaning on the platform gives photographers a natural action shot. However, the tilt is only a few degrees — in a photo it may not even register as "tilted" versus "slightly off-level." The side view, which most spectators and passersby will see, largely looks like a regular plinko board. The LED jackpot strip adds visual pop at night events. Overall, above average but not head-turning from across a crowded gym.
 
-### Onboarding Time: 9/10 (Cornhole-tier)
-**5-second explanation:** "Stand on that pad, your friend stands on that one. Lean together to tilt the board. Catch the balls in the middle for the most points. Go!"
-
-That's it. Kids who've been watching in line already understand the mechanic. The footplates have "STAND HERE" printed on them. The scoring zones are clearly numbered. There are no rules to memorize, no turns to track, no complex mechanics to explain. You step on, the earthquake starts, and you figure it out by feel within the first 3 balls.
+### Onboarding Time: 8/10
+The mechanic is intuitive — stand on the platform, lean to tilt. Kids watching in line will pick it up visually. The footplates marked "STAND HERE" help. But there's a subtlety the 5-second pitch glosses over: the cooperative element requires two players to coordinate, and if one kid doesn't have a partner, the volunteer has to pair strangers or find a parent. That's a line-management problem that slows throughput. The scoring zones (which ones are worth more, what the gold ball does) take a round to internalize. Still faster to explain than most skill games, but not quite "hand them a ball and point at the target" simplicity.
 
 ---
 
@@ -54,16 +52,22 @@ That's it. Kids who've been watching in line already understand the mechanic. Th
 
 | Heuristic | Score |
 |-----------|-------|
-| Overall Entertainment | 9/10 |
-| Memorability | 10/10 |
-| Ease of Construction | 6/10 |
+| Overall Entertainment | 7/10 |
+| Memorability | 7/10 |
+| Ease of Construction | 5/10 |
 | Appeal by Grade | 8/10 |
 | Skill vs Luck Balance | 7/10 |
-| Chaos Level | 8/10 |
+| Chaos Level | 6/10 |
 | Durability | 8/10 |
-| Photogenicity | 9/10 |
-| Onboarding Time | 9/10 |
-| **AVERAGE** | **8.2/10** |
+| Photogenicity | 7/10 |
+| Onboarding Time | 8/10 |
+| **AVERAGE** | **7.0/10** |
 
 ## Verdict
-EARTHQUAKE! scores highest on the things that matter most for a school carnival: memorability, onboarding, and spectacle. The cooperative-only design is a bold choice that makes the game fundamentally different from every other booth — kids aren't competing against each other, they're working together against the earthquake. The construction complexity (6/10) is the main trade-off, but the pivot system is straightforward for anyone comfortable with a drill press and the modular design means it only needs to be built once. This is the game that gives a school carnival its identity.
+Earthquake Tilt's genuine strength is its physical novelty — a cooperative rocker platform controlling a plinko board is something kids haven't encountered before, and the body-involvement separates it from passive drop-and-watch games. The grade appeal is solid across the range, and the cooperative mechanic creates real social moments.
+
+The honest concern is whether the core gameplay loop sustains a 60-second round. The player's input (leaning) is continuous but subtle, and the feedback (balls drifting slightly left or right through pegs) is indirect. After the initial "whoa, it tilts!" moment, you're watching a plinko board that sways gently. That may not hold a 3rd grader's attention the way a game with throwing, launching, or direct physical impact would.
+
+The construction cost is real. This is the hardest build in the set — specialty hardware, alignment-sensitive pivot assembly, and a tuning step that requires mechanical intuition. A school with a parent who does metalwork or mechanical engineering can pull this off; most schools should pick a simpler concept.
+
+**Build if:** you have a mechanically skilled builder AND you want a cooperative centerpiece that's unlike anything at a typical carnival. **Don't build if:** your volunteer pool is general-purpose handy parents, or your carnival already has strong cooperative games and needs more competitive head-to-head booths.

@@ -5,41 +5,40 @@ Each heuristic scored 1–10 (10 = best possible).
 
 ---
 
-### Overall Entertainment: 10/10
-This game turns kids into human pneumatic pumps. The act of STOMPING — jumping, slamming, absolutely going ham on a floor bladder — is inherently joyful. You're not just standing and aiming. You're using your whole body. The stomp launches a ball upward, then you watch it cascade through a neon peg forest into scoring buckets. The combo of physical exertion + visual chaos + instant feedback (ding! or WAH WAH) creates a dopamine loop that rivals actual arcade games. 45 seconds of pure adrenaline.
+### Overall Entertainment: 7/10
+The stomp mechanic is genuinely physical and satisfying — kids use their whole body, which is more engaging than standing and tossing. But the actual gameplay loop is: stomp, watch ball bounce through pegs, repeat. The stomping is active; the plinko half is passive spectating. Stomp rockets already exist as a popular kids' toy, so the core thrill (stomp and watch something fly) is familiar, not novel. The 45-second timed round adds urgency, and dual-player competition helps. This is a solidly fun booth — better than most carnival games — but it's not the best carnival game imaginable. That would require the player to be engaged for the full duration, not just during the stomp.
 
-### Memorability: 10/10
-"Remember that game where you STOMPED on the ground and balls flew up into that giant neon board?" — this sells itself. The stomp mechanic is visceral and unique — no kid has seen a carnival game where jumping on a pad launches balls into a plinko board. The neon aesthetic is eye-candy. The sounds (THWOMP, ding, sad trombone, jackpot siren) create an audio identity. Kids will reenact the stomping motion on the drive home.
+### Memorability: 7/10
+Kids will remember stomping on a pad and watching balls fly into a neon board. That's a good hook. But stomp rockets are a toy most kids have already played with, and plinko boards are at every carnival and game show. The combination is clever — genuinely more interesting than either component alone — but it's a mashup of two known things, not something unprecedented. The neon aesthetic helps it stand out visually on carnival day. The sound effects (if implemented) add identity. A parent volunteer watching this for the first time would say "oh, that's cool" — which is a 7, not a 10.
 
-### Ease of Construction: 7/10
-The plinko board itself is standard — plywood, pegs, acrylic, edge rails. Two dads can build that in a weekend. The support frame is a bit taller (7ft peak) but straightforward. The stomp pads are simple (bladder + hose + platform). The trickiest parts are: (1) the ball magazine auto-feed gate — needs prototyping, (2) the ball return system — gravity-fed but routing 3" PVC from buckets to magazines needs careful planning, and (3) 60 3D-printed pegs — overnight print jobs across a week. No power tools beyond a drill and circular saw. The optional sound system adds complexity but isn't required. Overall, two motivated weekends is realistic.
+### Ease of Construction: 6/10
+The plinko board is standard construction — plywood, pegs, acrylic, edge rails. Two dads can build that in a weekend. But the full system is more than a plinko board. It requires: (1) stomp pads with bladders and hoses that reliably translate foot force into ball launches — this has never been prototyped and is the core unknown, (2) a ball magazine auto-feed gate with a moving part that needs design iteration, (3) a ball return system routing 3" PVC from buckets back to magazines, (4) 60 3D-printed pegs across multiple overnight print jobs, (5) a 7ft-tall support frame. The optional sound system adds more. Any one of these is manageable; together, this is a 3-weekend project for experienced builders assuming the pneumatics work on the first prototype attempt. They probably won't.
 
 ### Appeal by Elementary School Grade
 | Grade | Appeal (1-10) | Notes |
 |-------|--------------|-------|
-| K–1st | 9/10 | STOMPING IS LIFE at this age. They may not stomp hard enough for top-zone launches, but they'll still get balls in play and the cascading pegs are mesmerizing. The lower zones are designed to still score. They'll love the sounds |
-| 2nd–3rd | 10/10 | Peak demographic. Strong enough for monster stomps, competitive enough to care about the 500-pt jackpot, energetic enough to stomp 10 times in 45 seconds without breaking a sweat. They'll develop stomp strategies between rounds |
-| 4th–5th | 9/10 | The physicality keeps it from feeling "babyish." The risk/reward of monster stomp vs. controlled stomp creates genuine strategy. The jackpot + gutter tension is real. Competitive 5th graders will trash-talk each other's stomp technique |
+| K–1st | 6/10 | Stomping is fun at this age, but the evaluation already concedes they "may not stomp hard enough for top-zone launches." That's not a footnote — it means the core mechanic partially fails for the youngest players. They'll get some balls in play and enjoy watching the pegs, but if their stomps produce weak dribbles instead of satisfying launches, the experience is frustrating, not magical. The lower scoring zones help, but the payoff is muted. |
+| 2nd–3rd | 8/10 | The right age for this game. Strong enough to get real launches, competitive enough to care about scores, energetic enough to stomp repeatedly for 45 seconds. This age group will have genuine fun and want to play again. |
+| 4th–5th | 7/10 | The physicality keeps it from feeling too young. The strategy of force calibration is real but shallow — after 2-3 stomps you've learned all there is to learn. Competitive kids will enjoy it, but the "stomp and watch" loop doesn't have enough depth to truly impress a 10-year-old the way a game with continuous engagement would. |
 
-### Skill to Luck Spectrum: 8/10 (Excellent balance)
-**Skill factors:** Stomp force directly controls launch height — controlled medium stomps consistently hit the mid-zone where the best risk/reward ratio lives. Speed of stomping matters (10 balls in 45 seconds = pace management). Deciding when to go for monster stomps vs. safe stomps is genuine strategy.
-**Luck factors:** Once the ball enters the peg field, pure plinko chaos. The ball bounces unpredictably through 60 pegs. A perfect monster stomp can still gutter. A weak stomp can get lucky and bounce into the 200 zone.
-This is better than Tornado Alley's mix — there's a meaningful skill axis (stomp calibration) layered over beautiful randomness (peg cascades).
+### Skill to Luck Spectrum: 7/10 (Good balance)
+**Skill factors:** Stomp force controls launch height. Harder stomp = higher entry point on the board. Pace management across 45 seconds matters. There's a real risk/reward choice between monster stomps (high zone, but also near gutters) and controlled stomps (safer mid-zone).
+**Luck factors:** Once the ball enters the peg field, the player has zero control. It's pure plinko randomness from that point. This means roughly half the gameplay experience (the cascade) has no skill component at all.
+The skill axis is real but narrow — it's essentially one variable (stomp force). Compare to a game where the player makes continuous decisions throughout. The balance is good, not excellent.
 
-### Chaos Level: 8/10
-With two players stomping simultaneously, up to 20 balls can be cascading through the peg field at once. Balls collide mid-board, redirect each other, and create unpredictable chain reactions. It's not quite Tornado Alley's "balls flying everywhere from air blasts" chaos, but the visual spectacle of neon balls bouncing through neon pegs under a clear acrylic panel is mesmerizing and chaotic in its own beautiful way. The gutters add dramatic tension that pushes it higher — every ball that enters the top zone could be a 500 or a zero.
+### Chaos Level: 7/10
+With two players stomping simultaneously, multiple balls can cascade through the peg field at once. Balls collide and redirect, which creates some visual excitement. But plinko chaos is orderly chaos — balls bouncing through evenly spaced pegs in a downward path is more mesmerizing than chaotic. The gutters add tension. It's visually interesting, but "20 balls cascading at once" is only possible if both players are stomping at maximum speed and the pneumatics keep up, which is an optimistic scenario.
 
-### Durability: 8/10
-**Strong points:** Plywood board is bombproof. 3D-printed mushroom pegs are solid — even if one breaks, it takes 20 minutes to print a replacement. PVC launch tubes and ball returns are industrial-grade. The acrylic front is shatter-resistant.
-**Weak points:** The stomp bladders take the most abuse — hundreds of full-force stomps per carnival day. Budget for 2 spare bladders per pad. The ball magazine feed gate has a moving part that could jam — keep a dowel handy for manual clearing.
-**Repairability:** All high-wear parts (bladders, feed gates) are cheap and swap in under 5 minutes. The rubber stomp mat surface can be replaced with any hardware store rubber sheet.
+### Durability: 7/10
+**Strong points:** The plywood board and PVC components are robust. 3D-printed pegs are replaceable if broken. Acrylic front panel is shatter-resistant.
+**Weak points:** The stomp bladders are the critical failure point. They absorb hundreds of full-force stomps from kids jumping with their full body weight. Bladder fatigue, hose disconnection, or air leaks would disable the game entirely — there's no degraded mode where the game still works without pneumatics. The ball magazine feed gate is a moving part under repeated stress that could jam. Budget for spare bladders and plan for mid-day repairs.
+**Repairability:** High-wear parts are cheap, but swapping a bladder mid-carnival means taking a station offline and potentially losing air-tight seals under time pressure.
 
-### Photogenicity: 9/10
-The neon-on-black aesthetic is Instagram GOLD. The clear acrylic front means you can photograph the ball chaos from any angle. The action shot of a kid mid-stomp with balls cascading through rainbow pegs above them is an absolute banger photo. LED backlighting (optional but recommended) makes this a nighttime showstopper. The only miss vs. a perfect 10 is that the game is vertically oriented — harder to capture both the stomping kid and the board in a single frame without a wide angle lens. But the board alone is a visual landmark that draws foot traffic.
+### Photogenicity: 7/10
+The neon-on-black color scheme is visually striking and would stand out in a carnival setting. The acrylic front lets spectators see the ball action. But the game is vertically oriented — capturing both the kid stomping at ground level and the board towering above in one photo requires a wide-angle lens or significant distance. The most photogenic moment (kid mid-stomp with balls cascading) is difficult to time. Without the optional LED backlighting, this is a colorful booth; with it, it's more impressive but that adds construction scope. A parent with a phone will get a decent photo, not a great one.
 
-### Onboarding Time: 9/10 (Instant — easier than cornhole)
-**15-second explanation:** "Stomp on the pad. Balls fly up into the board. Watch them bounce down into the buckets. Big number good. Center bucket is 500 points. Don't hit the gutter. 45 seconds. GO."
-Kids see a big pad on the floor and a giant neon board — the affordance is immediate. Stomp the pad, ball goes up. The only learning curve is force calibration (how hard = how high), which takes exactly one stomp to understand. No rules complexity. No aiming. Just stomp.
+### Onboarding Time: 7/10 (Fast, but not instant)
+The explanation is short: "Stomp the pad, balls fly up, watch them score, 45 seconds." That's good. But "instant" and "easier than cornhole" are both wrong. Cornhole requires zero explanation — you see bags and a hole. This game requires explaining: (1) stomp the pad, (2) balls launch into the board, (3) they fall into scoring zones, (4) avoid gutters, (5) you have 45 seconds, (6) higher zones score more but risk gutters. Kids will figure it out after one stomp, but a parent volunteer running the booth needs to understand the scoring, the timer, and the dual-player setup. It's a 30-second onboarding, not a 5-second one.
 
 ---
 
@@ -47,22 +46,25 @@ Kids see a big pad on the floor and a giant neon board — the affordance is imm
 
 | Heuristic | Score |
 |-----------|-------|
-| Overall Entertainment | 10/10 |
-| Memorability | 10/10 |
-| Ease of Construction | 7/10 |
-| Appeal (K–1st) | 9/10 |
-| Appeal (2nd–3rd) | 10/10 |
-| Appeal (4th–5th) | 9/10 |
-| Skill/Luck Balance | 8/10 |
-| Chaos Level | 8/10 |
-| Durability | 8/10 |
-| Photogenicity | 9/10 |
-| Onboarding Time | 9/10 |
-| **Average** | **8.8/10** |
+| Overall Entertainment | 7/10 |
+| Memorability | 7/10 |
+| Ease of Construction | 6/10 |
+| Appeal (K–1st) | 6/10 |
+| Appeal (2nd–3rd) | 8/10 |
+| Appeal (4th–5th) | 7/10 |
+| Skill/Luck Balance | 7/10 |
+| Chaos Level | 7/10 |
+| Durability | 7/10 |
+| Photogenicity | 7/10 |
+| Onboarding Time | 7/10 |
+| **Average** | **6.9/10** |
 
 ## Verdict
-Stomp Rockets Plinko beats Tornado Alley (8.1) on nearly every axis. The full-body stomp mechanic is more accessible than vortex cannons (no hand strength required — even kindergartners can stomp), the neon plinko board is a more dramatic visual spectacle, and the self-resetting ball return means zero downtime between players. The skill expression is richer (stomp force calibration vs. port selection), and the risk/reward of monster stomps vs. safe stomps creates genuine strategic depth.
 
-**Biggest risk:** The stomp-to-launch pneumatics. The bladder needs to reliably propel a whiffle ball 4+ feet up a 1.5" tube with a single stomp. This MUST be prototyped before building the full board. If the bladder is too soft, stomps feel wimpy and balls don't launch. If it's too stiff, little kids can't play. The sweet spot is critical. Build one pad + one tube + one ball and test with kids of varying sizes before committing.
+Stomp Rockets Plinko is a solid concept built on a genuinely appealing physical mechanic. The stomp-and-launch loop is more physically engaging than most carnival booth interactions, and the neon plinko board is a good visual anchor. It's a good game. It is not a great game pretending to be a perfect one.
 
-**Biggest upgrade opportunity:** LED strips behind the peg grid, powered by a battery pack. Turns the game into a glowing beacon at dusk. Combined with the sound system, this becomes the #1 booth at any evening carnival.
+**The existential risk is the pneumatics.** The entire concept depends on a stomp bladder reliably propelling a whiffle ball 4+ feet up a 1.5" tube. This has not been prototyped. If the bladder is too soft, stomps feel wimpy and balls dribble. If it's too stiff, kindergartners and small first-graders can't play at all — cutting out a meaningful chunk of the audience. The sweet spot between these failure modes may be narrow, and it may shift with temperature (bladder stiffness changes in heat), bladder fatigue (softens over hundreds of stomps), and child weight variation. This is not a "biggest risk" footnote — it is a go/no-go dependency. Build one pad, one tube, and one ball. Test it with a 40-pound kindergartner and a 90-pound fifth-grader. If both get satisfying launches, proceed. If not, the concept doesn't work.
+
+**What this concept sacrifices:** Player engagement during the plinko cascade phase (passive watching), depth of skill expression (one variable: stomp force), and construction simplicity (pneumatics add meaningful build risk). It also underserves the youngest players if the force threshold can't be tuned low enough.
+
+**Build recommendation:** Prototype the stomp-to-launch mechanism first. If it works reliably across the age/weight range, this is a top-half concept worth building. If it doesn't, no amount of neon pegs saves it.
