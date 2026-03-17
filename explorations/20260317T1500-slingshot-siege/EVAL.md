@@ -25,9 +25,9 @@ No electronics, no blowers, no pneumatics — good. But the mechanical simplicit
 ### Appeal by Elementary School Grade
 | Grade | Appeal (1-10) | Notes |
 |-------|--------------|-------|
-| K–1st | 8/10 | Slingshots are universally appealing at this age. The castle theme is catnip for imaginative kids. Pulling back the tubing requires some hand strength, but the slingshot can be adjusted to lighter tension bands for littles. They can stand closer (3ft) for easier hits. They may not grasp the multiplier strategy but they'll LOVE launching balls at a castle |
-| 2nd–3rd | 10/10 | The sweet spot. Strong enough for full-tension pulls, competitive enough to care about tower gates vs. main gates, strategic enough to develop aiming techniques across their 12 balls. The siege narrative hits perfectly — this age group LIVES for castle battles. Head-to-head competition against a classmate adds social stakes |
-| 4th–5th | 9/10 | The marksmanship element keeps it from feeling young. Aiming a slingshot at a specific 3.5" gate from 5 feet away is genuinely challenging and skill-expressive. The multiplier math adds strategy. 5th graders will be calculating optimal shot selection ("two tower gates beats six main gates"). The face-to-face format feeds the competitive energy of this age group. Slight coolness concern for the oldest kids, but the slingshot mechanic is timeless |
+| K-1st | 6/10 | Slingshots are appealing at this age, and the castle theme helps. But pulling back Theraband tubing requires hand strength that many K-1st graders lack. Lighter bands reduce range and accuracy further. Standing closer (3ft) helps but narrows the already-small gate targets from a steep angle. If they miss most shots, the frustration will outweigh the novelty. The multiplier system will go over their heads entirely |
+| 2nd-3rd | 8/10 | The best age for this concept. Strong enough for meaningful pulls, competitive enough to care about the head-to-head format, and the castle theme still resonates. The accuracy concern applies here too — whiffle ball flight is inconsistent regardless of age — but this group has the motor control to develop some aim across 12 shots. The face-to-face rivalry is a genuine draw |
+| 4th-5th | 8/10 | The marksmanship element and multiplier math add depth that keeps it from feeling young. The face-to-face format feeds the competitive energy of this age group. If the accuracy works, this age group gets the most out of the strategic layer. Slight coolness concern for 5th graders — slingshots may read as "little kid toy" depending on the school |
 
 ### Skill to Luck Spectrum: 6/10 (Uncertain — needs prototyping)
 **Skill factors on paper:** Slingshot aiming involves angle, pull distance, and release timing. Gate tier selection (1x/2x/3x) adds strategic decision-making. Ball management across 12 shots rewards pacing. These are real skill dimensions.
@@ -72,18 +72,18 @@ The slingshot affordance is immediate — kids understand pull back, aim, releas
 
 | Heuristic | Score |
 |-----------|-------|
-| Overall Entertainment | 9/10 |
-| Memorability | 10/10 |
-| Ease of Construction | 7/10 |
-| Appeal (K–1st) | 8/10 |
-| Appeal (2nd–3rd) | 10/10 |
-| Appeal (4th–5th) | 9/10 |
-| Skill/Luck Balance | 9/10 |
-| Chaos Level | 7/10 |
-| Durability | 9/10 |
-| Photogenicity | 9/10 |
-| Onboarding Time | 9/10 |
-| **Average** | **8.7/10** |
+| Overall Entertainment | 7/10 |
+| Memorability | 7/10 |
+| Ease of Construction | 6/10 |
+| Appeal (K-1st) | 6/10 |
+| Appeal (2nd-3rd) | 8/10 |
+| Appeal (4th-5th) | 8/10 |
+| Skill/Luck Balance | 6/10 |
+| Chaos Level | 6/10 |
+| Durability | 8/10 |
+| Photogenicity | 8/10 |
+| Onboarding Time | 8/10 |
+| **Average** | **7.1/10** |
 
 ## Verdict
 Slingshot Siege scores 8.7/10, just under Stomp Rockets' 8.8 — but it wins on different axes. It's the **most skill-expressive** game (9/10 vs 8/10) and the **most durable** (9/10 vs 8/10). No pneumatics, no bladders, no moving parts that can fail. It trades raw chaos and full-body physicality for **strategic depth and interpersonal competition**. This is the game where rivalries form.

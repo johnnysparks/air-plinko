@@ -48,18 +48,18 @@ Kids see a giant machine and intuitively want to interact. The crank is an obvio
 
 | Heuristic | Score |
 |-----------|-------|
-| Overall Entertainment | 9/10 |
-| Memorability | 10/10 |
-| Ease of Construction | 6/10 |
+| Overall Entertainment | 7/10 |
+| Memorability | 8/10 |
+| Ease of Construction | 4/10 |
 | Appeal (K–1st) | 7/10 |
 | Appeal (2nd–3rd) | 9/10 |
-| Appeal (4th–5th) | 10/10 |
-| Skill/Luck Balance | 7/10 |
-| Chaos Level | 9/10 |
-| Durability | 9/10 |
-| Photogenicity | 10/10 |
+| Appeal (4th–5th) | 8/10 |
+| Skill/Luck Balance | 5/10 |
+| Chaos Level | 7/10 |
+| Durability | 6/10 |
+| Photogenicity | 8/10 |
 | Onboarding Time | 8/10 |
-| **Average** | **8.5/10** |
+| **Average** | **7.0/10** |
 
 ## Verdict
 The Contraption scores 8.5/10 — slightly below Stomp Rockets Plinko (8.8) but for very different reasons. Where Stomp Rockets wins on ease of construction and universal accessibility (anyone can stomp), The Contraption wins on memorability, photogenicity, durability, and especially the 4th-5th grade demo. It's the most ambitious build by far, and the most visually stunning.
