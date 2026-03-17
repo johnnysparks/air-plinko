@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<!-- screenshot: 900x1400 -->
+<html>
+<head>
+<meta charset="utf-8">
+<title>Flipper Plinko — Snap-Together Pinball Plinko</title>
+<style>
+  body { margin: 0; padding: 0; background: #0a0e1a; overflow: hidden; }
+  canvas { display: block; }
+</style>
+</head>
+<body>
+<canvas id="c" width="900" height="1400"></canvas>
+<script>
+const c = document.getElementById('c');
+const ctx = c.getContext('2d');
+
+// Colors
+const COL = {
+  bg: '#0a0e1a',
+  pegboard: '#1a1a1a',
+  pegboardEdge: '#333',
+  polycarb: 'rgba(135,206,250,0.15)',
+  polycarbEdge: 'rgba(135,206,250,0.5)',
+  pvc: '#888',
+  pvcJoint: '#ff8800',
+  pegGreen: '#39ff14',
+  pegOrange: '#ff6600',
+  pegPink: '#ff1493',
+  pegBlue: '#00bfff',
+  bucket100: '#ffd700',
+  bucket50: '#ff8c00',
+  bucket25: '#c0c0c0',
+  bucket10: '#8b7355',
+  flipper: '#ff3333',
+  flipperP2: '#3388ff',
+  plunger: '#aaa',
+  ball1: '#ff4444',
+  ball2: '#4488ff',
+  trail: 'rgba(255,255,100,0.3)',
+  gutter: '#333',
+  divider: '#666',
+  dim: '#888',
+  label: '#ccc',
+  title: '#fff',
+  specs: '#aaa',
+  brakeCable: '#ffcc00',
+  brakeHandle: '#cc8800',
+  chute: '#555',
+};
+
+// ---- TITLE ----
+ctx.fillStyle = COL.bg;
+ctx.fillRect(0, 0, 900, 1400);
+
+ctx.fillStyle = COL.title;
+ctx.font = 'bold 22px monospace';
+ctx.textAlign = 'center';
+ctx.fillText('FLIPPER PLINKO — Snap-Together Pinball Plinko', 450, 30);
+ctx.font = '12px monospace';
+ctx.fillStyle = COL.specs;
+ctx.fillText('48"W × 60"H × 4" deep  |  ~30 lbs  |  10-min assembly  |  Zero tools  |  ~$200', 450, 50);
+
+// ---- FRONT VIEW ----
+const FX = 30, FY = 80, FW = 520, FH = 680;
+
+ctx.fillStyle = COL.label;
+ctx.font = 'bold 14px monospace';
+ctx.textAlign = 'center';
+ctx.fillText('FRONT VIEW (Player Perspective)', FX + FW/2, FY - 8);
+
+// PVC Frame
+ctx.strokeStyle = COL.pvc;
+ctx.lineWidth = 6;
+ctx.strokeRect(FX, FY, FW, FH);
+
+// Corner joints (3D printed)
+const jointR = 10;
+[[FX,FY],[FX+FW,FY],[FX,FY+FH],[FX+FW,FY+FH]].forEach(([x,y]) => {
+  ctx.fillStyle = COL.pvcJoint;
+  ctx.beginPath(); ctx.arc(x,y,jointR,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.font = '6px monospace'; ctx.textAlign = 'center';
+  ctx.fillText('SNAP', x, y+2);
+});
+
+// Pegboard (dark, slightly lighter than bg)
+ctx.fillStyle = COL.pegboard;
+ctx.fillRect(FX+8, FY+8, FW-16, FH-16);
+
+// Pegboard holes (subtle dots)
+ctx.fillStyle = '#222';
+for (let py = FY+20; py < FY+FH-10; py += 12) {
+  for (let px = FX+20; px < FX+FW-10; px += 12) {
+    ctx.beginPath(); ctx.arc(px, py, 1.5, 0, Math.PI*2); ctx.fill();
+  }
+}
+
+// Peg field — offset rows of neon pegs
+const pegColors = [COL.pegGreen, COL.pegOrange, COL.pegPink, COL.pegBlue];
+const pegStartY = FY + 120;
+const pegEndY = FY + FH - 200;
+const pegSpaceX = 36;
+const pegSpaceY = 32;
+let pegRow = 0;
+for (let py = pegStartY; py < pegEndY; py += pegSpaceY) {
+  const offset = (pegRow % 2 === 0) ? 0 : pegSpaceX / 2;
+  const color = pegColors[pegRow % 4];
+  for (let px = FX + 50 + offset; px < FX + FW - 40; px += pegSpaceX) {
+    // Peg shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+    ctx.beginPath(); ctx.arc(px+1, py+1, 7, 0, Math.PI*2); ctx.fill();
+    // Peg cap
+    ctx.fillStyle = color;
+    ctx.beginPath(); ctx.arc(px, py, 6, 0, Math.PI*2); ctx.fill();
+    // Highlight
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.beginPath(); ctx.arc(px-2, py-2, 2, 0, Math.PI*2); ctx.fill();
+  }
+  pegRow++;
+}
+
+// ---- SCORING BUCKETS ----
+function drawBucket(x, y, w, h, color, label, pts) {
+  ctx.fillStyle = color;
+  ctx.globalAlpha = 0.7;
+  ctx.fillRect(x, y, w, h);
+  ctx.globalAlpha = 1;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  ctx.strokeRect(x, y, w, h);
+  // Lip
+  ctx.fillStyle = color;
+  ctx.fillRect(x, y, w, 3);
+  // Label
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 10px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText(label, x + w/2, y + h/2 + 3);
+}
+
+// Jackpot — top center
+drawBucket(FX + FW/2 - 25, FY + 85, 50, 28, COL.bucket100, '100 PTS', 100);
+
+// 50 pts — upper wings
+drawBucket(FX + 70, FY + 150, 60, 25, COL.bucket50, '50 PTS', 50);
+drawBucket(FX + FW - 130, FY + 150, 60, 25, COL.bucket50, '50 PTS', 50);
+
+// 25 pts — mid sides
+drawBucket(FX + 40, FY + 300, 70, 25, COL.bucket25, '25 PTS', 25);
+drawBucket(FX + FW - 110, FY + 300, 70, 25, COL.bucket25, '25 PTS', 25);
+
+// 10 pts — wide bottom shelf
+drawBucket(FX + 30, FY + FH - 195, 100, 22, COL.bucket10, '10 PTS', 10);
+drawBucket(FX + FW - 130, FY + FH - 195, 100, 22, COL.bucket10, '10 PTS', 10);
+
+// ---- CENTER DIVIDER ----
+ctx.setLineDash([4, 4]);
+ctx.strokeStyle = COL.divider;
+ctx.lineWidth = 2;
+ctx.beginPath();
+ctx.moveTo(FX + FW/2, FY + FH - 35);
+ctx.lineTo(FX + FW/2, FY + FH - 180);
+ctx.stroke();
+ctx.setLineDash([]);
+ctx.fillStyle = COL.label;
+ctx.font = '8px monospace';
+ctx.textAlign = 'center';
+ctx.fillText('CENTER', FX + FW/2, FY + FH - 183);
+ctx.fillText('DIVIDER', FX + FW/2, FY + FH - 174);
+
+// ---- FLIPPER ZONE ----
+// Flipper trough (angled channel)
+const flipY = FY + FH - 65;
+
+// Player 1 flipper (left)
+ctx.save();
+ctx.translate(FX + FW/2 - 70, flipY);
+ctx.rotate(-0.15);
+ctx.fillStyle = COL.flipper;
+ctx.fillRect(-50, -6, 100, 12);
+ctx.fillStyle = '#fff';
+ctx.font = 'bold 8px monospace';
+ctx.textAlign = 'center';
+ctx.fillText('P1 FLIPPER', 0, 4);
+ctx.restore();
+
+// Flipper at rest position (ghost)
+ctx.save();
+ctx.translate(FX + FW/2 - 70, flipY);
+ctx.rotate(0.2);
+ctx.globalAlpha = 0.25;
+ctx.fillStyle = COL.flipper;
+ctx.fillRect(-50, -6, 100, 12);
+ctx.globalAlpha = 1;
+ctx.restore();
+
+// Sweep arc indicator P1
+ctx.strokeStyle = COL.flipper;
+ctx.globalAlpha = 0.3;
+ctx.lineWidth = 1;
+ctx.beginPath();
+ctx.arc(FX + FW/2 - 120, flipY, 95, -0.8, 0.2);
+ctx.stroke();
+ctx.globalAlpha = 1;
+ctx.fillStyle = COL.flipper;
+ctx.font = '7px monospace';
+ctx.textAlign = 'left';
+ctx.fillText('60° sweep', FX + 40, flipY - 30);
+
+// Player 2 flipper (right)
+ctx.save();
+ctx.translate(FX + FW/2 + 70, flipY);
+ctx.rotate(0.15);
+ctx.fillStyle = COL.flipperP2;
+ctx.fillRect(-50, -6, 100, 12);
+ctx.fillStyle = '#fff';
+ctx.font = 'bold 8px monospace';
+ctx.textAlign = 'center';
+ctx.fillText('P2 FLIPPER', 0, 4);
+ctx.restore();
+
+// Flipper at rest (ghost) P2
+ctx.save();
+ctx.translate(FX + FW/2 + 70, flipY);
+ctx.rotate(-0.2);
+ctx.globalAlpha = 0.25;
+ctx.fillStyle = COL.flipperP2;
+ctx.fillRect(-50, -6, 100, 12);
+ctx.globalAlpha = 1;
+ctx.restore();
+
+// ---- BALL LAUNCHERS ----
+// P1 launcher (bottom-left)
+ctx.fillStyle = COL.plunger;
+ctx.fillRect(FX + 15, FY + FH - 100, 18, 80);
+ctx.fillStyle = '#ddd';
+ctx.fillRect(FX + 12, FY + FH - 30, 24, 12);
+ctx.fillStyle = COL.label;
+ctx.font = '8px monospace';
+ctx.textAlign = 'center';
+ctx.fillText('PLUNGER', FX + 24, FY + FH - 105);
+ctx.fillText('P1', FX + 24, FY + FH - 115);
+
+// Launch ramp P1
+ctx.strokeStyle = COL.pvcJoint;
+ctx.lineWidth = 3;
+ctx.beginPath();
+ctx.moveTo(FX + 24, FY + FH - 100);
+ctx.quadraticCurveTo(FX + 24, FY + FH - 150, FX + 60, FY + FH - 160);
+ctx.stroke();
+ctx.fillStyle = COL.pvcJoint;
+ctx.font = '7px monospace';
+ctx.fillText('RAMP', FX + 50, FY + FH - 135);
+
+// P2 launcher (bottom-right)
+ctx.fillStyle = COL.plunger;
+ctx.fillRect(FX + FW - 33, FY + FH - 100, 18, 80);
+ctx.fillStyle = '#ddd';
+ctx.fillRect(FX + FW - 36, FY + FH - 30, 24, 12);
+ctx.fillStyle = COL.label;
+ctx.font = '8px monospace';
+ctx.textAlign = 'center';
+ctx.fillText('PLUNGER', FX + FW - 24, FY + FH - 105);
+ctx.fillText('P2', FX + FW - 24, FY + FH - 115);
+
+// Launch ramp P2
+ctx.strokeStyle = COL.pvcJoint;
+ctx.lineWidth = 3;
+ctx.beginPath();
+ctx.moveTo(FX + FW - 24, FY + FH - 100);
+ctx.quadraticCurveTo(FX + FW - 24, FY + FH - 150, FX + FW - 60, FY + FH - 160);
+ctx.stroke();
+
+// ---- BRAKE HANDLES ----
+// P1 brake handle on left upright
+ctx.fillStyle = COL.brakeHandle;
+ctx.fillRect(FX - 18, FY + FH - 250, 16, 40);
+ctx.strokeStyle = COL.brakeCable;
+ctx.lineWidth = 1.5;
+ctx.setLineDash([3,3]);
+ctx.beginPath();
+ctx.moveTo(FX - 10, FY + FH - 210);
+ctx.lineTo(FX - 10, FY + FH - 80);
+ctx.lineTo(FX + FW/2 - 120, flipY);
+ctx.stroke();
+ctx.setLineDash([]);
+ctx.fillStyle = COL.brakeCable;
+ctx.font = '7px monospace';
+ctx.textAlign = 'right';
+ctx.fillText('BRAKE', FX - 20, FY + FH - 255);
+ctx.fillText('LEVER', FX - 20, FY + FH - 246);
+
+// P2 brake handle on right upright
+ctx.fillStyle = COL.brakeHandle;
+ctx.fillRect(FX + FW + 2, FY + FH - 250, 16, 40);
+ctx.strokeStyle = COL.brakeCable;
+ctx.lineWidth = 1.5;
+ctx.setLineDash([3,3]);
+ctx.beginPath();
+ctx.moveTo(FX + FW + 10, FY + FH - 210);
+ctx.lineTo(FX + FW + 10, FY + FH - 80);
+ctx.lineTo(FX + FW/2 + 120, flipY);
+ctx.stroke();
+ctx.setLineDash([]);
+ctx.fillStyle = COL.brakeCable;
+ctx.font = '7px monospace';
+ctx.textAlign = 'left';
+ctx.fillText('BRAKE', FX + FW + 20, FY + FH - 255);
+ctx.fillText('LEVER', FX + FW + 20, FY + FH - 246);
+
+// ---- GUTTER ----
+ctx.fillStyle = COL.gutter;
+ctx.fillRect(FX + 8, FY + FH - 25, FW - 16, 18);
+ctx.fillStyle = COL.label;
+ctx.font = '9px monospace';
+ctx.textAlign = 'center';
+ctx.fillText('GUTTER / BALL RETURN TROUGH', FX + FW/2, FY + FH - 13);
+
+// ---- BALLS IN ACTION ----
+// Ball 1 (P1, red) — cascading through pegs
+const b1x = FX + 180, b1y = FY + 260;
+ctx.fillStyle = COL.ball1;
+ctx.beginPath(); ctx.arc(b1x, b1y, 10, 0, Math.PI*2); ctx.fill();
+ctx.fillStyle = '#fff';
+ctx.font = 'bold 7px monospace';
+ctx.textAlign = 'center';
+ctx.fillText('P1', b1x, b1y+3);
+
+// Ball trail (P1)
+ctx.strokeStyle = 'rgba(255,68,68,0.3)';
+ctx.lineWidth = 2;
+ctx.setLineDash([3,3]);
+ctx.beginPath();
+ctx.moveTo(FX + 100, FY + 140);
+ctx.lineTo(FX + 130, FY + 180);
+ctx.lineTo(FX + 155, FY + 210);
+ctx.lineTo(b1x, b1y);
+ctx.stroke();
+ctx.setLineDash([]);
+
+// Ball 2 (P2, blue) — near flipper zone
+const b2x = FX + FW/2 + 90, b2y = flipY - 20;
+ctx.fillStyle = COL.ball2;
+ctx.beginPath(); ctx.arc(b2x, b2y, 10, 0, Math.PI*2); ctx.fill();
+ctx.fillStyle = '#fff';
+ctx.font = 'bold 7px monospace';
+ctx.textAlign = 'center';
+ctx.fillText('P2', b2x, b2y+3);
+
+// Ball trail (P2) — about to hit flipper
+ctx.strokeStyle = 'rgba(68,136,255,0.3)';
+ctx.lineWidth = 2;
+ctx.setLineDash([3,3]);
+ctx.beginPath();
+ctx.moveTo(FX + FW/2 + 50, FY + FH - 200);
+ctx.lineTo(FX + FW/2 + 70, FY + FH - 140);
+ctx.lineTo(b2x, b2y);
+ctx.stroke();
+ctx.setLineDash([]);
+
+// Arrow showing flipper save trajectory
+ctx.strokeStyle = 'rgba(68,136,255,0.5)';
+ctx.lineWidth = 2;
+ctx.setLineDash([5,3]);
+ctx.beginPath();
+ctx.moveTo(b2x, b2y);
+ctx.quadraticCurveTo(FX + FW/2 + 50, FY + FH - 200, FX + FW/2 + 30, FY + 350);
+ctx.stroke();
+ctx.setLineDash([]);
+ctx.fillStyle = COL.ball2;
+ctx.font = '8px monospace';
+ctx.textAlign = 'left';
+ctx.fillText('FLIPPER SAVE!', FX + FW/2 + 35, FY + 360);
+
+// ---- POLYCARBONATE OVERLAY (dashed) ----
+ctx.strokeStyle = COL.polycarbEdge;
+ctx.lineWidth = 2;
+ctx.setLineDash([8, 4]);
+ctx.strokeRect(FX + 5, FY + 5, FW - 10, FH - 10);
+ctx.setLineDash([]);
+ctx.fillStyle = COL.polycarbEdge;
+ctx.font = '8px monospace';
+ctx.textAlign = 'left';
+ctx.fillText('CLEAR POLYCARBONATE FRONT', FX + 15, FY + 20);
+
+// ---- DIMENSION LINES (FRONT) ----
+// Width
+ctx.strokeStyle = COL.dim;
+ctx.lineWidth = 1;
+ctx.beginPath();
+ctx.moveTo(FX, FY + FH + 15);
+ctx.lineTo(FX + FW, FY + FH + 15);
+ctx.stroke();
+ctx.beginPath(); ctx.moveTo(FX, FY+FH+10); ctx.lineTo(FX, FY+FH+20); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(FX+FW, FY+FH+10); ctx.lineTo(FX+FW, FY+FH+20); ctx.stroke();
+ctx.fillStyle = COL.dim;
+ctx.font = '10px monospace';
+ctx.textAlign = 'center';
+ctx.fillText('48" (4 ft)', FX + FW/2, FY + FH + 28);
+
+// Height
+ctx.beginPath();
+ctx.moveTo(FX + FW + 25, FY);
+ctx.lineTo(FX + FW + 25, FY + FH);
+ctx.stroke();
+ctx.beginPath(); ctx.moveTo(FX+FW+20, FY); ctx.lineTo(FX+FW+30, FY); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(FX+FW+20, FY+FH); ctx.lineTo(FX+FW+30, FY+FH); ctx.stroke();
+ctx.save();
+ctx.translate(FX + FW + 38, FY + FH/2);
+ctx.rotate(-Math.PI/2);
+ctx.fillText('60" (5 ft)', 0, 0);
+ctx.restore();
+
+// ---- SIDE VIEW ----
+const SX = 620, SY = 80, SW = 220, SH = 680;
+
+ctx.fillStyle = COL.label;
+ctx.font = 'bold 14px monospace';
+ctx.textAlign = 'center';
+ctx.fillText('SIDE VIEW (Cross-Section)', SX + SW/2, SY - 8);
+
+// Floor line
+ctx.strokeStyle = '#333';
+ctx.lineWidth = 1;
+ctx.beginPath();
+ctx.moveTo(SX, SY + SH);
+ctx.lineTo(SX + SW, SY + SH);
+ctx.stroke();
+
+// Pegboard (tilted ~20° from vertical)
+const tiltAngle = 20 * Math.PI / 180;
+const boardBottom = { x: SX + 60, y: SY + SH - 10 };
+const boardTop = { x: boardBottom.x + Math.sin(tiltAngle) * (SH - 40), y: SY + 20 };
+
+ctx.strokeStyle = '#8B4513';
+ctx.lineWidth = 5;
+ctx.beginPath();
+ctx.moveTo(boardBottom.x, boardBottom.y);
+ctx.lineTo(boardTop.x, boardTop.y);
+ctx.stroke();
+
+ctx.fillStyle = '#8B4513';
+ctx.font = '9px monospace';
+ctx.textAlign = 'left';
+ctx.fillText('PEGBOARD', boardTop.x + 8, boardTop.y + 15);
+ctx.fillText('(¼" hardboard)', boardTop.x + 8, boardTop.y + 26);
+
+// Polycarbonate front (parallel, 4" gap — exaggerated to ~35px)
+const gap = 35;
+const polyBottom = { x: boardBottom.x - gap * Math.cos(tiltAngle), y: boardBottom.y };
+const polyTop = { x: boardTop.x - gap * Math.cos(tiltAngle), y: boardTop.y };
+
+ctx.strokeStyle = COL.polycarbEdge;
+ctx.lineWidth = 3;
+ctx.setLineDash([6, 3]);
+ctx.beginPath();
+ctx.moveTo(polyBottom.x, polyBottom.y);
+ctx.lineTo(polyTop.x, polyTop.y);
+ctx.stroke();
+ctx.setLineDash([]);
+
+ctx.fillStyle = COL.polycarbEdge;
+ctx.font = '8px monospace';
+ctx.textAlign = 'right';
+ctx.fillText('POLYCARB', polyTop.x - 5, polyTop.y + 15);
+ctx.fillText('(⅛" clear)', polyTop.x - 5, polyTop.y + 25);
+
+// Gap dimension line
+const midY = SY + SH/2;
+const midBoard = { x: boardBottom.x + Math.sin(tiltAngle) * (SH/2 - 20), y: midY };
+const midPoly = { x: midBoard.x - gap * Math.cos(tiltAngle), y: midY };
+
+ctx.strokeStyle = COL.dim;
+ctx.lineWidth = 1;
+ctx.beginPath();
+ctx.moveTo(midPoly.x, midY - 15);
+ctx.lineTo(midBoard.x, midY - 15);
+ctx.stroke();
+ctx.beginPath(); ctx.moveTo(midPoly.x, midY-20); ctx.lineTo(midPoly.x, midY-10); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(midBoard.x, midY-20); ctx.lineTo(midBoard.x, midY-10); ctx.stroke();
+ctx.fillStyle = COL.dim;
+ctx.font = '9px monospace';
+ctx.textAlign = 'center';
+ctx.fillText('4" gap', (midPoly.x + midBoard.x)/2, midY - 20);
+
+// Pegs on board (side view — small bumps)
+for (let i = 0; i < 10; i++) {
+  const t = 0.15 + i * 0.065;
+  const px = boardBottom.x + (boardTop.x - boardBottom.x) * t;
+  const py = boardBottom.y + (boardTop.y - boardBottom.y) * t;
+  const pegColor = pegColors[i % 4];
+  ctx.fillStyle = pegColor;
+  ctx.beginPath();
+  ctx.arc(px - 12, py, 4, 0, Math.PI*2);
+  ctx.fill();
+}
+ctx.fillStyle = COL.label;
+ctx.font = '7px monospace';
+ctx.textAlign = 'left';
+const pegLabelT = 0.45;
+const pegLabelX = boardBottom.x + (boardTop.x - boardBottom.x) * pegLabelT - 30;
+const pegLabelY = boardBottom.y + (boardTop.y - boardBottom.y) * pegLabelT;
+ctx.fillText('SNAP-IN', pegLabelX, pegLabelY - 8);
+ctx.fillText('PEGS', pegLabelX, pegLabelY + 2);
+
+// Rear legs (PVC)
+ctx.strokeStyle = COL.pvc;
+ctx.lineWidth = 5;
+// Rear leg from top of board angling back
+ctx.beginPath();
+ctx.moveTo(boardTop.x + 10, boardTop.y + 5);
+ctx.lineTo(SX + SW - 30, SY + SH - 10);
+ctx.stroke();
+
+// Rear foot
+ctx.fillStyle = '#444';
+ctx.fillRect(SX + SW - 38, SY + SH - 15, 16, 15);
+ctx.fillStyle = COL.pvcJoint;
+ctx.fillRect(SX + SW - 36, SY + SH - 5, 12, 5);
+ctx.fillStyle = COL.label;
+ctx.font = '7px monospace';
+ctx.textAlign = 'center';
+ctx.fillText('RUBBER', SX + SW - 30, SY + SH + 12);
+ctx.fillText('FOOT', SX + SW - 30, SY + SH + 21);
+
+// Top joint
+ctx.fillStyle = COL.pvcJoint;
+ctx.beginPath(); ctx.arc(boardTop.x + 10, boardTop.y + 5, 7, 0, Math.PI*2); ctx.fill();
+ctx.fillStyle = '#fff';
+ctx.font = '5px monospace';
+ctx.fillText('SNAP', boardTop.x + 10, boardTop.y + 7);
+
+// Cross brace
+const braceY = SY + SH - 200;
+ctx.strokeStyle = COL.pvc;
+ctx.lineWidth = 3;
+const braceX1 = boardBottom.x + (boardTop.x - boardBottom.x) * 0.7;
+const braceX2 = SX + SW - 30 - (SX + SW - 30 - boardTop.x - 10) * 0.3;
+ctx.beginPath();
+ctx.moveTo(braceX1 + 5, braceY);
+ctx.lineTo(SX + SW - 45, braceY);
+ctx.stroke();
+ctx.fillStyle = COL.label;
+ctx.font = '7px monospace';
+ctx.textAlign = 'center';
+ctx.fillText('CROSS', (braceX1 + SX + SW - 45)/2, braceY - 8);
+ctx.fillText('BRACE', (braceX1 + SX + SW - 45)/2, braceY + 2);
+
+// Tilt angle indicator
+ctx.strokeStyle = COL.dim;
+ctx.lineWidth = 1;
+// Vertical reference line
+ctx.setLineDash([3,3]);
+ctx.beginPath();
+ctx.moveTo(boardBottom.x, boardBottom.y);
+ctx.lineTo(boardBottom.x, boardBottom.y - 120);
+ctx.stroke();
+ctx.setLineDash([]);
+// Arc
+ctx.beginPath();
+ctx.arc(boardBottom.x, boardBottom.y, 80, -Math.PI/2, -Math.PI/2 + tiltAngle);
+ctx.stroke();
+ctx.fillStyle = COL.dim;
+ctx.font = '10px monospace';
+ctx.textAlign = 'left';
+ctx.fillText('20°', boardBottom.x + 25, boardBottom.y - 75);
+
+// Flipper (side view — at bottom)
+const flipSideY = boardBottom.y - 30;
+const flipSideX = boardBottom.x - 15;
+ctx.fillStyle = COL.flipper;
+ctx.fillRect(flipSideX - 8, flipSideY - 3, 16, 6);
+ctx.fillStyle = COL.label;
+ctx.font = '7px monospace';
+ctx.textAlign = 'right';
+ctx.fillText('FLIPPER', flipSideX - 12, flipSideY + 3);
+
+// Brake cable (side view)
+ctx.strokeStyle = COL.brakeCable;
+ctx.lineWidth = 1;
+ctx.setLineDash([2,2]);
+ctx.beginPath();
+ctx.moveTo(flipSideX, flipSideY);
+ctx.lineTo(boardBottom.x + 5, boardBottom.y - 200);
+ctx.stroke();
+ctx.setLineDash([]);
+
+// Brake lever (on upright, side view)
+ctx.fillStyle = COL.brakeHandle;
+ctx.fillRect(boardBottom.x - 2, boardBottom.y - 210, 10, 25);
+ctx.fillStyle = COL.brakeCable;
+ctx.font = '7px monospace';
+ctx.textAlign = 'left';
+ctx.fillText('BRAKE', boardBottom.x + 12, boardBottom.y - 200);
+ctx.fillText('CABLE', boardBottom.x + 12, boardBottom.y - 191);
+
+// Ball in gap (side view)
+const ballSideT = 0.5;
+const ballSideX = (midPoly.x + midBoard.x) / 2;
+ctx.fillStyle = COL.ball1;
+ctx.beginPath(); ctx.arc(ballSideX, midY + 30, 8, 0, Math.PI*2); ctx.fill();
+ctx.fillStyle = '#fff';
+ctx.font = '6px monospace';
+ctx.textAlign = 'center';
+ctx.fillText('BALL', ballSideX, midY + 33);
+
+// Ball return (behind pegboard)
+ctx.fillStyle = COL.chute;
+ctx.beginPath();
+ctx.moveTo(boardBottom.x + 8, boardBottom.y - 5);
+ctx.lineTo(boardBottom.x + 30, boardBottom.y - 5);
+ctx.lineTo(boardBottom.x + 30, boardBottom.y + 5);
+ctx.lineTo(boardBottom.x + 8, boardBottom.y + 5);
+ctx.fill();
+ctx.fillStyle = COL.label;
+ctx.font = '7px monospace';
+ctx.textAlign = 'left';
+ctx.fillText('BALL RETURN', boardBottom.x + 35, boardBottom.y + 3);
+ctx.fillText('(behind board)', boardBottom.x + 35, boardBottom.y + 13);
+
+// Channel rail detail
+ctx.fillStyle = COL.pvcJoint;
+ctx.font = '8px monospace';
+ctx.textAlign = 'center';
+const chanY = SY + 60;
+ctx.fillText('Panels slide into', SX + SW/2, chanY);
+ctx.fillText('3D-printed channel', SX + SW/2, chanY + 12);
+ctx.fillText('rails on frame', SX + SW/2, chanY + 24);
+
+// ---- TRANSPORT DIAGRAM ----
+const TX = 30, TY = 810, TW = 840, TH = 200;
+
+ctx.fillStyle = COL.label;
+ctx.font = 'bold 14px monospace';
+ctx.textAlign = 'center';
+ctx.fillText('TRANSPORT MODE — Fits In Any Car', TX + TW/2, TY - 8);
+
+// Panel bundle
+ctx.strokeStyle = '#8B4513';
+ctx.lineWidth = 3;
+ctx.fillStyle = 'rgba(139,69,19,0.15)';
+ctx.fillRect(TX + 20, TY + 20, 200, 140);
+ctx.strokeRect(TX + 20, TY + 20, 200, 140);
+
+// Polycarb on top
+ctx.strokeStyle = COL.polycarbEdge;
+ctx.lineWidth = 2;
+ctx.setLineDash([4,3]);
+ctx.strokeRect(TX + 25, TY + 25, 195, 135);
+ctx.setLineDash([]);
+
+// Rubber bands
+ctx.strokeStyle = '#ff4444';
+ctx.lineWidth = 2;
+ctx.beginPath();
+ctx.moveTo(TX + 80, TY + 15); ctx.lineTo(TX + 80, TY + 165);
+ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(TX + 160, TY + 15); ctx.lineTo(TX + 160, TY + 165);
+ctx.stroke();
+
+ctx.fillStyle = COL.label;
+ctx.font = '10px monospace';
+ctx.textAlign = 'center';
+ctx.fillText('PANEL BUNDLE', TX + 120, TY + 95);
+ctx.font = '8px monospace';
+ctx.fillText('48" × 60" × 1"', TX + 120, TY + 110);
+ctx.fillText('~18 lbs', TX + 120, TY + 122);
+
+// Duffel bag
+ctx.fillStyle = 'rgba(50,50,50,0.5)';
+ctx.strokeStyle = '#666';
+ctx.lineWidth = 2;
+// Bag shape
+ctx.beginPath();
+ctx.ellipse(TX + 430, TY + 90, 120, 55, 0, 0, Math.PI*2);
+ctx.fill();
+ctx.stroke();
+
+// Bag zipper
+ctx.strokeStyle = COL.pvcJoint;
+ctx.lineWidth = 1.5;
+ctx.beginPath();
+ctx.ellipse(TX + 430, TY + 90, 120, 55, 0, -0.1, Math.PI + 0.1);
+ctx.stroke();
+
+// Bag contents label
+ctx.fillStyle = COL.label;
+ctx.font = '10px monospace';
+ctx.textAlign = 'center';
+ctx.fillText('FRAME KIT (DUFFEL)', TX + 430, TY + 80);
+ctx.font = '8px monospace';
+ctx.fillText('PVC pipes + connectors', TX + 430, TY + 93);
+ctx.fillText('pegs + buckets + flippers', TX + 430, TY + 105);
+ctx.fillText('36" × 12" × 8"  |  ~12 lbs', TX + 430, TY + 120);
+
+// Arrow to car
+ctx.fillStyle = COL.dim;
+ctx.font = '11px monospace';
+ctx.textAlign = 'center';
+ctx.fillText('=', TX + 580, TY + 90);
+
+// Car silhouette (simple)
+const carX = TX + 620, carY = TY + 40;
+ctx.fillStyle = '#2a2a4a';
+ctx.beginPath();
+// Body
+ctx.moveTo(carX, carY + 80);
+ctx.lineTo(carX + 10, carY + 50);
+ctx.lineTo(carX + 50, carY + 30);
+ctx.lineTo(carX + 120, carY + 20);
+ctx.lineTo(carX + 180, carY + 30);
+ctx.lineTo(carX + 200, carY + 50);
+ctx.lineTo(carX + 210, carY + 80);
+ctx.lineTo(carX, carY + 80);
+ctx.fill();
+ctx.strokeStyle = '#4a4a6a';
+ctx.lineWidth = 2;
+ctx.stroke();
+
+// Wheels
+ctx.fillStyle = '#111';
+ctx.beginPath(); ctx.arc(carX + 50, carY + 85, 15, 0, Math.PI*2); ctx.fill();
+ctx.beginPath(); ctx.arc(carX + 170, carY + 85, 15, 0, Math.PI*2); ctx.fill();
+ctx.fillStyle = '#333';
+ctx.beginPath(); ctx.arc(carX + 50, carY + 85, 8, 0, Math.PI*2); ctx.fill();
+ctx.beginPath(); ctx.arc(carX + 170, carY + 85, 8, 0, Math.PI*2); ctx.fill();
+
+// Windows
+ctx.fillStyle = 'rgba(135,206,250,0.2)';
+ctx.beginPath();
+ctx.moveTo(carX + 55, carY + 48);
+ctx.lineTo(carX + 90, carY + 35);
+ctx.lineTo(carX + 110, carY + 35);
+ctx.lineTo(carX + 110, carY + 48);
+ctx.fill();
+ctx.beginPath();
+ctx.moveTo(carX + 115, carY + 35);
+ctx.lineTo(carX + 160, carY + 35);
+ctx.lineTo(carX + 175, carY + 48);
+ctx.lineTo(carX + 115, carY + 48);
+ctx.fill();
+
+ctx.fillStyle = COL.pegGreen;
+ctx.font = 'bold 10px monospace';
+ctx.textAlign = 'center';
+ctx.fillText('FITS IN ANY SEDAN', carX + 105, carY + 120);
+ctx.fillStyle = COL.label;
+ctx.font = '9px monospace';
+ctx.fillText('Total: ~30 lbs', carX + 105, carY + 135);
+
+// ---- ASSEMBLY STEPS ----
+const AX = 30, AY = 1040, AW = 840;
+
+ctx.fillStyle = COL.label;
+ctx.font = 'bold 14px monospace';
+ctx.textAlign = 'center';
+ctx.fillText('10-MINUTE ASSEMBLY — Zero Tools', AX + AW/2, AY - 8);
+
+const steps = [
+  { icon: '1', label: 'SNAP FRAME', desc: 'Push PVC into\n3D-printed joints', time: '2 min', color: COL.pvc },
+  { icon: '2', label: 'HANG BOARD', desc: 'Pegboard slides\ninto channel rails', time: '1 min', color: '#8B4513' },
+  { icon: '3', label: 'POP IN PEGS', desc: '~80 snap-in pegs\ninto pegboard holes', time: '3 min', color: COL.pegGreen },
+  { icon: '4', label: 'HOOK BUCKETS', desc: 'Score buckets\nhook on like bins', time: '1 min', color: COL.bucket100 },
+  { icon: '5', label: 'CLIP FLIPPERS', desc: 'Wing-nut flipper\nassemblies on rail', time: '1 min', color: COL.flipper },
+  { icon: '6', label: 'SLIDE FRONT', desc: 'Polycarb slides\nin from top', time: '1 min', color: COL.polycarbEdge },
+  { icon: '7', label: 'PLAY!', desc: 'Attach plungers\n& ball trough', time: '1 min', color: COL.pegOrange },
+];
+
+const stepW = AW / steps.length;
+steps.forEach((step, i) => {
+  const sx = AX + i * stepW;
+  const sy = AY + 10;
+
+  // Step circle
+  ctx.fillStyle = step.color;
+  ctx.beginPath(); ctx.arc(sx + stepW/2, sy + 20, 16, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#000';
+  ctx.font = 'bold 14px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText(step.icon, sx + stepW/2, sy + 25);
+
+  // Label
+  ctx.fillStyle = step.color;
+  ctx.font = 'bold 9px monospace';
+  ctx.fillText(step.label, sx + stepW/2, sy + 50);
+
+  // Description
+  ctx.fillStyle = COL.specs;
+  ctx.font = '8px monospace';
+  const lines = step.desc.split('\n');
+  lines.forEach((line, li) => {
+    ctx.fillText(line, sx + stepW/2, sy + 65 + li * 11);
+  });
+
+  // Time
+  ctx.fillStyle = COL.pegGreen;
+  ctx.font = 'bold 8px monospace';
+  ctx.fillText(step.time, sx + stepW/2, sy + 95);
+
+  // Arrow between steps
+  if (i < steps.length - 1) {
+    ctx.fillStyle = COL.dim;
+    ctx.font = '14px monospace';
+    ctx.fillText('→', sx + stepW - 2, sy + 22);
+  }
+});
+
+// ---- LEGEND ----
+const LX = 30, LY = 1170, LW = 420;
+
+ctx.fillStyle = COL.label;
+ctx.font = 'bold 12px monospace';
+ctx.textAlign = 'left';
+ctx.fillText('LEGEND', LX, LY);
+
+const legendItems = [
+  { color: COL.pegboard, label: 'Pegboard (¼" hardboard, matte black)' },
+  { color: COL.polycarbEdge, label: 'Polycarbonate (⅛" clear Lexan)', dash: true },
+  { color: COL.pvc, label: 'PVC conduit frame (¾" Sched 40)' },
+  { color: COL.pvcJoint, label: '3D-printed snap connectors (PETG)' },
+  { color: COL.pegGreen, label: 'Snap-in pegs (neon, 3D-printed)' },
+  { color: COL.bucket100, label: 'Scoring buckets (hook-on)' },
+  { color: COL.flipper, label: 'P1 flipper + controls' },
+  { color: COL.flipperP2, label: 'P2 flipper + controls' },
+  { color: COL.brakeCable, label: 'Brake cable (flipper actuation)' },
+  { color: COL.plunger, label: 'Pinball plunger launcher' },
+];
+
+legendItems.forEach((item, i) => {
+  const lx = LX + (i >= 5 ? 420 : 0);
+  const ly = LY + 18 + (i % 5) * 18;
+
+  if (item.dash) {
+    ctx.strokeStyle = item.color;
+    ctx.lineWidth = 3;
+    ctx.setLineDash([4,3]);
+    ctx.beginPath();
+    ctx.moveTo(lx, ly - 4);
+    ctx.lineTo(lx + 20, ly - 4);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  } else {
+    ctx.fillStyle = item.color;
+    ctx.fillRect(lx, ly - 9, 20, 10);
+  }
+
+  ctx.fillStyle = COL.label;
+  ctx.font = '9px monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText(item.label, lx + 26, ly);
+});
+
+// ---- SPECS TABLE ----
+const SPX = 30, SPY = 1290;
+
+ctx.fillStyle = COL.label;
+ctx.font = 'bold 12px monospace';
+ctx.textAlign = 'left';
+ctx.fillText('KEY SPECS', SPX, SPY);
+
+const specs = [
+  ['Field', '48"W × 60"H × 4"D'],
+  ['Tilt', '20° from vertical'],
+  ['Weight', '~30 lbs total'],
+  ['Assembly', '10 min, zero tools'],
+  ['Players', '2 (side-by-side)'],
+  ['Balls', '2.75" whiffle balls'],
+  ['Flippers', '60° sweep, brake-lever actuated'],
+  ['Pegs', '~80 snap-in, reconfigurable'],
+  ['Cost', '~$200'],
+];
+
+specs.forEach((s, i) => {
+  const sx = SPX + (i >= 5 ? 420 : 0);
+  const sy = SPY + 16 + (i % 5) * 16;
+
+  ctx.fillStyle = COL.pvcJoint;
+  ctx.font = 'bold 9px monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText(s[0] + ':', sx, sy);
+
+  ctx.fillStyle = COL.specs;
+  ctx.font = '9px monospace';
+  ctx.fillText(s[1], sx + 80, sy);
+});
+
+</script>
+</body>
+</html>
