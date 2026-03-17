@@ -18,6 +18,7 @@
 6. **Label everything, even if small** — 6-7px labels are still readable in 900px-wide screenshots. Every element should have text
 
 ### Common pitfalls:
+- **Never use emoji characters in Canvas diagrams** — headless Chromium renders them as purple squares or missing glyphs. Always DRAW icons (bees, crowns, droplets, bells) with Canvas paths instead. A 10-line drawBee() function beats a one-line emoji every time in screenshot reliability
 - Side cross-sections need more vertical exaggeration to be readable — a 6" gap drawn to scale on a 900px canvas is nearly invisible. Scale it up
 - Canvas text at < 6px becomes unreadable in screenshots
 - Overlapping elements in the center get cluttered fast — space out the most important elements first, fill gaps with secondary items

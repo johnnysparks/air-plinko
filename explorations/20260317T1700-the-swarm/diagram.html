@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THE SWARM — Concept Diagram</title>
+<!-- screenshot: 1200x1900 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1a1a0e; color: #e0e0e0; font-family: 'Courier New', monospace; padding: 20px; min-height: 1900px; }
+  h1 { text-align: center; color: #FFD700; margin-bottom: 2px; font-size: 36px; letter-spacing: 6px; }
+  .subtitle { text-align: center; color: #b89a3c; margin-bottom: 24px; font-size: 13px; }
+  .views { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+  .view { background: #2a2a1e; border: 1px solid #444; border-radius: 8px; padding: 16px; }
+  .view h2 { color: #FFD700; margin-bottom: 12px; font-size: 14px; text-align: center; }
+  canvas { display: block; }
+  .legend { margin-top: 24px; max-width: 960px; margin-left: auto; margin-right: auto; display: flex; gap: 30px; }
+  .legend-col { flex: 1; }
+  .legend h3 { color: #FFD700; margin-bottom: 10px; }
+  .legend-item { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; font-size: 11px; }
+  .legend-swatch { width: 16px; height: 16px; border-radius: 3px; flex-shrink: 0; }
+  .specs { margin-top: 20px; max-width: 960px; margin-left: auto; margin-right: auto; background: #2a2a1e; border: 1px solid #444; border-radius: 8px; padding: 16px; }
+  .specs h3 { color: #FFD700; margin-bottom: 10px; }
+  .specs-grid { display: flex; gap: 30px; }
+  .specs-col { flex: 1; }
+  .specs table { width: 100%; font-size: 11px; }
+  .specs td { padding: 3px 8px; }
+  .specs td:first-child { color: #999; }
+  .sequence { margin-top: 20px; max-width: 960px; margin-left: auto; margin-right: auto; background: #2a2a1e; border: 1px solid #444; border-radius: 8px; padding: 16px; }
+  .sequence h3 { color: #FFD700; margin-bottom: 10px; }
+  .sequence canvas { margin: 0 auto; }
+</style>
+</head>
+<body>
+
+<h1>THE SWARM</h1>
+<p class="subtitle">stomp-launched honeycomb plinko x queen bee spinner x bee bumpers x multi-sensory hive — Grattan Elementary Carnival</p>
+
+<div class="views">
+  <div class="view">
+    <h2>FRONT VIEW (Player Perspective)</h2>
+    <canvas id="front" width="520" height="750"></canvas>
+  </div>
+  <div class="view">
+    <h2>SIDE CROSS-SECTION</h2>
+    <canvas id="side" width="340" height="750"></canvas>
+  </div>
+</div>
+
+<div class="sequence">
+  <h3>GAMEPLAY SEQUENCE</h3>
+  <canvas id="seq" width="920" height="100"></canvas>
+</div>
+
+<div class="legend">
+  <div class="legend-col">
+    <h3>LEGEND — Structure</h3>
+    <div class="legend-item"><div class="legend-swatch" style="background:#1a1a0e; border:2px solid #FFD700"></div> Back panel (3/4" plywood, matte black + gold hex stencil)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:rgba(255,215,0,0.15); border:1px solid #FFD700"></div> Acrylic front panel (1/4" clear)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#FFD700"></div> Hex peg caps (3D printed gold PLA on dowels)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#333"></div> Hex peg caps (alternating black)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#8B5E3C"></div> Edge rails (1x6 lumber frame)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#666"></div> A-frame legs (hinged, wing nut joints)</div>
+  </div>
+  <div class="legend-col">
+    <h3>LEGEND — Mechanisms</h3>
+    <div class="legend-item"><div class="legend-swatch" style="background:#FF6B35"></div> Flower stomp pads (pneumatic launchers)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:radial-gradient(circle, #FFD700 40%, #8B4513 100%)"></div> Queen Bee Spinner (rotating hex drum, center)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:repeating-linear-gradient(90deg,#FFD700 0 4px,#222 4px 8px)"></div> Bee Bumpers x3 (spring-loaded, cam-driven)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#DAA520"></div> Honey Pot scoring buckets (hex, candy-dispensing)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#e8e84a"></div> UV-reactive pollen balls (yellow whiffle balls)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#8B4513"></div> Beekeeper crank (drives Queen + bumpers)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:rgba(255,215,0,0.3)"></div> Golden pollen fog zone (fog machine, top 1/3)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#9B30FF"></div> UV blacklight strip (under canopy)</div>
+    <div class="legend-item"><div class="legend-swatch" style="background:#CD7F32"></div> Brass bell (jackpot alert)</div>
+  </div>
+</div>
+
+<div class="specs">
+  <h3>KEY SPECS</h3>
+  <div class="specs-grid">
+    <div class="specs-col">
+      <table>
+        <tr><td>Playing field</td><td>48" W x 72" H x 5" deep</td></tr>
+        <tr><td>Tilt</td><td>~20deg from vertical</td></tr>
+        <tr><td>Peak height</td><td>~84" (7 ft) on frame</td></tr>
+        <tr><td>Footprint</td><td>~8ft W x 6ft D x 7ft H</td></tr>
+        <tr><td>Peg grid</td><td>Hex pattern, ~90 pegs, 4.5" c-to-c</td></tr>
+        <tr><td>Queen Spinner</td><td>10" hex drum, 6 exit slots, crank-driven</td></tr>
+        <tr><td>Bee bumpers</td><td>3 x spring-loaded, cam-driven, 5" hex</td></tr>
+      </table>
+    </div>
+    <div class="specs-col">
+      <table>
+        <tr><td>Stomp pads</td><td>2 x 24" flower platforms, pneumatic</td></tr>
+        <tr><td>Scoring buckets</td><td>7 hex honey pots + candy tubes</td></tr>
+        <tr><td>Balls</td><td>UV-reactive yellow whiffle, 10/player</td></tr>
+        <tr><td>Sensory</td><td>UV + fog + bass hum + cedar/beeswax + candy</td></tr>
+        <tr><td>Power</td><td>~450W (fog + UV + amp + warmer)</td></tr>
+        <tr><td>Round time</td><td>60 seconds, simultaneous 2-player</td></tr>
+        <tr><td>Est. cost</td><td>~$750-850 (incl. candy for 200 plays)</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// HELPER: draw a hexagon
+// ══════════════════════════════════════════════
+function hexPath(ctx, cx, cy, r, flat) {
+  ctx.beginPath();
+  for (let i = 0; i < 6; i++) {
+    const a = Math.PI / 3 * i - (flat ? Math.PI / 6 : 0);
+    const px = cx + r * Math.cos(a);
+    const py = cy + r * Math.sin(a);
+    if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+  }
+  ctx.closePath();
+}
+
+// ══════════════════════════════════════════════
+// FRONT VIEW
+// ══════════════════════════════════════════════
+const fc = document.getElementById('front').getContext('2d');
+const FW = 520, FH = 750;
+
+fc.fillStyle = '#1a1a0e';
+fc.fillRect(0, 0, FW, FH);
+
+// Board area
+const bx = 50, by = 50, bw = 420, bh = 580;
+fc.fillStyle = '#111';
+fc.fillRect(bx, by, bw, bh);
+
+// Gold honeycomb stencil background
+fc.strokeStyle = 'rgba(255,215,0,0.10)';
+fc.lineWidth = 0.8;
+const hexBgR = 16;
+for (let row = 0; row < 26; row++) {
+  for (let col = 0; col < 16; col++) {
+    const cx = bx + 12 + col * (hexBgR * 1.74);
+    const cy = by + 12 + row * (hexBgR * 1.5) + (col % 2 === 1 ? hexBgR * 0.75 : 0);
+    if (cx > bx + bw - 8 || cy > by + bh - 8) continue;
+    hexPath(fc, cx, cy, hexBgR, true);
+    fc.stroke();
+  }
+}
+
+// Edge rails
+fc.strokeStyle = '#8B5E3C';
+fc.lineWidth = 8;
+fc.strokeRect(bx, by, bw, bh);
+
+// ── FOG ZONE (top third) ──
+const fogGrad = fc.createLinearGradient(bx, by, bx, by + bh * 0.38);
+fogGrad.addColorStop(0, 'rgba(255, 215, 0, 0.18)');
+fogGrad.addColorStop(0.6, 'rgba(255, 215, 0, 0.06)');
+fogGrad.addColorStop(1, 'rgba(255, 215, 0, 0)');
+fc.fillStyle = fogGrad;
+fc.fillRect(bx + 4, by + 4, bw - 8, bh * 0.38);
+
+// Fog swirl hints
+fc.strokeStyle = 'rgba(255,215,0,0.12)';
+fc.lineWidth = 1.5;
+for (let i = 0; i < 4; i++) {
+  fc.beginPath();
+  const sx = bx + 80 + i * 90;
+  const sy = by + 50 + (i % 2) * 30;
+  fc.arc(sx, sy, 15 + i * 5, 0.5, Math.PI * 1.3);
+  fc.stroke();
+}
+
+// Fog label
+fc.fillStyle = 'rgba(255,215,0,0.45)';
+fc.font = '9px Courier New';
+fc.textAlign = 'center';
+fc.fillText('~ ~ ~ POLLEN FOG ZONE ~ ~ ~', bx + bw/2, by + 22);
+
+// UV strip at top
+fc.fillStyle = '#9B30FF';
+fc.fillRect(bx + 10, by - 6, bw - 20, 5);
+fc.shadowColor = '#9B30FF';
+fc.shadowBlur = 8;
+fc.fillRect(bx + 10, by - 6, bw - 20, 5);
+fc.shadowBlur = 0;
+fc.fillStyle = '#9B30FF';
+fc.font = '7px Courier New';
+fc.textAlign = 'center';
+fc.fillText('UV BLACKLIGHT STRIP', bx + bw/2, by - 10);
+
+// ── "THE SWARM" header on board ──
+fc.fillStyle = '#FFD700';
+fc.font = 'bold 28px Courier New';
+fc.textAlign = 'center';
+fc.fillText('THE SWARM', bx + bw/2, by + 50);
+fc.font = 'bold 9px Courier New';
+fc.fillStyle = '#b89a3c';
+fc.fillText('GRATTAN ELEMENTARY', bx + bw/2, by + 62);
+
+// Bee mascot icons (drawn, not emoji — emoji fail in headless Chrome)
+function drawBee(ctx, x, y, size) {
+  // Body
+  ctx.fillStyle = '#FFD700';
+  ctx.beginPath();
+  ctx.ellipse(x, y, size, size * 0.7, 0, 0, Math.PI * 2);
+  ctx.fill();
+  // Stripes
+  ctx.strokeStyle = '#222';
+  ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(x - size * 0.3, y - size * 0.7); ctx.lineTo(x - size * 0.3, y + size * 0.7); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x + size * 0.3, y - size * 0.7); ctx.lineTo(x + size * 0.3, y + size * 0.7); ctx.stroke();
+  // Wings
+  ctx.fillStyle = 'rgba(255,255,255,0.3)';
+  ctx.beginPath(); ctx.ellipse(x - size * 0.5, y - size * 0.8, size * 0.5, size * 0.3, -0.5, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(x + size * 0.5, y - size * 0.8, size * 0.5, size * 0.3, 0.5, 0, Math.PI * 2); ctx.fill();
+}
+drawBee(fc, bx + bw/2 - 75, by + 46, 8);
+drawBee(fc, bx + bw/2 + 68, by + 46, 8);
+
+// ── ZONE SIDEBAR (left) ──
+const zones = [
+  { y: by + 10, h: bh * 0.33, label: 'FOG ZONE', color: 'rgba(255,215,0,0.25)' },
+  { y: by + bh * 0.33, h: bh * 0.22, label: 'BUMPER ZONE', color: 'rgba(255,100,50,0.2)' },
+  { y: by + bh * 0.55, h: bh * 0.22, label: 'PEG FIELD', color: 'rgba(200,200,200,0.1)' },
+  { y: by + bh * 0.77, h: bh * 0.23, label: 'SCORING', color: 'rgba(218,165,32,0.2)' },
+];
+for (const z of zones) {
+  fc.fillStyle = z.color;
+  fc.fillRect(bx - 38, z.y, 30, z.h);
+  fc.strokeStyle = z.color.replace(/[\d.]+\)/, '0.5)');
+  fc.lineWidth = 1;
+  fc.strokeRect(bx - 38, z.y, 30, z.h);
+  fc.save();
+  fc.translate(bx - 23, z.y + z.h / 2);
+  fc.rotate(-Math.PI / 2);
+  fc.fillStyle = '#aaa';
+  fc.font = '7px Courier New';
+  fc.textAlign = 'center';
+  fc.fillText(z.label, 0, 0);
+  fc.restore();
+}
+
+// ── HEX PEG FIELD ──
+// Queen Bee Spinner position
+const queenX = bx + bw / 2;
+const queenY = by + bh * 0.42;
+const queenR = 42;
+
+// Bumper positions
+const bumpers = [
+  { x: bx + 120, y: by + bh * 0.39 },
+  { x: bx + bw - 120, y: by + bh * 0.39 },
+  { x: bx + bw / 2, y: by + bh * 0.28 },
+];
+
+function isNearQueen(px, py) {
+  const dx = px - queenX, dy = py - queenY;
+  return Math.sqrt(dx * dx + dy * dy) < queenR + 18;
+}
+function isNearBumper(px, py) {
+  for (const b of bumpers) {
+    const dx = px - b.x, dy = py - b.y;
+    if (Math.sqrt(dx * dx + dy * dy) < 38) return true;
+  }
+  return false;
+}
+
+// Draw hex pegs
+function drawHexPeg(x, y, isGold) {
+  const r = 7;
+  fc.fillStyle = isGold ? '#FFD700' : '#333';
+  hexPath(fc, x, y, r, true);
+  fc.fill();
+  if (isGold) {
+    fc.fillStyle = 'rgba(255,255,255,0.25)';
+    fc.beginPath();
+    fc.arc(x - 2, y - 2, 2.5, 0, Math.PI * 2);
+    fc.fill();
+  }
+}
+
+const pegStartX = bx + 48;
+const pegStartY = by + 95;
+const pegSpaceX = 32;
+const pegSpaceY = 28;
+let pegIdx = 0;
+for (let row = 0; row < 17; row++) {
+  const offset = row % 2 === 1 ? pegSpaceX / 2 : 0;
+  const cols = row % 2 === 0 ? 12 : 11;
+  for (let col = 0; col < cols; col++) {
+    const px = pegStartX + offset + col * pegSpaceX;
+    const py = pegStartY + row * pegSpaceY;
+    if (py > by + bh - 100) continue;
+    if (py < by + 68) continue;
+    if (isNearQueen(px, py)) continue;
+    if (isNearBumper(px, py)) continue;
+    drawHexPeg(px, py, pegIdx % 3 !== 0);
+    pegIdx++;
+  }
+}
+
+// ── QUEEN BEE SPINNER ──
+// Outer hex drum
+fc.lineWidth = 3;
+fc.strokeStyle = '#8B4513';
+hexPath(fc, queenX, queenY, queenR, true);
+fc.stroke();
+
+// Inner fill
+const queenGrad = fc.createRadialGradient(queenX, queenY, 5, queenX, queenY, queenR);
+queenGrad.addColorStop(0, 'rgba(255,215,0,0.35)');
+queenGrad.addColorStop(0.7, 'rgba(139,69,19,0.25)');
+queenGrad.addColorStop(1, 'rgba(139,69,19,0.4)');
+fc.fillStyle = queenGrad;
+hexPath(fc, queenX, queenY, queenR, true);
+fc.fill();
+
+// Entry/exit slots (6 around perimeter)
+for (let i = 0; i < 6; i++) {
+  const a = Math.PI / 3 * i;
+  const sx = queenX + (queenR - 3) * Math.cos(a);
+  const sy = queenY + (queenR - 3) * Math.sin(a);
+  fc.fillStyle = '#111';
+  fc.beginPath();
+  fc.arc(sx, sy, 7, 0, Math.PI * 2);
+  fc.fill();
+  fc.strokeStyle = '#FFD700';
+  fc.lineWidth = 1;
+  fc.stroke();
+}
+
+// Center bearing
+fc.fillStyle = '#8B4513';
+fc.beginPath();
+fc.arc(queenX, queenY, 8, 0, Math.PI * 2);
+fc.fill();
+fc.fillStyle = '#FFD700';
+fc.beginPath();
+fc.arc(queenX, queenY, 4, 0, Math.PI * 2);
+fc.fill();
+
+// Rotation arrow
+fc.strokeStyle = '#FFD700';
+fc.lineWidth = 1.5;
+fc.beginPath();
+fc.arc(queenX, queenY, 18, -0.5, Math.PI * 1.2);
+fc.stroke();
+// Arrowhead
+const arrowA = Math.PI * 1.2;
+const arrowX = queenX + 18 * Math.cos(arrowA);
+const arrowY = queenY + 18 * Math.sin(arrowA);
+fc.fillStyle = '#FFD700';
+fc.beginPath();
+fc.moveTo(arrowX, arrowY);
+fc.lineTo(arrowX + 6, arrowY - 3);
+fc.lineTo(arrowX + 2, arrowY + 5);
+fc.closePath();
+fc.fill();
+
+// Labels
+fc.fillStyle = '#FFD700';
+fc.font = 'bold 9px Courier New';
+fc.textAlign = 'center';
+fc.fillText('QUEEN BEE', queenX, queenY - 2);
+fc.fillText('SPINNER', queenX, queenY + 9);
+fc.font = '7px Courier New';
+fc.fillStyle = '#b89a3c';
+fc.fillText('6 exit slots', queenX, queenY + 20);
+
+// Ghost position (rotated state at 30% opacity)
+fc.globalAlpha = 0.2;
+fc.strokeStyle = '#FFD700';
+fc.lineWidth = 2;
+hexPath(fc, queenX, queenY, queenR, false); // pointy-top = rotated
+fc.stroke();
+fc.globalAlpha = 1;
+
+// ── BEE BUMPERS ──
+function drawBeeBumper(x, y, label) {
+  const r = 26;
+  // Clearance zone
+  fc.strokeStyle = 'rgba(255,215,0,0.2)';
+  fc.lineWidth = 1;
+  fc.setLineDash([4, 4]);
+  fc.beginPath();
+  fc.arc(x, y, r + 10, 0, Math.PI * 2);
+  fc.stroke();
+  fc.setLineDash([]);
+
+  // Ghost position (retracted)
+  fc.globalAlpha = 0.15;
+  fc.fillStyle = '#FFD700';
+  hexPath(fc, x, y, r - 4, false);
+  fc.fill();
+  fc.globalAlpha = 1;
+
+  // Bumper hex body
+  hexPath(fc, x, y, r, false);
+  fc.fillStyle = '#FFD700';
+  fc.fill();
+  fc.strokeStyle = '#222';
+  fc.lineWidth = 2.5;
+  fc.stroke();
+
+  // Black stripes
+  fc.strokeStyle = '#222';
+  fc.lineWidth = 4;
+  fc.beginPath();
+  fc.moveTo(x - r + 8, y - 5);
+  fc.lineTo(x + r - 8, y - 5);
+  fc.stroke();
+  fc.beginPath();
+  fc.moveTo(x - r + 10, y + 7);
+  fc.lineTo(x + r - 10, y + 7);
+  fc.stroke();
+
+  // Label
+  fc.fillStyle = '#111';
+  fc.font = 'bold 7px Courier New';
+  fc.textAlign = 'center';
+  fc.fillText('BEE', x, y + 1);
+  fc.fillText('BUMP', x, y + 9);
+
+  fc.fillStyle = '#FFD700';
+  fc.font = '7px Courier New';
+  fc.fillText(label, x, y - r - 12);
+  fc.fillText('\u26A1 SPRING', x, y - r - 4);
+}
+
+drawBeeBumper(bumpers[0].x, bumpers[0].y, 'BUMPER L');
+drawBeeBumper(bumpers[1].x, bumpers[1].y, 'BUMPER R');
+drawBeeBumper(bumpers[2].x, bumpers[2].y, 'BUMPER TOP');
+
+// ── SCORING BUCKETS ──
+const bucketY = by + bh - 60;
+const bucketData = [
+  { label: '-25', color: '#222', w: 28, name: 'STING', textColor: '#ff4444', candy: '' },
+  { label: '50', color: '#AAAA22', w: 52, name: 'POLLEN', textColor: '#fff', candy: 'gummy' },
+  { label: '150', color: '#DAA520', w: 44, name: 'HONEY', textColor: '#fff', candy: 'honey stick' },
+  { label: '300', color: '#9B59B6', w: 38, name: 'ROYAL', textColor: '#fff', candy: 'stick+bar' },
+  { label: '1000', color: '#FFD700', w: 28, name: 'QUEEN', textColor: '#111', candy: 'KING SIZE' },
+  { label: '300', color: '#9B59B6', w: 38, name: 'ROYAL', textColor: '#fff', candy: 'stick+bar' },
+  { label: '150', color: '#DAA520', w: 44, name: 'HONEY', textColor: '#fff', candy: 'honey stick' },
+  { label: '50', color: '#AAAA22', w: 52, name: 'POLLEN', textColor: '#fff', candy: 'gummy' },
+  { label: '-25', color: '#222', w: 28, name: 'STING', textColor: '#ff4444', candy: '' },
+];
+
+let bucketXPos = bx + 14;
+for (const b of bucketData) {
+  const bCx = bucketXPos + b.w / 2;
+  const bCy = bucketY + 22;
+  const bR = b.w / 2;
+
+  fc.fillStyle = b.color;
+  fc.globalAlpha = 0.75;
+  hexPath(fc, bCx, bCy, bR, true);
+  fc.fill();
+  fc.globalAlpha = 1;
+  fc.strokeStyle = b.color === '#222' ? '#ff4444' : b.color;
+  fc.lineWidth = 1.5;
+  fc.stroke();
+
+  // Point label
+  fc.fillStyle = b.textColor;
+  fc.font = 'bold 9px Courier New';
+  fc.textAlign = 'center';
+  fc.fillText(b.label, bCx, bCy + 2);
+
+  // Name
+  fc.fillStyle = b.color === '#222' ? '#ff4444' : b.color;
+  fc.font = '6px Courier New';
+  fc.fillText(b.name, bCx, bCy + 12);
+
+  // Candy label below
+  if (b.candy) {
+    fc.fillStyle = '#888';
+    fc.font = '5px Courier New';
+    fc.fillText(b.candy, bCx, bCy + 22);
+  }
+
+  bucketXPos += b.w + 6;
+}
+
+// Crown on Queen's Cell
+// Crown icon (drawn)
+fc.fillStyle = '#FFD700';
+fc.beginPath();
+fc.moveTo(bx + bw/2 - 10, bucketY + 6);
+fc.lineTo(bx + bw/2 - 7, bucketY - 2);
+fc.lineTo(bx + bw/2 - 3, bucketY + 3);
+fc.lineTo(bx + bw/2, bucketY - 4);
+fc.lineTo(bx + bw/2 + 3, bucketY + 3);
+fc.lineTo(bx + bw/2 + 7, bucketY - 2);
+fc.lineTo(bx + bw/2 + 10, bucketY + 6);
+fc.closePath();
+fc.fill();
+
+// Brass bell above queen bucket
+fc.fillStyle = '#CD7F32';
+fc.beginPath();
+fc.moveTo(bx + bw / 2 - 7, bucketY - 5);
+fc.lineTo(bx + bw / 2 + 7, bucketY - 5);
+fc.lineTo(bx + bw / 2 + 4, bucketY - 14);
+fc.lineTo(bx + bw / 2 - 4, bucketY - 14);
+fc.closePath();
+fc.fill();
+fc.beginPath();
+fc.arc(bx + bw / 2, bucketY - 14, 3, 0, Math.PI * 2);
+fc.fill();
+fc.fillStyle = '#CD7F32';
+fc.font = '7px Courier New';
+fc.fillText('BRASS BELL', bx + bw / 2, bucketY - 19);
+
+// ── STOMP PAD STATIONS (below board) ──
+function drawFlowerPad(cx, cy, playerLabel, petalColor) {
+  const padR = 30;
+  // Petals
+  for (let i = 0; i < 6; i++) {
+    const a = Math.PI / 3 * i;
+    const px = cx + (padR + 8) * Math.cos(a);
+    const py = cy + (padR + 8) * 0.5 * Math.sin(a); // squished perspective
+    fc.fillStyle = petalColor;
+    fc.globalAlpha = 0.6;
+    fc.beginPath();
+    fc.ellipse(px, py, 12, 8, a, 0, Math.PI * 2);
+    fc.fill();
+    fc.globalAlpha = 1;
+  }
+  // Center
+  fc.fillStyle = '#FFD700';
+  fc.beginPath();
+  fc.ellipse(cx, cy, padR * 0.5, padR * 0.35, 0, 0, Math.PI * 2);
+  fc.fill();
+  fc.strokeStyle = '#8B4513';
+  fc.lineWidth = 2;
+  fc.stroke();
+
+  // Player label
+  fc.fillStyle = '#FFD700';
+  fc.font = 'bold 11px Courier New';
+  fc.textAlign = 'center';
+  fc.fillText(playerLabel, cx, cy + 4);
+
+  // "STOMP" label
+  fc.fillStyle = petalColor;
+  fc.font = 'bold 8px Courier New';
+  fc.fillText('STOMP!', cx, cy + 50);
+
+  // Flex hose (dashed line to board)
+  fc.strokeStyle = '#888';
+  fc.lineWidth = 2;
+  fc.setLineDash([4, 3]);
+  fc.beginPath();
+  fc.moveTo(cx, cy - 20);
+  const targetX = cx < FW / 2 ? bx + 55 : bx + bw - 55;
+  fc.quadraticCurveTo(cx, cy - 60, targetX, by + bh + 5);
+  fc.stroke();
+  fc.setLineDash([]);
+  fc.fillStyle = '#888';
+  fc.font = '6px Courier New';
+  fc.fillText('AIR HOSE', (cx + targetX) / 2, cy - 40);
+
+  // Launch tube at board bottom
+  fc.fillStyle = '#888';
+  fc.save();
+  fc.translate(targetX, by + bh - 5);
+  fc.rotate(cx < FW / 2 ? -0.2 : 0.2);
+  fc.fillRect(-5, -65, 10, 65);
+  fc.restore();
+
+  // Ball magazine
+  fc.fillStyle = '#555';
+  fc.strokeStyle = '#777';
+  fc.lineWidth = 1;
+  fc.fillRect(targetX - 10, by + bh - 90, 20, 28);
+  fc.strokeRect(targetX - 10, by + bh - 90, 20, 28);
+
+  // Balls in magazine
+  for (let i = 0; i < 3; i++) {
+    fc.fillStyle = '#e8e84a';
+    fc.globalAlpha = 0.8;
+    fc.beginPath();
+    fc.arc(targetX, by + bh - 83 + i * 9, 4.5, 0, Math.PI * 2);
+    fc.fill();
+    // UV glow
+    fc.shadowColor = '#e8e84a';
+    fc.shadowBlur = 4;
+    fc.fill();
+    fc.shadowBlur = 0;
+    fc.globalAlpha = 1;
+  }
+  fc.fillStyle = '#888';
+  fc.font = '6px Courier New';
+  fc.textAlign = 'center';
+  fc.fillText('MAGAZINE', targetX, by + bh - 94);
+}
+
+drawFlowerPad(bx + 60, by + bh + 95, 'P1', '#FF6B35');
+drawFlowerPad(bx + bw - 60, by + bh + 95, 'P2', '#9B59B6');
+
+// ── BALLS IN PLAY ──
+// Ball 1: rising from P1 launcher (trajectory)
+fc.fillStyle = '#e8e84a';
+fc.globalAlpha = 0.9;
+fc.beginPath();
+fc.arc(bx + 100, by + 170, 8, 0, Math.PI * 2);
+fc.fill();
+fc.shadowColor = '#e8e84a';
+fc.shadowBlur = 6;
+fc.fill();
+fc.shadowBlur = 0;
+fc.globalAlpha = 1;
+
+// Rising trajectory
+fc.strokeStyle = 'rgba(232,232,74,0.35)';
+fc.lineWidth = 1.5;
+fc.setLineDash([3, 5]);
+fc.beginPath();
+fc.moveTo(bx + 55, by + bh - 60);
+fc.quadraticCurveTo(bx + 60, by + 350, bx + 100, by + 170);
+fc.stroke();
+fc.setLineDash([]);
+
+// Ball 2: inside Queen spinner
+fc.fillStyle = '#e8e84a';
+fc.globalAlpha = 0.85;
+fc.beginPath();
+fc.arc(queenX + 12, queenY - 5, 8, 0, Math.PI * 2);
+fc.fill();
+fc.shadowColor = '#e8e84a';
+fc.shadowBlur = 5;
+fc.fill();
+fc.shadowBlur = 0;
+fc.globalAlpha = 1;
+fc.fillStyle = 'rgba(255,215,0,0.5)';
+fc.font = '7px Courier New';
+fc.textAlign = 'left';
+fc.fillText('IN THE QUEEN!', queenX + 25, queenY - 8);
+
+// Ball 3: ricocheting from bumper
+fc.fillStyle = '#e8e84a';
+fc.globalAlpha = 0.9;
+fc.beginPath();
+fc.arc(bx + 170, by + 420, 8, 0, Math.PI * 2);
+fc.fill();
+fc.shadowColor = '#e8e84a';
+fc.shadowBlur = 5;
+fc.fill();
+fc.shadowBlur = 0;
+fc.globalAlpha = 1;
+
+// Ricochet line from left bumper
+fc.strokeStyle = 'rgba(255,100,100,0.45)';
+fc.lineWidth = 1.5;
+fc.setLineDash([3, 4]);
+fc.beginPath();
+fc.moveTo(bumpers[0].x, bumpers[0].y);
+fc.lineTo(bx + 170, by + 420);
+fc.stroke();
+fc.setLineDash([]);
+fc.fillStyle = 'rgba(255,100,100,0.6)';
+fc.font = '7px Courier New';
+fc.textAlign = 'left';
+fc.fillText('RICOCHET!', bx + 180, by + 418);
+
+// ── DIMENSION LINES ──
+// Width
+fc.strokeStyle = '#888';
+fc.lineWidth = 1;
+fc.beginPath(); fc.moveTo(bx, by - 22); fc.lineTo(bx + bw, by - 22); fc.stroke();
+fc.beginPath(); fc.moveTo(bx, by - 26); fc.lineTo(bx, by - 18); fc.stroke();
+fc.beginPath(); fc.moveTo(bx + bw, by - 26); fc.lineTo(bx + bw, by - 18); fc.stroke();
+fc.fillStyle = '#888';
+fc.font = '10px Courier New';
+fc.textAlign = 'center';
+fc.fillText('48" (4 ft)', bx + bw / 2, by - 28);
+
+// Height
+fc.beginPath(); fc.moveTo(bx + bw + 16, by); fc.lineTo(bx + bw + 16, by + bh); fc.stroke();
+fc.beginPath(); fc.moveTo(bx + bw + 12, by); fc.lineTo(bx + bw + 20, by); fc.stroke();
+fc.beginPath(); fc.moveTo(bx + bw + 12, by + bh); fc.lineTo(bx + bw + 20, by + bh); fc.stroke();
+fc.save();
+fc.translate(bx + bw + 28, by + bh / 2);
+fc.rotate(-Math.PI / 2);
+fc.fillText('72" (6 ft)', 0, 0);
+fc.restore();
+
+// Acrylic overlay
+fc.strokeStyle = 'rgba(255,215,0,0.18)';
+fc.lineWidth = 2;
+fc.setLineDash([10, 5]);
+fc.strokeRect(bx + 3, by + 3, bw - 6, bh - 6);
+fc.setLineDash([]);
+fc.fillStyle = 'rgba(255,215,0,0.3)';
+fc.font = '7px Courier New';
+fc.textAlign = 'right';
+fc.fillText('CLEAR ACRYLIC FRONT', bx + bw - 8, by + 16);
+
+// Crank callout
+fc.fillStyle = '#8B4513';
+fc.font = '8px Courier New';
+fc.textAlign = 'left';
+fc.fillText('BEEKEEPER CRANK \u2192', bx + bw + 6, queenY - 5);
+fc.fillText('(drives Queen +', bx + bw + 6, queenY + 6);
+fc.fillText(' bumpers)', bx + bw + 6, queenY + 16);
+
+// Crank handle visual
+fc.strokeStyle = '#8B4513';
+fc.lineWidth = 3;
+fc.beginPath();
+fc.moveTo(bx + bw, queenY);
+fc.lineTo(bx + bw + 18, queenY);
+fc.lineTo(bx + bw + 18, queenY + 8);
+fc.stroke();
+fc.fillStyle = '#8B4513';
+fc.beginPath();
+fc.arc(bx + bw + 18, queenY + 8, 4, 0, Math.PI * 2);
+fc.fill();
+
+// Fog machine callout (top right)
+fc.fillStyle = '#888';
+fc.font = '7px Courier New';
+fc.textAlign = 'left';
+fc.fillText('FOG MACHINE', bx + bw + 6, by + 25);
+fc.fillText('(golden haze)', bx + bw + 6, by + 34);
+fc.strokeStyle = '#888';
+fc.lineWidth = 1;
+fc.setLineDash([2,2]);
+fc.beginPath();
+fc.moveTo(bx + bw + 4, by + 30);
+fc.lineTo(bx + bw, by + 30);
+fc.stroke();
+fc.setLineDash([]);
+
+// Bass transducer callout
+fc.fillStyle = '#888';
+fc.font = '7px Courier New';
+fc.fillText('BASS 200Hz \u{266C}', bx + bw + 6, queenY + 40);
+fc.fillText('(hive hum)', bx + bw + 6, queenY + 49);
+
+// Candy callout
+fc.fillStyle = '#DAA520';
+fc.font = '7px Courier New';
+fc.fillText('CANDY TUBES', bx + bw + 6, by + bh - 30);
+fc.fillText('(behind board)', bx + bw + 6, by + bh - 21);
+fc.fillText('> honey sticks', bx + bw + 6, by + bh - 10);
+
+// Beekeeper stick figure (behind board, top right)
+const bkX = bx + bw + 50, bkY = queenY + 80;
+// Body
+fc.strokeStyle = '#b89a3c';
+fc.lineWidth = 2;
+// Head
+fc.beginPath(); fc.arc(bkX, bkY - 25, 7, 0, Math.PI * 2); fc.stroke();
+// Hat
+fc.fillStyle = '#FFD700';
+fc.fillRect(bkX - 10, bkY - 35, 20, 5);
+fc.fillRect(bkX - 6, bkY - 40, 12, 6);
+// Body
+fc.beginPath(); fc.moveTo(bkX, bkY - 18); fc.lineTo(bkX, bkY + 5); fc.stroke();
+// Arms (one reaching for crank)
+fc.beginPath(); fc.moveTo(bkX, bkY - 12); fc.lineTo(bkX - 18, bkY - 5); fc.stroke();
+fc.beginPath(); fc.moveTo(bkX, bkY - 12); fc.lineTo(bkX + 12, bkY - 18); fc.stroke();
+// Legs
+fc.beginPath(); fc.moveTo(bkX, bkY + 5); fc.lineTo(bkX - 8, bkY + 22); fc.stroke();
+fc.beginPath(); fc.moveTo(bkX, bkY + 5); fc.lineTo(bkX + 8, bkY + 22); fc.stroke();
+// Label
+fc.fillStyle = '#b89a3c';
+fc.font = '7px Courier New';
+fc.textAlign = 'center';
+fc.fillText('"THE BEEKEEPER"', bkX, bkY + 34);
+
+// Mist nozzle callouts near stomp pads
+fc.fillStyle = '#4488bb';
+fc.font = '6px Courier New';
+fc.textAlign = 'center';
+fc.fillText('MIST JET', bx + 15, by + bh + 60);
+// Droplet drawn
+fc.fillStyle = '#4488bb';
+fc.beginPath(); fc.arc(bx + 15, by + bh + 72, 4, 0, Math.PI * 2); fc.fill();
+fc.fillText('MIST JET', bx + bw - 15, by + bh + 60);
+fc.beginPath(); fc.arc(bx + bw - 15, by + bh + 72, 4, 0, Math.PI * 2); fc.fill();
+
+
+// ══════════════════════════════════════════════
+// SIDE VIEW
+// ══════════════════════════════════════════════
+const sc = document.getElementById('side').getContext('2d');
+const SHt = 750;
+
+// Ground line
+sc.strokeStyle = '#555';
+sc.lineWidth = 1;
+sc.beginPath();
+sc.moveTo(30, 620);
+sc.lineTo(320, 620);
+sc.stroke();
+sc.fillStyle = '#555';
+sc.font = '8px Courier New';
+sc.textAlign = 'center';
+sc.fillText('GROUND', 175, 635);
+
+const tilt = 20 * Math.PI / 180;
+const boardBaseS = { x: 160, y: 618 };
+const boardTopS = {
+  x: boardBaseS.x - Math.sin(tilt) * 490,
+  y: boardBaseS.y - Math.cos(tilt) * 490
+};
+
+// Back panel
+sc.strokeStyle = '#8B5E3C';
+sc.lineWidth = 6;
+sc.beginPath();
+sc.moveTo(boardBaseS.x, boardBaseS.y);
+sc.lineTo(boardTopS.x, boardTopS.y);
+sc.stroke();
+
+sc.fillStyle = '#8B5E3C';
+sc.font = '8px Courier New';
+sc.save();
+sc.translate(boardBaseS.x - 12, boardBaseS.y - 180);
+sc.rotate(-tilt);
+sc.fillText('PLYWOOD BACK', 0, 0);
+sc.restore();
+
+// Acrylic front
+const gapPx = 30;
+const acBaseS = {
+  x: boardBaseS.x + gapPx * Math.cos(tilt),
+  y: boardBaseS.y - gapPx * Math.sin(tilt)
+};
+const acTopS = {
+  x: boardTopS.x + gapPx * Math.cos(tilt),
+  y: boardTopS.y - gapPx * Math.sin(tilt)
+};
+
+sc.strokeStyle = 'rgba(255,215,0,0.4)';
+sc.lineWidth = 3;
+sc.beginPath();
+sc.moveTo(acBaseS.x, acBaseS.y);
+sc.lineTo(acTopS.x, acTopS.y);
+sc.stroke();
+
+sc.fillStyle = 'rgba(255,215,0,0.35)';
+sc.font = '8px Courier New';
+sc.save();
+sc.translate(acBaseS.x + 12, acBaseS.y - 160);
+sc.rotate(-tilt);
+sc.fillText('ACRYLIC', 0, 0);
+sc.restore();
+
+// Gap dimension
+const gMidFrac = 0.55;
+const gMidX1 = boardBaseS.x + (boardTopS.x - boardBaseS.x) * gMidFrac;
+const gMidY1 = boardBaseS.y + (boardTopS.y - boardBaseS.y) * gMidFrac;
+const gMidX2 = gMidX1 + gapPx * Math.cos(tilt);
+const gMidY2 = gMidY1 - gapPx * Math.sin(tilt);
+
+sc.strokeStyle = '#888';
+sc.lineWidth = 1;
+sc.beginPath(); sc.moveTo(gMidX1, gMidY1); sc.lineTo(gMidX2, gMidY2); sc.stroke();
+sc.beginPath(); sc.moveTo(gMidX1 - 3, gMidY1 - 3); sc.lineTo(gMidX1 + 3, gMidY1 + 3); sc.stroke();
+sc.beginPath(); sc.moveTo(gMidX2 - 3, gMidY2 - 3); sc.lineTo(gMidX2 + 3, gMidY2 + 3); sc.stroke();
+sc.fillStyle = '#888';
+sc.font = '9px Courier New';
+sc.textAlign = 'center';
+sc.fillText('5"', (gMidX1 + gMidX2) / 2 + 5, (gMidY1 + gMidY2) / 2 - 8);
+
+// Hex pegs (side dots)
+sc.fillStyle = '#FFD700';
+for (let i = 0; i < 9; i++) {
+  const t = (i + 1) / 11;
+  const px = boardBaseS.x + (boardTopS.x - boardBaseS.x) * t + gapPx * Math.cos(tilt) / 2;
+  const py = boardBaseS.y + (boardTopS.y - boardBaseS.y) * t;
+  sc.beginPath();
+  sc.arc(px, py, 3, 0, Math.PI * 2);
+  sc.fill();
+}
+
+// Queen Bee Spinner (side view — shows drum between panels)
+const queenSideT = 0.42;
+const queenSideX = boardBaseS.x + (boardTopS.x - boardBaseS.x) * queenSideT + gapPx * Math.cos(tilt) / 2;
+const queenSideY = boardBaseS.y + (boardTopS.y - boardBaseS.y) * queenSideT;
+
+sc.fillStyle = 'rgba(255,215,0,0.3)';
+sc.strokeStyle = '#8B4513';
+sc.lineWidth = 2;
+sc.fillRect(queenSideX - 14, queenSideY - 14, 28, 28);
+sc.strokeRect(queenSideX - 14, queenSideY - 14, 28, 28);
+
+// Bearing behind
+sc.fillStyle = '#8B4513';
+sc.beginPath();
+sc.arc(queenSideX - 18, queenSideY, 5, 0, Math.PI * 2);
+sc.fill();
+
+// Belt to crank
+sc.strokeStyle = '#8B4513';
+sc.lineWidth = 1.5;
+sc.setLineDash([3, 3]);
+sc.beginPath();
+sc.moveTo(queenSideX - 22, queenSideY);
+sc.lineTo(queenSideX - 50, queenSideY + 30);
+sc.stroke();
+sc.setLineDash([]);
+
+sc.fillStyle = '#DAA520';
+sc.font = '7px Courier New';
+sc.textAlign = 'left';
+sc.fillText('QUEEN', queenSideX + 18, queenSideY - 5);
+sc.fillText('SPINNER', queenSideX + 18, queenSideY + 4);
+sc.fillText('(10" drum)', queenSideX + 18, queenSideY + 13);
+
+// Bee bumper (side view)
+const bumperSideT = 0.5;
+const bumperSideX1 = boardBaseS.x + (boardTopS.x - boardBaseS.x) * bumperSideT;
+const bumperSideY1 = boardBaseS.y + (boardTopS.y - boardBaseS.y) * bumperSideT;
+
+// Pushrod
+sc.strokeStyle = '#888';
+sc.lineWidth = 3;
+const pushStartX = bumperSideX1 - 18;
+const pushStartY = bumperSideY1 + 6;
+sc.beginPath();
+sc.moveTo(pushStartX, pushStartY);
+sc.lineTo(bumperSideX1 + gapPx * Math.cos(tilt) * 0.3, bumperSideY1 - gapPx * Math.sin(tilt) * 0.3);
+sc.stroke();
+
+// Spring coils
+sc.strokeStyle = '#DAA520';
+sc.lineWidth = 1.5;
+for (let i = 0; i < 3; i++) {
+  sc.beginPath();
+  const sx = pushStartX - 5 - i * 4;
+  const sy = pushStartY + 1 + i * 1.5;
+  sc.moveTo(sx, sy - 4);
+  sc.lineTo(sx + 3, sy + 4);
+  sc.stroke();
+}
+
+// Bumper face
+const bfX = bumperSideX1 + gapPx * Math.cos(tilt) * 0.3;
+const bfY = bumperSideY1 - gapPx * Math.sin(tilt) * 0.3;
+sc.fillStyle = '#FFD700';
+sc.fillRect(bfX - 2, bfY - 7, 5, 14);
+sc.strokeStyle = '#222';
+sc.lineWidth = 1;
+sc.strokeRect(bfX - 2, bfY - 7, 5, 14);
+
+sc.fillStyle = '#DAA520';
+sc.font = '7px Courier New';
+sc.textAlign = 'left';
+sc.fillText('BUMPER', bfX + 8, bfY - 2);
+sc.fillText('SPRING', pushStartX - 24, pushStartY - 3);
+
+// Cam behind board
+const camSX = pushStartX - 28;
+const camSY = pushStartY + 4;
+sc.fillStyle = '#8B4513';
+sc.beginPath();
+sc.arc(camSX, camSY, 9, 0, Math.PI * 2);
+sc.fill();
+sc.fillStyle = '#1a1a0e';
+sc.beginPath();
+sc.arc(camSX, camSY, 3, 0, Math.PI * 2);
+sc.fill();
+sc.fillStyle = '#8B4513';
+sc.beginPath();
+sc.ellipse(camSX + 7, camSY - 5, 5, 3.5, -0.5, 0, Math.PI * 2);
+sc.fill();
+sc.fillStyle = '#8B4513';
+sc.font = '7px Courier New';
+sc.textAlign = 'center';
+sc.fillText('CAM', camSX, camSY + 18);
+sc.fillText('AXLE', camSX, camSY + 26);
+
+// Crank handle
+const crankX = camSX - 15;
+const crankY = camSY + 35;
+sc.strokeStyle = '#8B4513';
+sc.lineWidth = 3;
+sc.beginPath();
+sc.moveTo(camSX, camSY);
+sc.lineTo(crankX, crankY);
+sc.stroke();
+sc.fillStyle = '#8B4513';
+sc.beginPath();
+sc.arc(crankX, crankY, 5, 0, Math.PI * 2);
+sc.fill();
+sc.fillStyle = '#b89a3c';
+sc.font = '7px Courier New';
+sc.textAlign = 'center';
+sc.fillText('CRANK', crankX - 5, crankY + 14);
+sc.fillText('HANDLE', crankX - 5, crankY + 22);
+
+// A-frame legs
+sc.strokeStyle = '#666';
+sc.lineWidth = 5;
+const legT = 0.35;
+const legTopXS = boardBaseS.x + (boardTopS.x - boardBaseS.x) * legT;
+const legTopYS = boardBaseS.y + (boardTopS.y - boardBaseS.y) * legT;
+const legEndXS = boardBaseS.x + 40;
+
+sc.beginPath();
+sc.moveTo(legTopXS, legTopYS);
+sc.lineTo(legEndXS, 618);
+sc.stroke();
+
+// Hinge dot
+sc.fillStyle = '#e94560';
+sc.beginPath();
+sc.arc(legTopXS, legTopYS, 4, 0, Math.PI * 2);
+sc.fill();
+sc.fillStyle = '#888';
+sc.font = '7px Courier New';
+sc.textAlign = 'left';
+sc.fillText('HINGE', legTopXS + 8, legTopYS - 3);
+
+// Cross brace
+sc.strokeStyle = '#555';
+sc.lineWidth = 2;
+const brT = 0.65;
+const brLX = legTopXS + (legEndXS - legTopXS) * brT;
+const brLY = legTopYS + (618 - legTopYS) * brT;
+const brBX = boardBaseS.x + (boardTopS.x - boardBaseS.x) * (1 - brT * 0.4);
+const brBY = boardBaseS.y + (boardTopS.y - boardBaseS.y) * (1 - brT * 0.4);
+sc.beginPath();
+sc.moveTo(brLX, brLY);
+sc.lineTo(brBX, brBY + 4);
+sc.stroke();
+
+// Rubber feet
+sc.fillStyle = '#e94560';
+sc.fillRect(legEndXS - 5, 616, 10, 5);
+sc.fillRect(boardBaseS.x - 5, 616, 10, 5);
+
+// Wing nut callout
+sc.fillStyle = '#FFD700';
+sc.font = '7px Courier New';
+sc.textAlign = 'center';
+sc.fillText('WING NUT', (legTopXS + legEndXS) / 2 + 6, (legTopYS + 618) / 2 - 6);
+sc.fillText('(NO TOOLS)', (legTopXS + legEndXS) / 2 + 6, (legTopYS + 618) / 2 + 2);
+
+// Angle arc
+sc.strokeStyle = '#FFD700';
+sc.lineWidth = 1.5;
+sc.beginPath();
+sc.arc(boardBaseS.x, boardBaseS.y, 50, -Math.PI / 2, -Math.PI / 2 + tilt, false);
+sc.stroke();
+sc.fillStyle = '#FFD700';
+sc.font = '10px Courier New';
+sc.textAlign = 'left';
+sc.fillText('~20\u00B0', boardBaseS.x + 12, boardBaseS.y - 48);
+
+// ── STOMP PAD (side view) ──
+const stompSideX = 265;
+const stompSideY = 615;
+
+// Floor pad profile
+sc.fillStyle = '#FF6B35';
+sc.globalAlpha = 0.7;
+sc.beginPath();
+sc.moveTo(stompSideX - 25, stompSideY);
+sc.lineTo(stompSideX + 25, stompSideY);
+sc.lineTo(stompSideX + 22, stompSideY - 8);
+sc.lineTo(stompSideX - 22, stompSideY - 8);
+sc.closePath();
+sc.fill();
+sc.globalAlpha = 1;
+
+// Bladder inside
+sc.fillStyle = 'rgba(255,150,100,0.4)';
+sc.beginPath();
+sc.ellipse(stompSideX, stompSideY - 4, 18, 5, 0, Math.PI, 0);
+sc.fill();
+
+// Hose from pad to launch tube
+sc.strokeStyle = '#888';
+sc.lineWidth = 2;
+sc.setLineDash([3, 3]);
+sc.beginPath();
+sc.moveTo(stompSideX - 5, stompSideY - 8);
+sc.quadraticCurveTo(stompSideX - 30, stompSideY - 50, acBaseS.x + 5, acBaseS.y - 20);
+sc.stroke();
+sc.setLineDash([]);
+
+sc.fillStyle = '#FF6B35';
+sc.font = '7px Courier New';
+sc.textAlign = 'center';
+sc.fillText('FLOWER', stompSideX, stompSideY - 14);
+sc.fillText('STOMP PAD', stompSideX, stompSideY - 6);
+sc.fillText('(AIR BLADDER)', stompSideX, stompSideY + 14);
+
+// Launch tube at base of acrylic side
+sc.fillStyle = '#888';
+sc.save();
+sc.translate(acBaseS.x, acBaseS.y - 15);
+sc.rotate(-tilt - 0.25);
+sc.fillRect(-4, -45, 8, 45);
+sc.restore();
+sc.fillStyle = '#888';
+sc.font = '7px Courier New';
+sc.textAlign = 'center';
+sc.fillText('LAUNCH', acBaseS.x + 15, acBaseS.y + 12);
+sc.fillText('TUBE', acBaseS.x + 15, acBaseS.y + 20);
+
+// Fog machine at top
+const fogTopX = boardTopS.x - 10;
+const fogTopY = boardTopS.y - 5;
+sc.fillStyle = '#555';
+sc.fillRect(fogTopX - 12, fogTopY - 8, 24, 14);
+sc.strokeStyle = '#888';
+sc.lineWidth = 1;
+sc.strokeRect(fogTopX - 12, fogTopY - 8, 24, 14);
+// Fog wisps
+sc.strokeStyle = 'rgba(255,215,0,0.3)';
+sc.lineWidth = 1.5;
+for (let i = 0; i < 3; i++) {
+  sc.beginPath();
+  sc.arc(fogTopX + 15 + i * 8, fogTopY - 5 + i * 3, 6, 0.5, Math.PI);
+  sc.stroke();
+}
+sc.fillStyle = '#888';
+sc.font = '7px Courier New';
+sc.textAlign = 'center';
+sc.fillText('FOG', fogTopX, fogTopY - 12);
+sc.fillText('MACHINE', fogTopX, fogTopY + 18);
+
+// UV strip
+sc.fillStyle = '#9B30FF';
+sc.shadowColor = '#9B30FF';
+sc.shadowBlur = 5;
+sc.fillRect(acTopS.x - 2, acTopS.y - 10, 8, 4);
+sc.shadowBlur = 0;
+sc.fillStyle = '#9B30FF';
+sc.font = '6px Courier New';
+sc.textAlign = 'left';
+sc.fillText('UV', acTopS.x + 8, acTopS.y - 6);
+
+// Candy tube behind board (dashed)
+sc.strokeStyle = '#DAA520';
+sc.lineWidth = 1.5;
+sc.setLineDash([3, 3]);
+sc.beginPath();
+const candyStartX = boardBaseS.x - 8;
+const candyStartY = boardBaseS.y - 30;
+sc.moveTo(candyStartX, candyStartY);
+sc.lineTo(candyStartX - 15, candyStartY - 40);
+sc.lineTo(candyStartX - 15, candyStartY - 80);
+sc.stroke();
+sc.setLineDash([]);
+sc.fillStyle = '#DAA520';
+sc.font = '7px Courier New';
+sc.textAlign = 'right';
+sc.fillText('CANDY', candyStartX - 18, candyStartY - 50);
+sc.fillText('TUBE', candyStartX - 18, candyStartY - 42);
+
+// Ball return chute
+sc.strokeStyle = '#555';
+sc.lineWidth = 1.5;
+sc.setLineDash([4, 4]);
+sc.beginPath();
+sc.moveTo(boardBaseS.x - 5, boardBaseS.y - 20);
+sc.lineTo(boardBaseS.x - 25, boardBaseS.y - 10);
+sc.lineTo(boardBaseS.x - 25, boardBaseS.y - 5);
+sc.stroke();
+sc.setLineDash([]);
+sc.fillStyle = '#555';
+sc.font = '7px Courier New';
+sc.textAlign = 'right';
+sc.fillText('BALL', boardBaseS.x - 28, boardBaseS.y - 14);
+sc.fillText('RETURN', boardBaseS.x - 28, boardBaseS.y - 6);
+
+// Bass transducer
+const bassX = boardBaseS.x + (boardTopS.x - boardBaseS.x) * 0.42 - 18;
+const bassY = boardBaseS.y + (boardTopS.y - boardBaseS.y) * 0.42 + 2;
+sc.fillStyle = '#555';
+sc.beginPath();
+sc.arc(bassX, bassY, 6, 0, Math.PI * 2);
+sc.fill();
+sc.strokeStyle = '#888';
+sc.lineWidth = 1;
+sc.stroke();
+// Vibration waves
+sc.strokeStyle = 'rgba(255,215,0,0.3)';
+sc.lineWidth = 1;
+for (let i = 1; i <= 3; i++) {
+  sc.beginPath();
+  sc.arc(bassX - 5, bassY, 6 + i * 4, -0.8, 0.8);
+  sc.stroke();
+}
+sc.fillStyle = '#888';
+sc.font = '6px Courier New';
+sc.textAlign = 'center';
+sc.fillText('BASS', bassX, bassY + 14);
+sc.fillText('200Hz', bassX, bassY + 21);
+
+// Beeswax warmer
+sc.fillStyle = '#DAA520';
+sc.globalAlpha = 0.5;
+sc.fillRect(camSX - 5, camSY + 35, 10, 8);
+sc.globalAlpha = 1;
+sc.strokeStyle = '#DAA520';
+sc.lineWidth = 1;
+sc.strokeRect(camSX - 5, camSY + 35, 10, 8);
+// Scent wisps
+sc.strokeStyle = 'rgba(218,165,32,0.3)';
+sc.lineWidth = 1;
+sc.beginPath(); sc.arc(camSX - 2, camSY + 30, 4, Math.PI, 0); sc.stroke();
+sc.beginPath(); sc.arc(camSX + 3, camSY + 27, 3, Math.PI, 0); sc.stroke();
+sc.fillStyle = '#DAA520';
+sc.font = '6px Courier New';
+sc.textAlign = 'center';
+sc.fillText('BEESWAX', camSX, camSY + 50);
+sc.fillText('WARMER', camSX, camSY + 57);
+
+// Height dimension
+sc.strokeStyle = '#888';
+sc.lineWidth = 1;
+sc.beginPath();
+sc.moveTo(30, acTopS.y - gapPx * Math.sin(tilt));
+sc.lineTo(30, 620);
+sc.stroke();
+sc.beginPath(); sc.moveTo(26, acTopS.y - gapPx * Math.sin(tilt)); sc.lineTo(34, acTopS.y - gapPx * Math.sin(tilt)); sc.stroke();
+sc.beginPath(); sc.moveTo(26, 620); sc.lineTo(34, 620); sc.stroke();
+sc.save();
+sc.translate(22, (acTopS.y - gapPx * Math.sin(tilt) + 620) / 2);
+sc.rotate(-Math.PI / 2);
+sc.fillStyle = '#888';
+sc.font = '9px Courier New';
+sc.textAlign = 'center';
+sc.fillText('~84" peak (7ft)', 0, 0);
+sc.restore();
+
+// Stick figure player
+const playerX = stompSideX;
+const playerY = stompSideY - 12;
+sc.strokeStyle = '#999';
+sc.lineWidth = 1.5;
+// Head
+sc.beginPath(); sc.arc(playerX, playerY - 50, 6, 0, Math.PI * 2); sc.stroke();
+// Body
+sc.beginPath(); sc.moveTo(playerX, playerY - 44); sc.lineTo(playerX, playerY - 20); sc.stroke();
+// Arms out
+sc.beginPath(); sc.moveTo(playerX, playerY - 38); sc.lineTo(playerX - 12, playerY - 30); sc.stroke();
+sc.beginPath(); sc.moveTo(playerX, playerY - 38); sc.lineTo(playerX + 12, playerY - 30); sc.stroke();
+// Legs (one up for stomp)
+sc.beginPath(); sc.moveTo(playerX, playerY - 20); sc.lineTo(playerX - 8, playerY - 5); sc.stroke();
+sc.beginPath(); sc.moveTo(playerX, playerY - 20); sc.lineTo(playerX + 6, playerY - 12); sc.stroke(); // leg up!
+// Stomp arrow
+sc.fillStyle = '#FF6B35';
+sc.beginPath();
+sc.moveTo(playerX + 8, playerY - 8);
+sc.lineTo(playerX + 12, playerY - 14);
+sc.lineTo(playerX + 4, playerY - 12);
+sc.closePath();
+sc.fill();
+sc.fillStyle = '#999';
+sc.font = '7px Courier New';
+sc.textAlign = 'center';
+sc.fillText('STOMP!', playerX, playerY - 58);
+
+// Side view labels
+sc.fillStyle = '#888';
+sc.font = '9px Courier New';
+sc.textAlign = 'center';
+sc.fillText('SIDE PROFILE', 175, 650);
+sc.fillText('Stomp pad 3ft in front of board', 175, 662);
+
+
+// ══════════════════════════════════════════════
+// GAMEPLAY SEQUENCE STRIP
+// ══════════════════════════════════════════════
+const sq = document.getElementById('seq').getContext('2d');
+const seqW = 920, seqH = 100;
+
+sq.fillStyle = '#2a2a1e';
+sq.fillRect(0, 0, seqW, seqH);
+
+const steps = [
+  { num: '1', label: 'STOMP\nthe flower', color: '#FF6B35' },
+  { num: '2', label: 'BALL\nlaunches up', color: '#e8e84a' },
+  { num: '3', label: 'ENTERS\nfog zone', color: 'rgba(255,215,0,0.6)' },
+  { num: '4', label: 'BOUNCES\nhex pegs', color: '#FFD700' },
+  { num: '5', label: 'QUEEN\nspins it!', color: '#8B4513' },
+  { num: '6', label: 'BUMPERS\nsmack it!', color: '#FFD700' },
+  { num: '7', label: 'LANDS in\nhoney pot', color: '#DAA520' },
+  { num: '8', label: 'CANDY\ndrops!', color: '#FF6B35' },
+];
+
+const stepW = seqW / steps.length;
+for (let i = 0; i < steps.length; i++) {
+  const s = steps[i];
+  const cx = stepW * i + stepW / 2;
+
+  // Circle
+  sq.fillStyle = s.color;
+  sq.beginPath();
+  sq.arc(cx, 32, 18, 0, Math.PI * 2);
+  sq.fill();
+
+  // Number
+  sq.fillStyle = '#111';
+  sq.font = 'bold 16px Courier New';
+  sq.textAlign = 'center';
+  sq.fillText(s.num, cx, 38);
+
+  // Label (multiline)
+  sq.fillStyle = '#ddd';
+  sq.font = '9px Courier New';
+  const lines = s.label.split('\n');
+  lines.forEach((line, li) => {
+    sq.fillText(line, cx, 62 + li * 12);
+  });
+
+  // Arrow
+  if (i < steps.length - 1) {
+    sq.strokeStyle = '#666';
+    sq.lineWidth = 1.5;
+    sq.beginPath();
+    sq.moveTo(cx + 22, 32);
+    sq.lineTo(cx + stepW - 22, 32);
+    sq.stroke();
+    // Arrowhead
+    sq.fillStyle = '#666';
+    sq.beginPath();
+    sq.moveTo(cx + stepW - 22, 32);
+    sq.lineTo(cx + stepW - 28, 28);
+    sq.lineTo(cx + stepW - 28, 36);
+    sq.closePath();
+    sq.fill();
+  }
+}
+</script>
+
+</body>
+</html>
