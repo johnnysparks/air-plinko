@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Drop Zone Express — Diagram</title>
+<!-- screenshot: 1200x1900 -->
+<style>
+  body {
+    margin: 0;
+    padding: 20px;
+    background: #1a1a2e;
+    font-family: 'Courier New', monospace;
+    color: #e0e0e0;
+    min-height: 1900px;
+  }
+  h1 {
+    text-align: center;
+    color: #FFD700;
+    font-size: 28px;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+  }
+  .subtitle {
+    text-align: center;
+    color: #aaa;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+  canvas {
+    display: block;
+    margin: 0 auto 20px auto;
+    border: 1px solid #333;
+    border-radius: 4px;
+  }
+  .legend {
+    max-width: 1160px;
+    margin: 0 auto 20px auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+  }
+  .legend-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+    border: 1px solid #555;
+  }
+  .specs {
+    max-width: 1160px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 15px;
+  }
+  .spec-card {
+    background: #16213e;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 12px;
+  }
+  .spec-card h3 {
+    color: #FFD700;
+    font-size: 13px;
+    margin: 0 0 8px 0;
+    text-transform: uppercase;
+  }
+  .spec-card p {
+    font-size: 11px;
+    margin: 3px 0;
+    color: #ccc;
+  }
+  .sequence {
+    max-width: 1160px;
+    margin: 20px auto;
+    background: #16213e;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 15px;
+  }
+  .sequence h3 {
+    color: #FFD700;
+    font-size: 14px;
+    margin: 0 0 10px 0;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<h1>Drop Zone Express</h1>
+<p class="subtitle">Operations-First Carnival Plinko — 3 Simultaneous Players — 15-Second Waves</p>
+
+<canvas id="frontView" width="1160" height="700"></canvas>
+<canvas id="sideView" width="1160" height="350"></canvas>
+<canvas id="topView" width="1160" height="280"></canvas>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-swatch" style="background:#8B4513"></div>Plywood / Lumber</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:rgba(135,206,250,0.4); border-color:#87CEFA"></div>Acrylic Panel</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#39FF14"></div>Neon Green Pegs</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#FF69B4"></div>Hot Pink Pegs</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#FF4444"></div>Spinner Pegs</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#FFD700"></div>Jackpot Zone</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#FF3333"></div>High Score (500)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#3388FF"></div>Mid Score (200)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#33CC33"></div>Low Score (100)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#FF6600"></div>Drop Handles</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#CC44CC"></div>LED Scoreboard</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#666"></div>Ball Return Chute</div>
+</div>
+
+<canvas id="sequenceCanvas" width="1160" height="120"></canvas>
+
+<div class="specs">
+  <div class="spec-card">
+    <h3>Dimensions</h3>
+    <p>Board: 48"W × 60"H × 4"D</p>
+    <p>Total w/ frame: 48"W × 72"H × 30"D</p>
+    <p>Tilt: 20° from vertical</p>
+    <p>Weight: ~45 lbs (board only)</p>
+  </div>
+  <div class="spec-card">
+    <h3>Throughput</h3>
+    <p>Players per wave: 3</p>
+    <p>Wave time: 15 seconds</p>
+    <p>Kids/hour: 720</p>
+    <p>Operators needed: 1</p>
+  </div>
+  <div class="spec-card">
+    <h3>Setup / Teardown</h3>
+    <p>Setup: 8 minutes (2 people)</p>
+    <p>Teardown: 6 minutes (2 people)</p>
+    <p>No tools required for field assembly</p>
+    <p>Board ships as one piece</p>
+  </div>
+  <div class="spec-card">
+    <h3>Scoring</h3>
+    <p>Jackpot: 1000 pts (2.5" slot)</p>
+    <p>High: 500 pts × 2</p>
+    <p>Mid: 200 pts × 2</p>
+    <p>Low: 100 pts × 2</p>
+    <p>Gutter: 0 pts × 2</p>
+  </div>
+  <div class="spec-card">
+    <h3>Power</h3>
+    <p>Scoreboard: 12V battery, 8+ hrs</p>
+    <p>No outlet needed</p>
+    <p>No blower / air system</p>
+    <p>Pure mechanical gameplay</p>
+  </div>
+  <div class="spec-card">
+    <h3>Materials</h3>
+    <p>Estimated cost: $490–540</p>
+    <p>80 pegs + 3 spinners</p>
+    <p>9 IR sensors for auto-scoring</p>
+    <p>Arduino-driven LED display</p>
+  </div>
+</div>
+
+<script>
+// ========== FRONT VIEW ==========
+(function() {
+  const c = document.getElementById('frontView');
+  const ctx = c.getContext('2d');
+
+  // Background
+  ctx.fillStyle = '#0f0f23';
+  ctx.fillRect(0, 0, 1160, 700);
+
+  // Title
+  ctx.fillStyle = '#FFD700';
+  ctx.font = 'bold 16px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('FRONT VIEW — Player Perspective', 580, 25);
+
+  // Board dimensions
+  const boardX = 280;
+  const boardY = 65;
+  const boardW = 400;
+  const boardH = 500;
+
+  // Dimension lines
+  ctx.strokeStyle = '#666';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+
+  // Width dimension
+  ctx.beginPath();
+  ctx.moveTo(boardX, boardY - 15);
+  ctx.lineTo(boardX + boardW, boardY - 15);
+  ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(boardX, boardY - 20); ctx.lineTo(boardX, boardY - 10); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(boardX + boardW, boardY - 20); ctx.lineTo(boardX + boardW, boardY - 10); ctx.stroke();
+  ctx.fillStyle = '#999';
+  ctx.font = '11px Courier New';
+  ctx.fillText('48"', boardX + boardW / 2, boardY - 20);
+
+  // Height dimension
+  ctx.beginPath();
+  ctx.moveTo(boardX - 15, boardY);
+  ctx.lineTo(boardX - 15, boardY + boardH);
+  ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(boardX - 20, boardY); ctx.lineTo(boardX - 10, boardY); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(boardX - 20, boardY + boardH); ctx.lineTo(boardX - 10, boardY + boardH); ctx.stroke();
+  ctx.save();
+  ctx.translate(boardX - 25, boardY + boardH / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText('60"', 0, 0);
+  ctx.restore();
+
+  ctx.setLineDash([]);
+
+  // Board back (plywood)
+  ctx.fillStyle = '#5C3A1E';
+  ctx.fillRect(boardX, boardY, boardW, boardH);
+
+  // Edge rails
+  ctx.strokeStyle = '#8B4513';
+  ctx.lineWidth = 6;
+  ctx.strokeRect(boardX, boardY, boardW, boardH);
+
+  // Acrylic overlay (translucent)
+  ctx.fillStyle = 'rgba(135, 206, 250, 0.08)';
+  ctx.fillRect(boardX, boardY, boardW, boardH);
+  ctx.strokeStyle = 'rgba(135, 206, 250, 0.3)';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(boardX + 2, boardY + 2, boardW - 4, boardH - 4);
+
+  // ---- DROP SLOTS (top) ----
+  const dropSlotY = boardY + 15;
+  const dropSlotW = 35;
+  const dropSlotH = 25;
+  const dropPositions = [boardX + boardW * 0.2, boardX + boardW * 0.5, boardX + boardW * 0.8];
+
+  dropPositions.forEach((x, i) => {
+    // Slot opening
+    ctx.fillStyle = '#222';
+    ctx.fillRect(x - dropSlotW/2, dropSlotY, dropSlotW, dropSlotH);
+
+    // Handle
+    ctx.fillStyle = '#FF6600';
+    ctx.fillRect(x - 4, dropSlotY - 15, 8, 20);
+    ctx.beginPath();
+    ctx.arc(x, dropSlotY - 15, 8, 0, Math.PI * 2);
+    ctx.fillStyle = '#FF6600';
+    ctx.fill();
+
+    // Ball in slot (loaded)
+    const grad = ctx.createRadialGradient(x - 3, dropSlotY + 12, 1, x, dropSlotY + 14, 10);
+    grad.addColorStop(0, '#fff');
+    grad.addColorStop(0.3, '#FFFF44');
+    grad.addColorStop(1, '#CCAA00');
+    ctx.beginPath();
+    ctx.arc(x, dropSlotY + 14, 10, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // Label
+    ctx.fillStyle = '#FFD700';
+    ctx.font = 'bold 10px Courier New';
+    ctx.textAlign = 'center';
+    ctx.fillText('SLOT ' + (i + 1), x, dropSlotY + dropSlotH + 15);
+  });
+
+  // Handle label
+  ctx.fillStyle = '#FF6600';
+  ctx.font = '10px Courier New';
+  ctx.textAlign = 'left';
+  ctx.fillText('← PULL HANDLES', boardX + boardW * 0.8 + 30, dropSlotY - 5);
+
+  // ---- PEG FIELD ----
+  const pegStartY = boardY + 80;
+  const pegEndY = boardY + boardH - 80;
+  const pegRows = 10;
+  const pegCols = 8;
+  const pegSpacingY = (pegEndY - pegStartY) / (pegRows - 1);
+  const pegSpacingX = (boardW - 60) / (pegCols - 1);
+
+  // Spinner peg positions (row, col) — rows 3,5,7 center area
+  const spinnerPositions = [[3, 3], [5, 4], [7, 5]];
+
+  for (let row = 0; row < pegRows; row++) {
+    const offsetX = (row % 2 === 0) ? 0 : pegSpacingX / 2;
+    const cols = (row % 2 === 0) ? pegCols : pegCols - 1;
+    for (let col = 0; col < cols; col++) {
+      const px = boardX + 30 + col * pegSpacingX + offsetX;
+      const py = pegStartY + row * pegSpacingY;
+
+      // Check if this is a spinner peg
+      const isSpinner = spinnerPositions.some(s => s[0] === row && s[1] === col);
+
+      if (isSpinner) {
+        // Spinner peg — red with rotor arms
+        ctx.beginPath();
+        ctx.arc(px, py, 6, 0, Math.PI * 2);
+        ctx.fillStyle = '#FF4444';
+        ctx.fill();
+        ctx.strokeStyle = '#FF6666';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Rotor arms
+        ctx.strokeStyle = '#FF4444';
+        ctx.lineWidth = 2;
+        for (let a = 0; a < 3; a++) {
+          const angle = (a * Math.PI * 2 / 3) + (row * 0.3);
+          ctx.beginPath();
+          ctx.moveTo(px, py);
+          ctx.lineTo(px + Math.cos(angle) * 14, py + Math.sin(angle) * 14);
+          ctx.stroke();
+        }
+
+        // Ghost rotor (rotated) — show movement
+        ctx.globalAlpha = 0.25;
+        ctx.strokeStyle = '#FF8888';
+        for (let a = 0; a < 3; a++) {
+          const angle = (a * Math.PI * 2 / 3) + (row * 0.3) + 0.5;
+          ctx.beginPath();
+          ctx.moveTo(px, py);
+          ctx.lineTo(px + Math.cos(angle) * 14, py + Math.sin(angle) * 14);
+          ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+      } else {
+        // Normal peg — alternating green/pink
+        const isGreen = (row + col) % 2 === 0;
+        ctx.beginPath();
+        ctx.arc(px, py, 5, 0, Math.PI * 2);
+
+        // Mushroom cap with highlight
+        const pegGrad = ctx.createRadialGradient(px - 1, py - 1, 0, px, py, 5);
+        if (isGreen) {
+          pegGrad.addColorStop(0, '#88FF44');
+          pegGrad.addColorStop(1, '#39FF14');
+        } else {
+          pegGrad.addColorStop(0, '#FF99CC');
+          pegGrad.addColorStop(1, '#FF69B4');
+        }
+        ctx.fillStyle = pegGrad;
+        ctx.fill();
+      }
+    }
+  }
+
+  // Spinner label
+  ctx.fillStyle = '#FF4444';
+  ctx.font = '10px Courier New';
+  ctx.textAlign = 'left';
+  const spinnerLabelPeg = spinnerPositions[0];
+  const slpx = boardX + 30 + spinnerLabelPeg[1] * pegSpacingX + (spinnerLabelPeg[0] % 2 === 0 ? 0 : pegSpacingX/2);
+  const slpy = pegStartY + spinnerLabelPeg[0] * pegSpacingY;
+  ctx.fillText('SPINNER PEGS ×3 →', boardX - 200, slpy + 4);
+  ctx.setLineDash([3, 3]);
+  ctx.strokeStyle = '#FF4444';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(boardX - 30, slpy);
+  ctx.lineTo(slpx - 16, slpy);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // ---- BALL TRAJECTORIES (3 balls in flight) ----
+  // Ball 1 — from slot 1, mid-cascade
+  const trajectory1 = [
+    [dropPositions[0], dropSlotY + 30],
+    [dropPositions[0] - 15, pegStartY + pegSpacingY * 1.5],
+    [dropPositions[0] + 20, pegStartY + pegSpacingY * 3],
+    [dropPositions[0] - 10, pegStartY + pegSpacingY * 4.5],
+  ];
+
+  ctx.setLineDash([4, 3]);
+  ctx.strokeStyle = 'rgba(255, 255, 100, 0.4)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  trajectory1.forEach((p, i) => i === 0 ? ctx.moveTo(p[0], p[1]) : ctx.lineTo(p[0], p[1]));
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Ball at current position
+  const ballGrad1 = ctx.createRadialGradient(trajectory1[3][0] - 2, trajectory1[3][1] - 2, 1, trajectory1[3][0], trajectory1[3][1], 8);
+  ballGrad1.addColorStop(0, '#fff');
+  ballGrad1.addColorStop(0.4, '#FFFF66');
+  ballGrad1.addColorStop(1, '#CCAA00');
+  ctx.beginPath();
+  ctx.arc(trajectory1[3][0], trajectory1[3][1], 8, 0, Math.PI * 2);
+  ctx.fillStyle = ballGrad1;
+  ctx.fill();
+
+  // Ball 2 — from slot 2, lower
+  const ball2X = dropPositions[1] + 25;
+  const ball2Y = pegStartY + pegSpacingY * 7;
+  const ballGrad2 = ctx.createRadialGradient(ball2X - 2, ball2Y - 2, 1, ball2X, ball2Y, 8);
+  ballGrad2.addColorStop(0, '#fff');
+  ballGrad2.addColorStop(0.4, '#FF8866');
+  ballGrad2.addColorStop(1, '#CC4400');
+  ctx.beginPath();
+  ctx.arc(ball2X, ball2Y, 8, 0, Math.PI * 2);
+  ctx.fillStyle = ballGrad2;
+  ctx.fill();
+
+  // Ball 3 — from slot 3, just starting
+  const ball3X = dropPositions[2] + 5;
+  const ball3Y = pegStartY + pegSpacingY * 1;
+  const ballGrad3 = ctx.createRadialGradient(ball3X - 2, ball3Y - 2, 1, ball3X, ball3Y, 8);
+  ballGrad3.addColorStop(0, '#fff');
+  ballGrad3.addColorStop(0.4, '#66CCFF');
+  ballGrad3.addColorStop(1, '#0066CC');
+  ctx.beginPath();
+  ctx.arc(ball3X, ball3Y, 8, 0, Math.PI * 2);
+  ctx.fillStyle = ballGrad3;
+  ctx.fill();
+
+  // ---- SCORING BUCKETS ----
+  const bucketY = boardY + boardH - 50;
+  const bucketH = 45;
+  const bucketTotalW = boardW - 20;
+  const bucketStartX = boardX + 10;
+
+  // Bucket widths proportional to real measurements
+  // Gutter(2") | Low(5") | Mid(4") | High(3") | Jackpot(2.5") | High(3") | Mid(4") | Low(5") | Gutter(2")
+  const bucketWidths = [15, 40, 33, 25, 20, 25, 33, 40, 15]; // pixels, proportional
+  const bucketScale = bucketTotalW / bucketWidths.reduce((a, b) => a + b, 0);
+  const scaledWidths = bucketWidths.map(w => w * bucketScale);
+  const bucketColors = ['#222', '#33CC33', '#3388FF', '#FF3333', '#FFD700', '#FF3333', '#3388FF', '#33CC33', '#222'];
+  const bucketLabels = ['', '100', '200', '500', '1000', '500', '200', '100', ''];
+  const bucketNames = ['GUTTER', 'LOW', 'MID', 'HIGH', 'JACKPOT', 'HIGH', 'MID', 'LOW', 'GUTTER'];
+
+  let bx = bucketStartX;
+  for (let i = 0; i < 9; i++) {
+    const w = scaledWidths[i];
+
+    // Bucket fill
+    ctx.fillStyle = bucketColors[i];
+    if (i === 4) {
+      // Jackpot — glowing
+      ctx.shadowColor = '#FFD700';
+      ctx.shadowBlur = 12;
+    }
+    ctx.globalAlpha = i === 0 || i === 8 ? 0.3 : 0.7;
+    ctx.fillRect(bx, bucketY, w, bucketH);
+    ctx.globalAlpha = 1;
+    ctx.shadowBlur = 0;
+
+    // Divider line
+    ctx.strokeStyle = '#8B4513';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(bx, bucketY);
+    ctx.lineTo(bx, bucketY + bucketH);
+    ctx.stroke();
+
+    // Label
+    if (bucketLabels[i]) {
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 11px Courier New';
+      ctx.textAlign = 'center';
+      ctx.fillText(bucketLabels[i], bx + w / 2, bucketY + 18);
+      ctx.font = '8px Courier New';
+      ctx.fillStyle = '#ccc';
+      ctx.fillText(bucketNames[i], bx + w / 2, bucketY + 30);
+    }
+
+    bx += w;
+  }
+  // Last divider
+  ctx.beginPath();
+  ctx.moveTo(bx, bucketY);
+  ctx.lineTo(bx, bucketY + bucketH);
+  ctx.stroke();
+
+  // ---- SCOREBOARD (above board) ----
+  const sbY = boardY - 55;
+  const sbH = 40;
+  ctx.fillStyle = '#1a0a2e';
+  ctx.fillRect(boardX, sbY, boardW, sbH);
+  ctx.strokeStyle = '#CC44CC';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(boardX, sbY, boardW, sbH);
+
+  // LED digits
+  const scorePositions = [boardX + boardW * 0.18, boardX + boardW * 0.42, boardX + boardW * 0.66];
+  const sampleScores = ['0350', '1000', '0200'];
+  ctx.font = 'bold 22px Courier New';
+  scorePositions.forEach((sx, i) => {
+    ctx.fillStyle = '#FF2222';
+    ctx.textAlign = 'center';
+    ctx.fillText(sampleScores[i], sx, sbY + 28);
+  });
+
+  // High score
+  ctx.fillStyle = '#FFAA00';
+  ctx.font = 'bold 10px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('HI: 2500', boardX + boardW * 0.88, sbY + 20);
+
+  // Scoreboard label
+  ctx.fillStyle = '#CC44CC';
+  ctx.font = '10px Courier New';
+  ctx.textAlign = 'right';
+  ctx.fillText('LED SCOREBOARD →', boardX - 10, sbY + 20);
+
+  // Scoreboard arrow to mounting
+  ctx.fillStyle = '#CC44CC';
+  ctx.font = '9px Courier New';
+  ctx.textAlign = 'left';
+  ctx.fillText('← Slides into U-brackets, 2 pins', boardX + boardW + 10, sbY + 15);
+  ctx.fillText('   Battery: 8+ hrs', boardX + boardW + 10, sbY + 28);
+
+  // ---- STICK FIGURE PLAYERS ----
+  function drawStickFigure(x, y, height, color, label) {
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 2;
+
+    // Head
+    ctx.beginPath();
+    ctx.arc(x, y - height + 8, 8, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Body
+    ctx.beginPath();
+    ctx.moveTo(x, y - height + 16);
+    ctx.lineTo(x, y - height * 0.4);
+    ctx.stroke();
+
+    // Arms (reaching up to handle)
+    ctx.beginPath();
+    ctx.moveTo(x - 12, y - height * 0.55);
+    ctx.lineTo(x, y - height * 0.65);
+    ctx.lineTo(x + 12, y - height * 0.55);
+    ctx.stroke();
+
+    // Legs
+    ctx.beginPath();
+    ctx.moveTo(x, y - height * 0.4);
+    ctx.lineTo(x - 10, y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x, y - height * 0.4);
+    ctx.lineTo(x + 10, y);
+    ctx.stroke();
+
+    // Label
+    ctx.font = '9px Courier New';
+    ctx.textAlign = 'center';
+    ctx.fillText(label, x, y + 12);
+  }
+
+  const groundY = boardY + boardH + 50;
+
+  // Three players at their stations
+  drawStickFigure(dropPositions[0], groundY, 80, '#39FF14', 'Player 1');
+  drawStickFigure(dropPositions[1], groundY, 75, '#FFFF44', 'Player 2');
+  drawStickFigure(dropPositions[2], groundY, 85, '#66CCFF', 'Player 3');
+
+  // On-deck players (waiting behind)
+  ctx.globalAlpha = 0.4;
+  drawStickFigure(dropPositions[0], groundY + 35, 70, '#39FF14', '');
+  drawStickFigure(dropPositions[1], groundY + 35, 72, '#FFFF44', '');
+  drawStickFigure(dropPositions[2], groundY + 35, 68, '#66CCFF', '');
+  ctx.globalAlpha = 1;
+
+  // On-deck label
+  ctx.fillStyle = '#888';
+  ctx.font = '9px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('ON DECK (next wave)', dropPositions[1], groundY + 60);
+
+  // On-deck mats
+  dropPositions.forEach((x) => {
+    ctx.strokeStyle = '#FFD700';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    ctx.strokeRect(x - 15, groundY + 18, 30, 20);
+    ctx.setLineDash([]);
+  });
+
+  // Exit arrow (right side)
+  ctx.fillStyle = '#FF6600';
+  ctx.font = 'bold 12px Courier New';
+  ctx.textAlign = 'left';
+  ctx.fillText('EXIT →', boardX + boardW + 30, groundY);
+  // Arrow shape
+  ctx.beginPath();
+  ctx.moveTo(boardX + boardW + 80, groundY - 12);
+  ctx.lineTo(boardX + boardW + 100, groundY - 5);
+  ctx.lineTo(boardX + boardW + 80, groundY + 2);
+  ctx.closePath();
+  ctx.fill();
+
+  // Queue line (left side)
+  ctx.fillStyle = '#888';
+  ctx.font = '10px Courier New';
+  ctx.textAlign = 'right';
+  ctx.fillText('← LINE', boardX - 40, groundY);
+
+  // Zone sidebar (right edge)
+  const zones = [
+    { y: boardY + 10, h: 45, color: '#FF6600', label: 'DROP ZONE' },
+    { y: boardY + 60, h: boardH - 130, color: '#39FF14', label: 'PEG FIELD' },
+    { y: boardY + boardH - 65, h: 60, color: '#FFD700', label: 'SCORING' },
+  ];
+
+  zones.forEach(z => {
+    ctx.fillStyle = z.color;
+    ctx.globalAlpha = 0.15;
+    ctx.fillRect(boardX + boardW + 5, z.y, 12, z.h);
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = z.color;
+    ctx.font = '8px Courier New';
+    ctx.textAlign = 'left';
+    ctx.save();
+    ctx.translate(boardX + boardW + 22, z.y + z.h / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center';
+    ctx.fillText(z.label, 0, 0);
+    ctx.restore();
+  });
+
+})();
+
+// ========== SIDE VIEW (Cross-Section) ==========
+(function() {
+  const c = document.getElementById('sideView');
+  const ctx = c.getContext('2d');
+
+  ctx.fillStyle = '#0f0f23';
+  ctx.fillRect(0, 0, 1160, 350);
+
+  ctx.fillStyle = '#FFD700';
+  ctx.font = 'bold 16px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('SIDE VIEW — Cross-Section (Setup / Structure)', 580, 25);
+
+  // Ground line
+  const groundY = 290;
+  ctx.strokeStyle = '#444';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(50, groundY);
+  ctx.lineTo(1110, groundY);
+  ctx.stroke();
+
+  // Board (tilted 20°)
+  const boardBaseX = 450;
+  const boardBaseY = groundY;
+  const boardLen = 260; // visual length
+  const tiltAngle = -70 * Math.PI / 180; // 20° from vertical = 70° from horizontal
+
+  const boardTopX = boardBaseX + Math.cos(tiltAngle) * boardLen;
+  const boardTopY = boardBaseY + Math.sin(tiltAngle) * boardLen;
+
+  // Plywood back
+  ctx.strokeStyle = '#8B4513';
+  ctx.lineWidth = 8;
+  ctx.beginPath();
+  ctx.moveTo(boardBaseX, boardBaseY);
+  ctx.lineTo(boardTopX, boardTopY);
+  ctx.stroke();
+
+  // Label
+  ctx.fillStyle = '#8B4513';
+  ctx.font = '10px Courier New';
+  ctx.textAlign = 'left';
+  ctx.fillText('¾" PLYWOOD', boardTopX + 15, boardTopY + 40);
+
+  // Acrylic front (4" gap)
+  const gapPx = 18; // visual gap
+  const normalX = Math.cos(tiltAngle + Math.PI / 2);
+  const normalY = Math.sin(tiltAngle + Math.PI / 2);
+
+  const acrylicBaseX = boardBaseX + normalX * gapPx;
+  const acrylicBaseY = boardBaseY + normalY * gapPx;
+  const acrylicTopX = boardTopX + normalX * gapPx;
+  const acrylicTopY = boardTopY + normalY * gapPx;
+
+  ctx.strokeStyle = 'rgba(135, 206, 250, 0.6)';
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(acrylicBaseX, acrylicBaseY);
+  ctx.lineTo(acrylicTopX, acrylicTopY);
+  ctx.stroke();
+
+  ctx.fillStyle = 'rgba(135, 206, 250, 0.8)';
+  ctx.font = '10px Courier New';
+  ctx.textAlign = 'left';
+  ctx.fillText('¼" ACRYLIC', acrylicTopX + 15, acrylicTopY + 20);
+
+  // Gap dimension
+  const midBoardX = (boardBaseX + boardTopX) / 2;
+  const midBoardY = (boardBaseY + boardTopY) / 2;
+  const midAcrylicX = midBoardX + normalX * gapPx;
+  const midAcrylicY = midBoardY + normalY * gapPx;
+
+  ctx.strokeStyle = '#999';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([3, 3]);
+  ctx.beginPath();
+  ctx.moveTo(midBoardX, midBoardY);
+  ctx.lineTo(midAcrylicX, midAcrylicY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.fillStyle = '#999';
+  ctx.font = '9px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('4"', midBoardX + normalX * gapPx / 2 + 12, midBoardY + normalY * gapPx / 2 - 5);
+
+  // Pegs (dots between back and front)
+  for (let i = 0; i < 6; i++) {
+    const t = 0.15 + i * 0.12;
+    const px = boardBaseX + (boardTopX - boardBaseX) * t + normalX * gapPx * 0.4;
+    const py = boardBaseY + (boardTopY - boardBaseY) * t + normalY * gapPx * 0.4;
+    ctx.beginPath();
+    ctx.arc(px, py, 3, 0, Math.PI * 2);
+    ctx.fillStyle = (i % 2 === 0) ? '#39FF14' : '#FF69B4';
+    ctx.fill();
+  }
+
+  // A-frame legs
+  const legTopX = boardBaseX + (boardTopX - boardBaseX) * 0.7;
+  const legTopY = boardBaseY + (boardTopY - boardBaseY) * 0.7;
+
+  // Rear leg
+  ctx.strokeStyle = '#B8860B';
+  ctx.lineWidth = 6;
+  ctx.beginPath();
+  ctx.moveTo(legTopX - 5, legTopY);
+  ctx.lineTo(legTopX - 100, groundY);
+  ctx.stroke();
+
+  // Hinge point
+  ctx.beginPath();
+  ctx.arc(legTopX - 5, legTopY, 5, 0, Math.PI * 2);
+  ctx.fillStyle = '#888';
+  ctx.fill();
+
+  // Chain/angle limiter
+  ctx.strokeStyle = '#888';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([4, 2]);
+  const chainBoardX = boardBaseX + (boardTopX - boardBaseX) * 0.35;
+  const chainBoardY = boardBaseY + (boardTopY - boardBaseY) * 0.35;
+  ctx.beginPath();
+  ctx.moveTo(chainBoardX, chainBoardY);
+  ctx.lineTo(legTopX - 70, groundY - 30);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.fillStyle = '#888';
+  ctx.font = '9px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('CHAIN', (chainBoardX + legTopX - 70) / 2 - 15, (chainBoardY + groundY - 30) / 2);
+  ctx.fillText('(sets 20° tilt)', (chainBoardX + legTopX - 70) / 2 - 15, (chainBoardY + groundY - 30) / 2 + 12);
+
+  // Rubber feet
+  ctx.fillStyle = '#333';
+  ctx.fillRect(legTopX - 110, groundY - 4, 20, 8);
+  ctx.fillRect(boardBaseX - 5, groundY - 4, 20, 8);
+
+  // Sandbag on rear hook
+  ctx.fillStyle = '#8B7D6B';
+  ctx.fillRect(legTopX - 80, groundY - 30, 25, 18);
+  ctx.fillStyle = '#aaa';
+  ctx.font = '7px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('25 lb', legTopX - 67, groundY - 18);
+
+  // Ball return chute (behind board)
+  ctx.strokeStyle = '#666';
+  ctx.lineWidth = 3;
+  ctx.setLineDash([6, 3]);
+  // Chute runs along the back of the board
+  const chuteOffset = -12;
+  ctx.beginPath();
+  ctx.moveTo(boardBaseX + chuteOffset, boardBaseY - 5);
+  ctx.lineTo(boardTopX + chuteOffset, boardTopY + 5);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  ctx.fillStyle = '#666';
+  ctx.font = '9px Courier New';
+  ctx.textAlign = 'right';
+  ctx.fillText('BALL RETURN', boardTopX + chuteOffset - 10, boardTopY + 20);
+  ctx.fillText('CHUTE (rear)', boardTopX + chuteOffset - 10, boardTopY + 32);
+
+  // Ball in chute (traveling up)
+  const chuteBallT = 0.5;
+  const cbx = boardBaseX + chuteOffset + (boardTopX + chuteOffset - boardBaseX - chuteOffset) * chuteBallT;
+  const cby = boardBaseY - 5 + (boardTopY + 5 - boardBaseY + 5) * chuteBallT;
+  ctx.beginPath();
+  ctx.arc(cbx, cby, 5, 0, Math.PI * 2);
+  ctx.fillStyle = '#FFFF44';
+  ctx.fill();
+
+  // Arrow showing ball direction (up the chute)
+  ctx.strokeStyle = '#FFFF44';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(cbx - 8, cby + 10);
+  ctx.lineTo(cbx, cby + 3);
+  ctx.lineTo(cbx + 8, cby + 10);
+  ctx.stroke();
+
+  // Tilt angle arc
+  ctx.strokeStyle = '#FFD700';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.arc(boardTopX, boardTopY, 40, Math.PI / 2, Math.PI / 2 + 20 * Math.PI / 180);
+  ctx.stroke();
+  ctx.fillStyle = '#FFD700';
+  ctx.font = '10px Courier New';
+  ctx.textAlign = 'left';
+  ctx.fillText('20°', boardTopX + 45, boardTopY + 15);
+
+  // Scoreboard bar on top
+  ctx.fillStyle = '#1a0a2e';
+  ctx.strokeStyle = '#CC44CC';
+  ctx.lineWidth = 2;
+  const sbx = boardTopX + normalX * gapPx * 0.5;
+  const sby = boardTopY - 20;
+  ctx.fillRect(sbx - 25, sby - 10, 50, 15);
+  ctx.strokeRect(sbx - 25, sby - 10, 50, 15);
+  ctx.fillStyle = '#CC44CC';
+  ctx.font = '8px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('LED', sbx, sby);
+
+  // Player stick figure (front of board)
+  const playerX = acrylicBaseX + 60;
+  const playerGroundY = groundY;
+
+  ctx.strokeStyle = '#39FF14';
+  ctx.lineWidth = 2;
+  // Head
+  ctx.beginPath();
+  ctx.arc(playerX, playerGroundY - 72, 8, 0, Math.PI * 2);
+  ctx.stroke();
+  // Body
+  ctx.beginPath();
+  ctx.moveTo(playerX, playerGroundY - 64);
+  ctx.lineTo(playerX, playerGroundY - 30);
+  ctx.stroke();
+  // Arms reaching toward board
+  ctx.beginPath();
+  ctx.moveTo(playerX, playerGroundY - 50);
+  ctx.lineTo(playerX - 25, playerGroundY - 55);
+  ctx.stroke();
+  // Legs
+  ctx.beginPath();
+  ctx.moveTo(playerX, playerGroundY - 30);
+  ctx.lineTo(playerX - 10, playerGroundY);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(playerX, playerGroundY - 30);
+  ctx.lineTo(playerX + 10, playerGroundY);
+  ctx.stroke();
+
+  ctx.fillStyle = '#39FF14';
+  ctx.font = '9px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('PLAYER', playerX, playerGroundY + 12);
+
+  // Keyhole bracket callout
+  ctx.fillStyle = '#FFD700';
+  ctx.font = '9px Courier New';
+  ctx.textAlign = 'left';
+  ctx.fillText('T-BOLT + KEYHOLE', legTopX + 10, legTopY - 10);
+  ctx.fillText('BRACKET (no tools)', legTopX + 10, legTopY + 2);
+
+  // Overall height dimension
+  ctx.strokeStyle = '#666';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  ctx.moveTo(200, sby - 15);
+  ctx.lineTo(200, groundY);
+  ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(195, sby - 15); ctx.lineTo(205, sby - 15); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(195, groundY); ctx.lineTo(205, groundY); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#999';
+  ctx.font = '11px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('72"', 200, (sby - 15 + groundY) / 2);
+  ctx.fillText('total', 200, (sby - 15 + groundY) / 2 + 13);
+
+  // Depth dimension
+  ctx.strokeStyle = '#666';
+  ctx.setLineDash([4, 4]);
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(legTopX - 110, groundY + 15);
+  ctx.lineTo(acrylicBaseX + 10, groundY + 15);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#999';
+  ctx.font = '11px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('30" footprint', (legTopX - 110 + acrylicBaseX + 10) / 2, groundY + 30);
+
+  // Setup callout box
+  ctx.fillStyle = '#16213e';
+  ctx.strokeStyle = '#FFD700';
+  ctx.lineWidth = 1;
+  const callX = 700;
+  const callY = 40;
+  ctx.fillRect(callX, callY, 400, 100);
+  ctx.strokeRect(callX, callY, 400, 100);
+
+  ctx.fillStyle = '#FFD700';
+  ctx.font = 'bold 12px Courier New';
+  ctx.textAlign = 'left';
+  ctx.fillText('FIELD SETUP (no tools)', callX + 10, callY + 18);
+  ctx.font = '10px Courier New';
+  ctx.fillStyle = '#ccc';
+  ctx.fillText('1. Slide T-bolts into keyholes (15s/side)', callX + 10, callY + 36);
+  ctx.fillText('2. Spread legs, chain catches at 20° (5s)', callX + 10, callY + 50);
+  ctx.fillText('3. Hang sandbags on rear hooks (10s)', callX + 10, callY + 64);
+  ctx.fillText('4. Slide scoreboard bar in, pin, power on (30s)', callX + 10, callY + 78);
+  ctx.fillStyle = '#FFD700';
+  ctx.fillText('TOTAL LEGS+BOARD: 60 seconds', callX + 10, callY + 94);
+
+})();
+
+// ========== TOP-DOWN VIEW ==========
+(function() {
+  const c = document.getElementById('topView');
+  const ctx = c.getContext('2d');
+
+  ctx.fillStyle = '#0f0f23';
+  ctx.fillRect(0, 0, 1160, 280);
+
+  ctx.fillStyle = '#FFD700';
+  ctx.font = 'bold 16px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('TOP-DOWN VIEW — Queue Flow & Footprint', 580, 25);
+
+  // Area dimensions
+  const areaX = 150;
+  const areaY = 45;
+  const areaW = 860;
+  const areaH = 210;
+
+  // Full footprint outline
+  ctx.strokeStyle = '#444';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([5, 5]);
+  ctx.strokeRect(areaX, areaY, areaW, areaH);
+  ctx.setLineDash([]);
+
+  // Board (seen from top — thin rectangle)
+  const boardX = areaX + areaW * 0.45;
+  const boardY = areaY + 30;
+  const boardW = 250;
+  const boardD = 25;
+
+  ctx.fillStyle = '#5C3A1E';
+  ctx.fillRect(boardX, boardY, boardW, boardD);
+  ctx.strokeStyle = '#8B4513';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(boardX, boardY, boardW, boardD);
+
+  // Acrylic side (facing players)
+  ctx.strokeStyle = 'rgba(135, 206, 250, 0.5)';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(boardX, boardY + boardD);
+  ctx.lineTo(boardX + boardW, boardY + boardD);
+  ctx.stroke();
+
+  ctx.fillStyle = '#8B4513';
+  ctx.font = '10px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('GAME BOARD (48"×4")', boardX + boardW / 2, boardY + 15);
+
+  // Legs (behind board)
+  ctx.fillStyle = '#B8860B';
+  ctx.fillRect(boardX + 20, boardY - 30, 8, 30);
+  ctx.fillRect(boardX + boardW - 28, boardY - 30, 8, 30);
+
+  // Cross brace
+  ctx.strokeStyle = '#B8860B';
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(boardX + 24, boardY - 20);
+  ctx.lineTo(boardX + boardW - 24, boardY - 20);
+  ctx.stroke();
+
+  // Sandbags
+  ctx.fillStyle = '#8B7D6B';
+  ctx.fillRect(boardX + 60, boardY - 22, 18, 12);
+  ctx.fillRect(boardX + boardW - 78, boardY - 22, 18, 12);
+
+  // Three player positions (in front of board)
+  const playerY = boardY + boardD + 40;
+  const playerPositions = [boardX + boardW * 0.2, boardX + boardW * 0.5, boardX + boardW * 0.8];
+
+  playerPositions.forEach((px, i) => {
+    // Player circle
+    ctx.beginPath();
+    ctx.arc(px, playerY, 10, 0, Math.PI * 2);
+    ctx.fillStyle = ['#39FF14', '#FFFF44', '#66CCFF'][i];
+    ctx.fill();
+    ctx.fillStyle = '#000';
+    ctx.font = 'bold 10px Courier New';
+    ctx.textAlign = 'center';
+    ctx.fillText(String(i + 1), px, playerY + 4);
+  });
+
+  // On-deck mats
+  const deckY = playerY + 30;
+  playerPositions.forEach((px, i) => {
+    ctx.strokeStyle = '#FFD700';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    ctx.strokeRect(px - 10, deckY - 8, 20, 16);
+    ctx.setLineDash([]);
+
+    // On-deck players (dimmed)
+    ctx.globalAlpha = 0.35;
+    ctx.beginPath();
+    ctx.arc(px, deckY, 8, 0, Math.PI * 2);
+    ctx.fillStyle = ['#39FF14', '#FFFF44', '#66CCFF'][i];
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  });
+
+  ctx.fillStyle = '#888';
+  ctx.font = '9px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('ON DECK', boardX + boardW * 0.5, deckY + 20);
+
+  // Queue line (rope + stanchions going left)
+  const queueY = deckY + 35;
+  const stanchionPositions = [
+    [boardX + boardW * 0.8, queueY],
+    [boardX + boardW * 0.5, queueY],
+    [boardX + boardW * 0.2, queueY],
+    [boardX - 40, queueY],
+  ];
+
+  // Rope between stanchions
+  ctx.strokeStyle = '#886644';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  stanchionPositions.forEach((s, i) => {
+    if (i === 0) ctx.moveTo(s[0], s[1]);
+    else ctx.lineTo(s[0], s[1]);
+  });
+  ctx.stroke();
+
+  // Extend line further left
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  ctx.moveTo(stanchionPositions[3][0], stanchionPositions[3][1]);
+  ctx.lineTo(areaX + 20, queueY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Stanchion circles
+  stanchionPositions.forEach(s => {
+    ctx.beginPath();
+    ctx.arc(s[0], s[1], 5, 0, Math.PI * 2);
+    ctx.fillStyle = '#886644';
+    ctx.fill();
+  });
+
+  // Queue people (dots in line)
+  for (let i = 0; i < 8; i++) {
+    const t = i / 8;
+    const qpx = stanchionPositions[3][0] + (stanchionPositions[0][0] - stanchionPositions[3][0]) * t - 20;
+    ctx.beginPath();
+    ctx.arc(qpx, queueY, 5, 0, Math.PI * 2);
+    ctx.fillStyle = `hsl(${i * 30}, 50%, 60%)`;
+    ctx.fill();
+  }
+
+  ctx.fillStyle = '#aaa';
+  ctx.font = '10px Courier New';
+  ctx.textAlign = 'left';
+  ctx.fillText('← LINE CONTINUES', areaX + 5, queueY - 12);
+
+  // Exit path (right side)
+  ctx.strokeStyle = '#FF6600';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([6, 4]);
+  ctx.beginPath();
+  ctx.moveTo(boardX + boardW + 10, playerY);
+  ctx.lineTo(boardX + boardW + 60, playerY);
+  ctx.lineTo(boardX + boardW + 60, queueY + 20);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Exit arrow
+  ctx.fillStyle = '#FF6600';
+  ctx.beginPath();
+  ctx.moveTo(boardX + boardW + 55, queueY + 20);
+  ctx.lineTo(boardX + boardW + 60, queueY + 30);
+  ctx.lineTo(boardX + boardW + 65, queueY + 20);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.font = 'bold 10px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('EXIT', boardX + boardW + 60, queueY + 42);
+
+  // Operator position
+  const opX = boardX + boardW + 30;
+  const opY = boardY + boardD / 2;
+  ctx.beginPath();
+  ctx.arc(opX, opY, 10, 0, Math.PI * 2);
+  ctx.fillStyle = '#FF4444';
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 9px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('OP', opX, opY + 3);
+
+  ctx.fillStyle = '#FF4444';
+  ctx.font = '9px Courier New';
+  ctx.fillText('OPERATOR', opX, opY + 20);
+
+  // Flow arrows
+  ctx.fillStyle = '#888';
+  ctx.font = '9px Courier New';
+  ctx.textAlign = 'center';
+
+  // Arrow from queue to on-deck
+  ctx.strokeStyle = '#FFD700';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(boardX + boardW * 0.5, queueY - 8);
+  ctx.lineTo(boardX + boardW * 0.5, deckY + 12);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(boardX + boardW * 0.5 - 4, deckY + 16);
+  ctx.lineTo(boardX + boardW * 0.5, deckY + 10);
+  ctx.lineTo(boardX + boardW * 0.5 + 4, deckY + 16);
+  ctx.fill();
+
+  // Arrow from on-deck to player
+  ctx.beginPath();
+  ctx.moveTo(boardX + boardW * 0.5, deckY - 12);
+  ctx.lineTo(boardX + boardW * 0.5, playerY + 14);
+  ctx.stroke();
+
+  // Footprint dimensions
+  ctx.strokeStyle = '#666';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  ctx.moveTo(boardX - 5, areaY + 5);
+  ctx.lineTo(boardX + boardW + 5, areaY + 5);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#999';
+  ctx.font = '10px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('48" board width', boardX + boardW / 2, areaY + 18);
+
+})();
+
+// ========== GAMEPLAY SEQUENCE STRIP ==========
+(function() {
+  const c = document.getElementById('sequenceCanvas');
+  const ctx = c.getContext('2d');
+
+  ctx.fillStyle = '#16213e';
+  ctx.fillRect(0, 0, 1160, 120);
+
+  ctx.strokeStyle = '#333';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(0, 0, 1160, 120);
+
+  ctx.fillStyle = '#FFD700';
+  ctx.font = 'bold 14px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('WAVE SEQUENCE — 15 SECONDS TOTAL', 580, 20);
+
+  const steps = [
+    { label: 'LOAD', time: '3s', desc: 'Next 3 step up', color: '#39FF14' },
+    { label: 'COUNT', time: '3s', desc: '3...2...1...DROP!', color: '#FFFF44' },
+    { label: 'CHAOS', time: '5s', desc: 'Balls cascade', color: '#FF69B4' },
+    { label: 'SCORE', time: '2s', desc: 'LEDs flash scores', color: '#CC44CC' },
+    { label: 'CYCLE', time: '2s', desc: 'Exit → Next wave', color: '#FF6600' },
+  ];
+
+  const startX = 100;
+  const stepW = 200;
+  const centerY = 70;
+
+  steps.forEach((step, i) => {
+    const x = startX + i * stepW;
+
+    // Circle
+    ctx.beginPath();
+    ctx.arc(x, centerY, 22, 0, Math.PI * 2);
+    ctx.fillStyle = step.color;
+    ctx.globalAlpha = 0.2;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = step.color;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Number
+    ctx.fillStyle = step.color;
+    ctx.font = 'bold 16px Courier New';
+    ctx.textAlign = 'center';
+    ctx.fillText(String(i + 1), x, centerY + 6);
+
+    // Label above
+    ctx.font = 'bold 11px Courier New';
+    ctx.fillText(step.label, x, centerY - 30);
+
+    // Time below
+    ctx.font = '10px Courier New';
+    ctx.fillStyle = '#999';
+    ctx.fillText(step.time, x, centerY + 38);
+
+    // Description
+    ctx.font = '9px Courier New';
+    ctx.fillStyle = '#ccc';
+    ctx.fillText(step.desc, x, centerY + 52);
+
+    // Arrow to next
+    if (i < steps.length - 1) {
+      ctx.strokeStyle = '#555';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(x + 25, centerY);
+      ctx.lineTo(x + stepW - 25, centerY);
+      ctx.stroke();
+
+      // Arrowhead
+      ctx.fillStyle = '#555';
+      ctx.beginPath();
+      ctx.moveTo(x + stepW - 25, centerY - 4);
+      ctx.lineTo(x + stepW - 18, centerY);
+      ctx.lineTo(x + stepW - 25, centerY + 4);
+      ctx.closePath();
+      ctx.fill();
+    }
+  });
+
+  // Loop arrow from last back to first
+  ctx.strokeStyle = '#FFD700';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([4, 3]);
+  ctx.beginPath();
+  ctx.moveTo(startX + 4 * stepW + 25, centerY);
+  ctx.lineTo(startX + 4 * stepW + 45, centerY);
+  ctx.lineTo(startX + 4 * stepW + 45, centerY + 40);
+  ctx.lineTo(startX - 45, centerY + 40);
+  ctx.lineTo(startX - 45, centerY);
+  ctx.lineTo(startX - 25, centerY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Loop arrowhead
+  ctx.fillStyle = '#FFD700';
+  ctx.beginPath();
+  ctx.moveTo(startX - 25, centerY - 4);
+  ctx.lineTo(startX - 18, centerY);
+  ctx.lineTo(startX - 25, centerY + 4);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = '#FFD700';
+  ctx.font = '9px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('REPEAT', 580, centerY + 50);
+
+})();
+</script>
+
+</body>
+</html>
