@@ -213,11 +213,15 @@ Total width: 41" (fits within the 48" board with 3.5" edge rails on each side)
 
 ### **Estimated Total: $550–600**
 
+*Materials cost checks out (~$524 itemized + contingency). However, see build sequence notes — the timeline is significantly more aggressive than the mechanical complexity warrants.*
+
 ---
 
 ## Build Sequence
 
-### Phase 1: Support Frame & Rocker (Weekend 1, Day 1)
+### Phase 1: Support Frame & Rocker (Weekend 1)
+
+**Reality check:** This project has a precision mechanical linkage system (pillow blocks, steel axle, heim joints, rocker-to-board calibration). Unlike a standard plinko board, you cannot eyeball the alignment — the pillow block bearings must be perfectly co-linear or the board will bind. The heim joint linkage needs iterative length adjustment to get the tilt ratio right. **Budget 4–5 weekends total, not 2.** The frame and rocker alone are a full weekend when you include the fulcrum routing and rocker balance testing.
 
 1. Cut 4×4 uprights to 66" each
 2. Build base platform from 2×6 lumber — 72"W × 36"D rectangle with cross-members
@@ -242,17 +246,19 @@ Total width: 41" (fits within the 48" board with 3.5" edge rails on each side)
 8. Paint neon scoring numbers and zone markers on back panel
 9. Build scoring dividers from ¼" plywood strips, mount inside bottom section
 
-### Phase 3: Pivot & Linkage (Weekend 2, Day 1)
+### Phase 3: Pivot & Linkage (Weekend 3 — this is the hard weekend)
 
-1. Mount pillow block bearings to inside faces of uprights at 30" height
+**This phase is the crux of the entire build.** The pillow block bearings must be mounted at exactly the same height on both uprights, or the board will bind/wobble. The linkage rod lengths need iterative adjustment — expect 2–3 hours of test-adjust-test cycles to get the tilt ratio feeling right. Don't rush this.
+
+1. Mount pillow block bearings to inside faces of uprights at 30" height — **use a level and measure from the base platform, not from the top of the uprights** (wood posts are never perfectly identical)
 2. Drill/mount board axle (1" pipe) through the board's edge rail frames at the 30" height line
-3. Set board axle into pillow block bearings — board should hang and tilt freely
+3. Set board axle into pillow block bearings — board should hang and tilt freely. **If it binds, shim one bearing. Do not proceed until the board swings freely with zero binding.**
 4. Mount rubber tilt limiters on uprights — test ±8° range
 5. Install linkage rods: heim joint on rocker beam end → threaded rod → heim joint on board bottom rail
-6. Calibrate: adjust heim joint threading until rocker tilt produces proportional board tilt
+6. Calibrate: adjust heim joint threading until rocker tilt produces proportional board tilt. **This will take longer than you think — the geometry is non-linear, and small changes in rod length produce large changes in tilt ratio at the extremes.**
 7. Full tilt test — step on each footplate, verify smooth, responsive tilting
 
-### Phase 4: Hopper, Acrylic & Finish (Weekend 2, Day 2)
+### Phase 4: Hopper, Acrylic & Finish (Weekends 4–5)
 
 1. Build ball hopper box, mount to top-center of board
 2. Build release drum (wooden cylinder with ball-sized notch, mounted on a shaft through hopper)

@@ -168,7 +168,9 @@ Each player gets a slingshot on a swivel-mounted post.
 
 **Total 3D print time: ~40 hours** (spread across several overnight runs)
 
-### **Estimated Total: $400–450**
+### **Estimated Total: $475–550**
+
+*The original estimate of $400–450 didn't cover the itemized line items above (which sum to $452–492). The main driver is the double acrylic — two 5×4 ft panels at $80–100 each is the optimistic case; acrylic prices vary widely and $100–130 per panel is common at retail. Plus 40 hours of 3D printing, slingshot station materials, and ricochet/backstop netting all add up. Budget $500+ to be realistic.*
 
 ---
 

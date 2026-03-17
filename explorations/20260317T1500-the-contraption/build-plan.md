@@ -268,17 +268,20 @@ ALL mechanisms mount to the backboard via a universal bolt pattern:
 | 3W speaker | 1 | $5 |
 | USB battery pack | 1 | $12 |
 
-### **Estimated Total: $550–650** (including $238 in filament)
+### **Estimated Total: $700–850**
+
+*The itemized materials above sum to $630–670 before contingency. Add realistic 3D printing waste (~20–30% across 170+ print hours and 12 filament types — failed prints, supports, purge towers, retries on complex mechanisms like the gear ratchets and Octopus arms), plus upgrading from bargain-bin 608ZZ bearings ($0.50 each) to reliable ones ($1.50 each) for the high-impact mechanisms, and the realistic range is $700–850. Budget $800 to be safe.*
 
 ---
 
 ## Build Sequence
 
-### Phase 0: Print Farm Begins (Weeks 1-2)
-Start printing immediately while the frame isn't built yet.
+### Phase 0: Print Farm Begins (Weeks 1-4)
+Start printing immediately while the frame isn't built yet. **Total print time is 170+ hours** — with a single printer running 10–12 hrs/day, this is 3–4 weeks of continuous printing. Failed prints (expect 10–15% failure rate on complex parts like gear ratchets and Octopus arms) add another week.
 1. Print all Tier 1 passive mechanisms (bumper mushrooms, spinning wheels, funnel spirals, helix drops) — ~32 hrs
 2. Begin Tier 2 mechanisms — pendulum gates first (most critical to test)
 3. Test-fit mechanisms with scrap plywood + T-nuts to verify the universal bolt pattern
+4. **Prototype before batch printing:** Print ONE of each Tier 2 mechanism and test with real balls before committing to the full batch. The gear ratchet pawl, see-saw balance, and trap door spring tension all need tuning in the CAD before final prints
 
 ### Phase 1: Frame & Board (Weekend 1)
 1. Cut plywood to 48×72"
@@ -317,7 +320,7 @@ Start printing immediately while the frame isn't built yet.
 5. Mount acrylic front panel — bolts through rails
 6. Seal all edges — no ball escape routes
 
-### Phase 5: Playtest & Tune (Week 7)
+### Phase 5: Playtest & Tune (Weeks 9-10)
 1. Load balls, crank, watch
 2. Identify dead zones where balls get stuck — add bumper mushrooms or adjust mechanism angles
 3. Tune pendulum gate weights — should alternate cleanly
@@ -325,7 +328,7 @@ Start printing immediately while the frame isn't built yet.
 5. Check see-saw catapult balance — add/remove weight as needed
 6. Verify ball return cycle — no jams from trough to crank to launch
 
-### Phase 6: Sound & Polish (Week 8)
+### Phase 6: Sound & Polish (Weeks 11-12)
 1. Wire up Arduino sound system (optional)
 2. Mount piezo sensors on target buckets
 3. Test sounds + adjust trigger sensitivity
