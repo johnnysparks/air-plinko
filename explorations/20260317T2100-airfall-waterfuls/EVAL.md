@@ -20,19 +20,18 @@ However: once you strip the blower novelty, the underlying game is "put ball on 
 
 Not a 9 or 10 because the game doesn't create a moment that transcends the booth. A 10 would be something that people outside the gym are talking about. This is something that people at the booth are talking about.
 
-## Ease of Construction: 5/10
+## Ease of Construction: 6/10
 
-The cabinet is straightforward — plywood box with an acrylic front, shelves inside. A competent woodworker builds this in a weekend. But the blower port system is a genuine engineering challenge.
+The cabinet is straightforward — plywood box with a polycarbonate front, shelves inside. A competent woodworker builds this in a weekend. The blower ports are dead simple: cut a 4" hole, stick brush strip weatherseal around the edge, done. No 3D-printed precision parts, no custom engineering.
 
 **The hard parts:**
-- The ball-and-socket funnel mount is the complexity bottleneck. It needs to be smooth enough to aim, stiff enough not to rattle from blower vibration, sealed enough that balls can't escape, and durable enough for 200+ rounds. This is a 3D-printed precision assembly that will require 2-3 design iterations to get right. Most dad-workshop 3D printers can do it, but dialing in the tolerances takes time.
-- Cutting 3" holes in polycarbonate without cracking it requires specific drill bits (stepped unibit or hole saw at low RPM with tape). One wrong move cracks the $90 panel.
-- The trapdoor reset system (9 hinged shelf bottoms linked by cable to a single pull handle) is mechanically complex. Routing cable through the back of a 6-foot-tall cabinet with 9 branch points that all need to open simultaneously is plumber-level work. If one cable sticks, the reset jams. The simpler alternative (3 separate pull handles) triples volunteer effort per reset.
-- The TPU flexible seal boots require a dual-material 3D printer or separate TPU prints that interface with PLA parts. Most home printers can do TPU, but it's finicky.
+- Cutting 4" holes in polycarbonate without cracking it requires a hole saw at low RPM with masking tape. It's not difficult if you go slow, but one rushed cut cracks the $90 panel. Practice on scrap first.
+- The trapdoor reset system (9 hinged shelf bottoms linked by cable to a single pull handle) is the most mechanically complex part of the build. Routing cable through the back of a 6-foot-tall cabinet with 9 branch points that all need to open simultaneously requires patience. If one cable sticks, the reset jams. The simpler alternative (3 separate pull handles) triples volunteer effort per reset but is much easier to build.
+- The cabinet is 6 feet tall. Working inside a tall narrow box to mount shelves and route cables is physically awkward. Having a second person hold things in place helps a lot.
 
-**Compared to the field:** The OG Air Plinko has the blower/hose/nozzle system, which is also non-trivial, but it uses commodity parts (flex hose, PVC). AIRFALL's funnel-socket system is custom-engineered. Cascade Chaos needs steel sheet work but no precision 3D prints. AIRFALL's build complexity is above average for the repo.
+**Compared to the field:** The OG Air Plinko has the blower/hose/nozzle system with Y-splitters and gate valves. Cascade Chaos needs steel sheet work and 3D-printed magnetic deflectors. AIRFALL's build is simpler than both — it's a box with shelves and two holes. The only non-trivial part is the cable-operated trapdoor system, and that can be simplified to manual pull-tabs if needed.
 
-**Two dads, two weekends reality:** They'll get the cabinet done Weekend 1. Weekend 2 will be mostly spent on the blower port system, swearing at 3D print tolerances, and debugging the trapdoor cable routing. It's achievable but tight.
+**Two dads, two weekends reality:** Cabinet and shelves done Weekend 1. Trapdoor system, polycarbonate front, and final assembly Weekend 2. The blower ports take 20 minutes including the brush seal. Achievable and not stressful.
 
 ## Appeal by Elementary School Grade
 
@@ -75,7 +74,7 @@ The noise is chaotic (two leaf blowers = loud), but the visual chaos is moderate
 
 **What might fail:** Ping pong balls will crack. At 2.7g hitting acrylic and wood shelves at blower speeds, expect 5-10 balls to crack per hour of play. With 20 spares and 3-second swaps, this is manageable but requires the volunteer to periodically check for cracked balls and swap them. A cracked ball with a ragged edge could jam in the funnel port mesh — if this happens, the game stops until the volunteer clears it.
 
-The ball-and-socket blower mount will wear. After 200+ insertions and removals of blower nozzles, the socket surface will develop slop. If 3D-printed in PLA, it may crack at stress points after ~500 cycles. PETG would last longer. The TPU boot will stretch over time. Bring a spare set of funnel assemblies.
+The brush seal weatherstrip around the blower ports will flatten over a day of play. Bristles compress from repeated nozzle pivoting. Bring a spare strip ($4) and plan to replace mid-carnival if aim starts feeling sloppy. This is a 2-minute fix — peel off old strip, stick on new one.
 
 Battery management is a real operational concern. Two M18 5.0Ah batteries last ~20 minutes of continuous use. At 60 seconds on, 30 seconds off, that's ~13 rounds per battery pair. Over a 4-hour carnival, you need ~18 battery swaps. With 4 batteries and a charger, you need charge times shorter than depletion times. M18 rapid charger does 5.0Ah in 45 minutes. Math works out, but the volunteer needs to remember battery rotation. A dead battery mid-round = dead game until swap.
 
@@ -109,7 +108,7 @@ This is faster to explain than any other concept in the repo. Cornhole-level sim
 |-----------|-------|-----------------|
 | Entertainment | 8/10 | Sustained engagement, no dead phases, but no peak moment |
 | Memorability | 7/10 | "Leaf blower game" sticks, but visually modest from a distance |
-| Ease of construction | 5/10 | Cabinet is easy; blower port system is a precision engineering project |
+| Ease of construction | 6/10 | Cabinet + shelves + two holes; trapdoor cables are the only tricky part |
 | K–1st appeal | 4/10 | Blower is too heavy for youngest; functionally unplayable solo |
 | 2nd–3rd appeal | 8/10 | Perfect weight, perfect excitement, perfect skill development |
 | 4th–5th appeal | 7/10 | Skill ceiling is real but strategic depth is thin |
@@ -119,7 +118,7 @@ This is faster to explain than any other concept in the repo. Cornhole-level sim
 | Photogenicity | 4/10 | Small white balls behind reflective panel; worse than a basic plinko board |
 | Onboarding | 9/10 | One sentence. Instant understanding. Fastest in the repo |
 
-**Overall weighted: 6.5/10**
+**Overall weighted: 6.6/10**
 
 ## Verdict
 
@@ -131,8 +130,8 @@ AIRFALL is a skill game with a strong gimmick. The core mechanic — aim a leaf 
 
 **The K-1st exclusion is meaningful.** If 20% of your carnival audience can't physically hold the blower without volunteer help, you're creating a bottleneck and an inequity. A game that's "for 2nd graders and up" is a game that makes some kindergartners feel left out.
 
-**Build this if:** You already own M18 blowers, you have a 3D printer and aren't afraid of iterating on precision parts, you want the highest skill-to-luck ratio in the repo, and you can accept that the spectator/photo experience is below average.
+**Build this if:** You already own M18 blowers, you want the highest skill-to-luck ratio in the repo, and you can accept that the spectator/photo experience is below average. Construction is straightforward — a box, shelves, and two holes.
 
-**Don't build this if:** You need a game that draws a crowd from across the gym, you need to serve K-1st graders equally, you don't own M18 blowers (buying them doubles the cost), or your build team isn't comfortable with 3D-printed precision assemblies.
+**Don't build this if:** You need a game that draws a crowd from across the gym, you need to serve K-1st graders equally, or you don't own M18 blowers (buying them doubles the cost).
 
 **Compared to the field:** Strongest skill game in the repo. Weakest spectator game. The Waterfuls nostalgia angle and power tool novelty carry the memorability, but the visual modesty of ping pong balls in a cabinet keeps this from being a top-tier carnival showpiece. It's a great game that makes a mediocre booth.

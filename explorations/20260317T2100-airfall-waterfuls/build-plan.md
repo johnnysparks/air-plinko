@@ -56,17 +56,15 @@ Shelves are mounted to the back panel inside the cabinet. Each shelf is a small 
 - **Mounting:** Each shelf screws into the back panel from behind. Shelf positions are left-right symmetric except the top center 100-pointer
 - **Trapdoor reset:** Each shelf has a hinged bottom panel operated by a pull-cable running down the back of the cabinet. Volunteer pulls a single handle → all trapdoors open → balls cascade to trough → release handle → trapdoors close via small return springs. One-pull reset
 
-### 3. Blower Interface System
+### 3. Blower Ports
 
-This is the critical mechanism — how players aim the blowers into the sealed cabinet.
+Dead simple. A hole in the front panel. You stick the blower nozzle through it and aim.
 
-- **Nozzle ports:** Two 3" diameter holes through the bottom edge of the front acrylic panel, positioned 8" from each side edge, at the level of the trough (about 6" above the bottom of the cabinet)
-- **Nozzle funnels:** 3D-printed cone adapters that mount into each port hole. Outer opening matches Milwaukee M18 blower nozzle diameter (~2.5"). Inner opening narrows to 2" for focused airstream. The funnel sits in a ball-and-socket mount
-- **Ball-and-socket aim:** The 3D-printed funnel sits in a spherical housing that allows ~30° of aim in all directions (up/down, left/right). This is the player's control — aiming the funnel directs the air column inside the cabinet
-- **Range of motion:** The socket mount limits vertical aim from horizontal (0°) to about 60° upward. Horizontal sweep is ~30° left and right of center. Stop bolts prevent over-rotation
-- **Seal:** A flexible rubber boot (cut from a bicycle inner tube or 3D-printed TPU) seals the gap between the funnel and the port, preventing air leaks while allowing full range of motion
-- **Blower cradle:** The blower nozzle rests in/against the funnel. No permanent attachment — the player holds the blower and presses it against the port. The funnel shape self-centers the nozzle
-- **Why not permanently mounted:** Players aim by physically moving the blower against the port. It's more intuitive and tactile than a joystick. Plus, it means the blowers can be detached for storage/charging
+- **Port holes:** Two 4" diameter holes through the front polycarbonate panel, positioned 8" from each side edge, at trough level (~6" above cabinet bottom). Cut with a hole saw at low RPM with masking tape
+- **Brush seal ring:** Adhesive-backed brush strip weatherseal (the kind used for door bottoms, ~$4/roll at Home Depot) wrapped around the inside edge of each hole. The bristles compress around the blower nozzle, allowing it to pivot freely while blocking ping pong balls from escaping. Air passes through the bristles without resistance. A 40mm ping pong ball cannot push through a ring of compressed brush bristles
+- **Ball screen backup:** A semicircle of ½" hardware cloth screwed to the inside face of the panel below each port hole. If a ball somehow gets past the brush seal, the mesh catches it. Belt and suspenders
+- **Aim range:** The 4" hole with a ~2.5" blower nozzle gives about 45° of pivot in all directions. Player aims by physically moving the blower — up, down, left, right, angled. The blower nozzle pokes 2-3" into the cabinet. This IS the control mechanism. No gimbal, no socket, no 3D-printed anything. You grab the blower and steer
+- **Why this works:** The M18 nozzle is tapered and smooth. It naturally self-centers in the hole. The brush seal provides just enough friction to keep air from leaking around the edges but zero resistance to movement. A kid can sweep the nozzle across the full range with one hand while squeezing the trigger with the other
 
 ### 4. Blower Tethers & Power
 
@@ -84,7 +82,7 @@ This is the critical mechanism — how players aim the blowers into the sealed c
 - **Total:** 40 balls in play
 - **Why ping pong balls:** At 2.7 grams, they're light enough to hover in a 450 CFM air stream. They float, drift, and cascade exactly like the rings in a Waterfuls toy. Heavier balls (whiffle, golf practice) would need more air and fly less gracefully. Ping pong balls ARE the concept
 - **Spare balls:** Keep a bag of 20 spares. Ping pong balls crack. Replace cracked ones between rounds — 3-second swap
-- **Ball containment:** The sealed cabinet with mesh top cap prevents escapes. The only openings are the blower ports, and the funnel adapters narrow enough that balls can't exit through them. A ping pong ball (40mm) won't fit through a 2" (50mm) funnel exit... actually it could. Add a mesh screen (½" hardware cloth) inside each funnel behind the narrowing, so air passes but balls can't exit
+- **Ball containment:** The sealed cabinet with mesh top cap prevents escapes. The blower ports are sealed by brush strip weatherseal that compresses around the nozzle — balls can't push through compressed bristles. Backup hardware cloth screens below each port catch anything that tries
 
 ### 6. Air Ventilation (Top)
 
@@ -136,12 +134,11 @@ This is the critical mechanism — how players aim the blowers into the sealed c
 | Rubber feet (base platform) | 4 | $6 |
 | Gate handles (side-mounted for carry) | 2 | $12 |
 
-### Blower Interface (3D-Printed)
+### Blower Ports
 | Item | Qty | Est. Cost |
 |------|-----|-----------|
-| PLA filament (2 funnel assemblies + ball-and-socket mounts) | ~400g | $10 |
-| TPU filament (flexible seal boots) | ~50g | $3 |
-| Bicycle inner tubes (alt seal material) | 2 | $0 (scrap) |
+| Adhesive brush strip weatherseal (door bottom style) | 1 roll | $4 |
+| ½" hardware cloth scraps (ball screen backup) | — | $0 (from vent roll) |
 
 ### Scoring Shelves (3D-Printed or Wood)
 | Item | Qty | Est. Cost |
@@ -171,8 +168,8 @@ This is the critical mechanism — how players aim the blowers into the sealed c
 | LED strip + microcontroller (timer, optional) | 1 | $15 |
 
 ### Estimated Total
-- **If you own M18 blowers + batteries:** $350–400
-- **If purchasing blowers + batteries:** $700–750
+- **If you own M18 blowers + batteries:** $330–380
+- **If purchasing blowers + batteries:** $690–730
 
 ---
 
@@ -198,14 +195,11 @@ This is the critical mechanism — how players aim the blowers into the sealed c
 7. Test: pull handle → all trapdoors open → balls fall to trough → release → trapdoors close
 
 ### Phase 3: Blower Ports (Weekend 2, Day 1)
-1. Cut two 3" holes in the front acrylic panel, 6" from bottom, 8" from each side edge (use hole saw on slow speed with masking tape to prevent cracking)
-2. 3D-print two funnel assemblies with ball-and-socket mounts
-3. 3D-print or cut TPU flexible seal boots
-4. Install mesh screens (½" hardware cloth circles) inside each funnel
-5. Mount funnel assemblies into acrylic holes. The socket housing bolts to the acrylic with a flange
-6. Attach seal boots around each socket joint
-7. Test range of motion: 0-60° vertical, 30° horizontal sweep each direction. Adjust stop bolts
-8. Test with blower: insert nozzle, trigger on, verify focused air stream enters cabinet
+1. Cut two 4" holes in the front polycarbonate panel, 6" from bottom, 8" from each side edge (hole saw at low RPM with masking tape to prevent cracking)
+2. Wrap adhesive brush strip weatherseal around the inside edge of each hole — bristles face inward
+3. Cut two semicircles of ½" hardware cloth, screw to inside face of panel below each port as ball screen backup
+4. Test: insert blower nozzle, sweep full range of motion, verify smooth pivot. Trim any brush bristles that snag
+5. Test with blower on: verify air stream enters cabinet cleanly, no balls can escape through port
 
 ### Phase 4: Acrylic Front & Sealing (Weekend 2, Day 1)
 1. Position acrylic front panel against side panel edges and bottom trough
@@ -240,7 +234,7 @@ This is the critical mechanism — how players aim the blowers into the sealed c
 
 ## Open Questions
 - [ ] Exact M18 blower model — compact (0824-20) may not have enough CFM for the full 72" height. The 2724-20 full-size pushes 450 CFM but is heavier for small kids. Test both if possible
-- [ ] Ball-and-socket mount friction — needs to be loose enough to aim smoothly but tight enough that the blower's vibration doesn't rattle it. May need felt washers or nylon bushings for tuning
+- [ ] Brush seal longevity — after 200+ rounds of nozzle pivoting, the bristles may flatten or the adhesive may peel. Bring a spare roll of brush strip ($4) for mid-carnival replacement if needed
 - [ ] Noise level — two M18 blowers running simultaneously in a gym will be LOUD. This is a feature for the kids and a concern for the volunteers running adjacent booths. Position the game near the gym wall or in a corner to direct noise
 - [ ] Ping pong ball cracking rate — balls hitting shelves and acrylic at speed may crack. With 20 spares and 3-second swaps this is manageable, but track the rate on carnival day
 - [ ] Optimal ball count — 40 is a starting guess. Too few = not enough visual chaos. Too many = balls jam and pile rather than floating. Test with 30, 40, and 50 during play-testing
