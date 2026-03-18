@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Tornado Alley v2 — Diagram</title>
+<!-- screenshot: 900x2100 -->
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a14;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    padding: 20px;
+    min-height: 2100px;
+  }
+  h1 {
+    text-align: center;
+    font-size: 28px;
+    color: #ff6b35;
+    margin-bottom: 4px;
+    letter-spacing: 2px;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 20px;
+  }
+  .views {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  canvas {
+    border: 1px solid #333;
+    border-radius: 4px;
+  }
+  .section-label {
+    text-align: center;
+    font-size: 13px;
+    color: #aaa;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .legend-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 16px auto;
+    max-width: 860px;
+  }
+  .legend-group {
+    background: #12121e;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 10px 14px;
+  }
+  .legend-group h3 {
+    font-size: 11px;
+    color: #ff6b35;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+    font-size: 11px;
+  }
+  .swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .specs-table {
+    margin: 16px auto;
+    max-width: 500px;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .specs-table th {
+    text-align: left;
+    padding: 4px 12px;
+    color: #ff6b35;
+    border-bottom: 1px solid #333;
+  }
+  .specs-table td {
+    padding: 4px 12px;
+    border-bottom: 1px solid #1a1a2e;
+  }
+  .gameplay-strip {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    align-items: center;
+    margin: 16px auto;
+    max-width: 860px;
+    flex-wrap: wrap;
+  }
+  .gp-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .gp-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #ff6b35;
+    color: #0a0a14;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  .gp-label {
+    font-size: 9px;
+    color: #aaa;
+    text-align: center;
+    max-width: 70px;
+  }
+  .gp-arrow {
+    color: #555;
+    font-size: 18px;
+    margin-top: -12px;
+  }
+</style>
+</head>
+<body>
+
+<h1>TORNADO ALLEY v2</h1>
+<p class="subtitle">Storm Chasers' Showdown &mdash; Two-Player Tabletop Wind Arena</p>
+
+<!-- TOP-DOWN VIEW -->
+<div class="section-label">Top-Down View &mdash; Playing Field Layout</div>
+<div class="views">
+  <canvas id="topDown" width="520" height="680"></canvas>
+  <!-- SIDE CROSS-SECTION -->
+  <div>
+    <div class="section-label" style="margin-bottom:6px;">Side Cross-Section</div>
+    <canvas id="sideView" width="340" height="680"></canvas>
+  </div>
+</div>
+
+<!-- GAMEPLAY SEQUENCE -->
+<div class="section-label">Gameplay Sequence (60-Second Round)</div>
+<div class="gameplay-strip">
+  <div class="gp-step"><div class="gp-circle">1</div><div class="gp-label">Scatter balls & debris</div></div>
+  <div class="gp-arrow">&#9654;</div>
+  <div class="gp-step"><div class="gp-circle">2</div><div class="gp-label">Fog burst (optional)</div></div>
+  <div class="gp-arrow">&#9654;</div>
+  <div class="gp-step"><div class="gp-circle">3</div><div class="gp-label">Siren sounds! BLAST!</div></div>
+  <div class="gp-arrow">&#9654;</div>
+  <div class="gp-step"><div class="gp-circle">4</div><div class="gp-label">Steer balls w/ wind</div></div>
+  <div class="gp-arrow">&#9654;</div>
+  <div class="gp-step"><div class="gp-circle">5</div><div class="gp-label">Contest dead zone</div></div>
+  <div class="gp-arrow">&#9654;</div>
+  <div class="gp-step"><div class="gp-circle">6</div><div class="gp-label">Score in shelters</div></div>
+  <div class="gp-arrow">&#9654;</div>
+  <div class="gp-step"><div class="gp-circle">7</div><div class="gp-label">Siren! Count flags!</div></div>
+</div>
+
+<!-- LEGEND -->
+<div class="legend-container">
+  <div class="legend-group">
+    <h3>Buildings</h3>
+    <div class="legend-item"><div class="swatch" style="background:#c0c0c0;"></div>Water Tower (cylinder)</div>
+    <div class="legend-item"><div class="swatch" style="background:#f5f5dc;"></div>Church + Steeple</div>
+    <div class="legend-item"><div class="swatch" style="background:#8B4513;"></div>General Store</div>
+    <div class="legend-item"><div class="swatch" style="background:#6a9f6a;"></div>Houses (x4)</div>
+    <div class="legend-item"><div class="swatch" style="background:#d2a679;"></div>Fences (x6)</div>
+    <div class="legend-item"><div class="swatch" style="background:#2d5e2d;"></div>Trees (x4)</div>
+  </div>
+  <div class="legend-group">
+    <h3>Scoring Shelters</h3>
+    <div class="legend-item"><div class="swatch" style="background:#ffd700;"></div>Town Hall (100 pts)</div>
+    <div class="legend-item"><div class="swatch" style="background:#9b59b6;"></div>Church Cellar (50 pts)</div>
+    <div class="legend-item"><div class="swatch" style="background:#3498db;"></div>School Basement x2 (25 pts)</div>
+    <div class="legend-item"><div class="swatch" style="background:#27ae60;"></div>Barn Shelter x2 (10 pts)</div>
+  </div>
+  <div class="legend-group">
+    <h3>Wind Effects</h3>
+    <div class="legend-item"><div class="swatch" style="background:#ff69b4;"></div>Ribbon Streamers</div>
+    <div class="legend-item"><div class="swatch" style="background:#e8e8e8; border:1px solid #666;"></div>Mylar Pinwheels</div>
+    <div class="legend-item"><div class="swatch" style="background:rgba(180,200,255,0.4);"></div>Fog Zone (optional)</div>
+    <div class="legend-item"><div class="swatch" style="background:#bb44ff;"></div>UV Glow Zone (optional)</div>
+  </div>
+  <div class="legend-group">
+    <h3>Players & Mechanics</h3>
+    <div class="legend-item"><div class="swatch" style="background:#e74c3c;"></div>Red Player / Balls</div>
+    <div class="legend-item"><div class="swatch" style="background:#3498db;"></div>Blue Player / Balls</div>
+    <div class="legend-item"><div class="swatch" style="background:#ff6b35;"></div>Boom Arm + Nozzle</div>
+    <div class="legend-item"><div class="swatch" style="background:rgba(255,107,53,0.2); border:1px dashed #ff6b35;"></div>Wind Blast (airflow)</div>
+  </div>
+</div>
+
+<!-- SPECS TABLE -->
+<table class="specs-table">
+  <tr><th>Spec</th><th>Value</th></tr>
+  <tr><td>Table Size</td><td>60" L x 36" W x 30" H</td></tr>
+  <tr><td>Arena Depth (walls)</td><td>8"</td></tr>
+  <tr><td>Boom Arm Height</td><td>48" above table</td></tr>
+  <tr><td>Blower Type</td><td>2x 450W inflators, damper-tuned</td></tr>
+  <tr><td>Balls</td><td>12 ping pong balls (6 red, 6 blue)</td></tr>
+  <tr><td>Round Time</td><td>60 seconds</td></tr>
+  <tr><td>Base Cost</td><td>$310-350</td></tr>
+  <tr><td>Full Spectacle Cost</td><td>$360-400</td></tr>
+  <tr><td>Setup Time</td><td>5 minutes (day-of)</td></tr>
+  <tr><td>Build Time</td><td>2 days (one-time)</td></tr>
+</table>
+
+<script>
+// ============ TOP-DOWN VIEW ============
+(function() {
+  const c = document.getElementById('topDown');
+  const ctx = c.getContext('2d');
+  const W = c.width, H = c.height;
+
+  // Background
+  ctx.fillStyle = '#0d0d1a';
+  ctx.fillRect(0, 0, W, H);
+
+  // Table area
+  const tx = 40, ty = 60, tw = 440, th = 560;
+  ctx.fillStyle = '#1a1a1a';
+  ctx.fillRect(tx, ty, tw, th);
+
+  // Road lines
+  ctx.strokeStyle = '#444';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([8, 6]);
+  // Main Street (lengthwise center)
+  ctx.beginPath();
+  ctx.moveTo(tx + tw/2, ty);
+  ctx.lineTo(tx + tw/2, ty + th);
+  ctx.stroke();
+  // Cross streets
+  for (let i = 1; i <= 3; i++) {
+    ctx.beginPath();
+    ctx.moveTo(tx, ty + th * i / 4);
+    ctx.lineTo(tx + tw, ty + th * i / 4);
+    ctx.stroke();
+  }
+  ctx.setLineDash([]);
+
+  // Edge walls
+  ctx.strokeStyle = '#666';
+  ctx.lineWidth = 4;
+  ctx.strokeRect(tx, ty, tw, th);
+
+  // --- DEAD ZONE ---
+  ctx.fillStyle = 'rgba(255, 107, 53, 0.06)';
+  ctx.fillRect(tx, ty + th * 0.38, tw, th * 0.24);
+  ctx.strokeStyle = 'rgba(255, 107, 53, 0.3)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  ctx.strokeRect(tx + 2, ty + th * 0.38, tw - 4, th * 0.24);
+  ctx.setLineDash([]);
+  ctx.fillStyle = 'rgba(255, 107, 53, 0.5)';
+  ctx.font = '10px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('CONTESTED DEAD ZONE', tx + tw/2, ty + th * 0.50 + 3);
+
+  // --- FOG ZONE (optional overlay) ---
+  const fogGrad = ctx.createRadialGradient(tx + tw/2, ty + th/2, 20, tx + tw/2, ty + th/2, tw * 0.45);
+  fogGrad.addColorStop(0, 'rgba(180, 200, 255, 0.12)');
+  fogGrad.addColorStop(1, 'rgba(180, 200, 255, 0)');
+  ctx.fillStyle = fogGrad;
+  ctx.fillRect(tx, ty, tw, th);
+
+  // Helper: draw building with label
+  function drawBuilding(x, y, w, h, color, label) {
+    ctx.fillStyle = color;
+    ctx.fillRect(x - w/2, y - h/2, w, h);
+    ctx.strokeStyle = '#555';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x - w/2, y - h/2, w, h);
+    if (label) {
+      ctx.fillStyle = '#ccc';
+      ctx.font = '8px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, x, y + h/2 + 10);
+    }
+  }
+
+  // Helper: draw cylinder (circle top-down)
+  function drawCylinder(x, y, r, color, label) {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#555';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    if (label) {
+      ctx.fillStyle = '#ccc';
+      ctx.font = '8px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, x, y + r + 10);
+    }
+  }
+
+  // Helper: draw ribbon streamers on a building
+  function drawStreamers(x, y, windAngle, count) {
+    for (let i = 0; i < count; i++) {
+      const sx = x + (i - (count-1)/2) * 6;
+      ctx.strokeStyle = 'rgba(255, 105, 180, 0.7)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(sx, y);
+      const endX = sx + Math.cos(windAngle) * 14;
+      const endY = y + Math.sin(windAngle) * 14;
+      // Wavy streamer
+      const midX = (sx + endX) / 2 + Math.sin(windAngle) * 4;
+      const midY = (y + endY) / 2 + Math.cos(windAngle) * 4;
+      ctx.quadraticCurveTo(midX, midY, endX, endY);
+      ctx.stroke();
+    }
+  }
+
+  // Helper: draw pinwheel
+  function drawPinwheel(x, y) {
+    ctx.save();
+    ctx.translate(x, y);
+    for (let i = 0; i < 4; i++) {
+      ctx.rotate(Math.PI / 2);
+      ctx.fillStyle = i % 2 === 0 ? '#e8e8e8' : '#aaa';
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(4, -2);
+      ctx.lineTo(0, -7);
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  // Helper: draw shelter
+  function drawShelter(x, y, w, color, pts) {
+    ctx.fillStyle = color;
+    ctx.fillRect(x - w/2, y - 6, w, 12);
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x - w/2, y - 6, w, 12);
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 9px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(pts + 'pts', x, y + 3);
+  }
+
+  const cx = tx + tw/2;
+  const cy = ty + th/2;
+
+  // ---- PLACE BUILDINGS ----
+  // Water Tower (center-ish, slightly offset)
+  drawCylinder(cx + 15, cy - 30, 14, '#c0c0c0', 'Water Tower');
+  drawStreamers(cx + 15, cy - 44, -0.3, 2);
+
+  // General Store (upper-left quadrant)
+  drawBuilding(cx - 70, cy - 80, 42, 24, '#8B4513', 'General Store');
+  drawStreamers(cx - 70, cy - 92, 0.5, 3);
+
+  // Church (mid-field offset left)
+  drawBuilding(cx - 80, cy + 20, 24, 24, '#f5f5dc', 'Church');
+  drawStreamers(cx - 80, cy + 8, -0.8, 2);
+
+  // Houses x4
+  drawBuilding(cx + 80, cy - 100, 18, 18, '#6a9f6a', '');
+  drawStreamers(cx + 80, cy - 109, 0.6, 2);
+  drawBuilding(cx + 55, cy + 80, 18, 18, '#6a9f6a', '');
+  drawStreamers(cx + 55, cy + 71, -0.4, 2);
+  drawBuilding(cx - 50, cy + 120, 18, 18, '#7aaf7a', '');
+  drawStreamers(cx - 50, cy + 111, -0.6, 2);
+  drawBuilding(cx + 100, cy + 30, 18, 18, '#5a8f5a', '');
+  drawStreamers(cx + 100, cy + 21, 0.2, 2);
+  ctx.fillStyle = '#888';
+  ctx.font = '7px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Houses', cx + 80, cy - 82);
+
+  // Trees x4 (circles)
+  drawCylinder(cx - 120, cy - 30, 7, '#2d5e2d', '');
+  drawCylinder(cx + 130, cy - 60, 7, '#2d5e2d', '');
+  drawCylinder(cx - 100, cy + 100, 7, '#356e35', '');
+  drawCylinder(cx + 110, cy + 110, 7, '#2d5e2d', '');
+
+  // Fences x6 (short lines)
+  function drawFence(x1, y1, x2, y2) {
+    ctx.strokeStyle = '#d2a679';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+  drawFence(cx - 40, cy - 140, cx + 30, cy - 140);
+  drawFence(cx - 130, cy - 50, cx - 130, cy + 10);
+  drawFence(cx + 140, cy - 20, cx + 140, cy + 40);
+  drawFence(cx - 30, cy + 70, cx + 30, cy + 70);
+  drawFence(cx - 100, cy + 150, cx - 50, cy + 150);
+  drawFence(cx + 60, cy + 150, cx + 120, cy + 150);
+
+  // Pinwheels on fence endpoints
+  drawPinwheel(cx - 40, cy - 140);
+  drawPinwheel(cx + 30, cy - 140);
+  drawPinwheel(cx - 130, cy - 50);
+  drawPinwheel(cx - 130, cy + 10);
+  drawPinwheel(cx + 140, cy - 20);
+  drawPinwheel(cx + 140, cy + 40);
+  drawPinwheel(cx - 30, cy + 70);
+  drawPinwheel(cx + 30, cy + 70);
+  drawPinwheel(cx - 100, cy + 150);
+  drawPinwheel(cx + 120, cy + 150);
+
+  // ---- SHELTERS ----
+  drawShelter(cx, cy, 22, '#ffd700', 100);  // Town Hall center
+  ctx.fillStyle = '#ccc';
+  ctx.font = '8px sans-serif';
+  ctx.fillText('Town Hall', cx, cy + 16);
+
+  drawShelter(cx - 80, cy + 45, 26, '#9b59b6', 50);  // Church Cellar
+  ctx.fillStyle = '#ccc';
+  ctx.fillText('Cellar', cx - 80, cy + 61);
+
+  drawShelter(cx - 100, cy - 120, 30, '#3498db', 25);  // School A
+  drawShelter(cx + 100, cy + 120, 30, '#3498db', 25);  // School B
+
+  drawShelter(cx - 60, ty + 50, 34, '#27ae60', 10);  // Barn (red end)
+  drawShelter(cx + 60, ty + th - 50, 34, '#27ae60', 10);  // Barn (blue end)
+
+  // ---- BALLS ----
+  function drawBall(x, y, color) {
+    const grad = ctx.createRadialGradient(x - 2, y - 2, 1, x, y, 6);
+    grad.addColorStop(0, color === 'red' ? '#ff6666' : '#66aaff');
+    grad.addColorStop(1, color === 'red' ? '#cc2222' : '#2266cc');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(x, y, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 0.5;
+    ctx.stroke();
+  }
+
+  // Scatter balls
+  drawBall(cx - 30, cy - 60, 'red');
+  drawBall(cx + 50, cy - 30, 'red');
+  drawBall(cx - 90, cy + 50, 'red');
+  drawBall(cx + 20, cy - 150, 'red');
+  drawBall(cx - 110, cy + 130, 'red');
+  drawBall(cx + 90, cy - 80, 'red');
+
+  drawBall(cx + 40, cy + 60, 'blue');
+  drawBall(cx - 60, cy + 100, 'blue');
+  drawBall(cx + 80, cy + 150, 'blue');
+  drawBall(cx - 20, cy + 180, 'blue');
+  drawBall(cx + 120, cy + 80, 'blue');
+  drawBall(cx - 130, cy + 160, 'blue');
+
+  // ---- WIND BLASTS ----
+  // Red player wind (from top)
+  ctx.save();
+  const redWindGrad = ctx.createLinearGradient(cx - 40, ty + 20, cx - 40, ty + 180);
+  redWindGrad.addColorStop(0, 'rgba(255, 107, 53, 0.35)');
+  redWindGrad.addColorStop(1, 'rgba(255, 107, 53, 0)');
+  ctx.fillStyle = redWindGrad;
+  ctx.beginPath();
+  ctx.moveTo(cx - 20, ty + 15);
+  ctx.lineTo(cx - 80, ty + 180);
+  ctx.lineTo(cx + 20, ty + 180);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+
+  // Blue player wind (from bottom)
+  ctx.save();
+  const blueWindGrad = ctx.createLinearGradient(cx + 30, ty + th - 20, cx + 30, ty + th - 180);
+  blueWindGrad.addColorStop(0, 'rgba(52, 152, 219, 0.35)');
+  blueWindGrad.addColorStop(1, 'rgba(52, 152, 219, 0)');
+  ctx.fillStyle = blueWindGrad;
+  ctx.beginPath();
+  ctx.moveTo(cx + 30, ty + th - 15);
+  ctx.lineTo(cx - 30, ty + th - 180);
+  ctx.lineTo(cx + 90, ty + th - 180);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+
+  // ---- BOOM ARMS ----
+  // Red boom arm (top)
+  ctx.strokeStyle = '#ff6b35';
+  ctx.lineWidth = 3;
+  ctx.setLineDash([6, 3]);
+  ctx.beginPath();
+  ctx.moveTo(cx, ty - 10);
+  ctx.lineTo(cx - 20, ty + 80);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  // Nozzle
+  ctx.fillStyle = '#ff6b35';
+  ctx.beginPath();
+  ctx.arc(cx - 20, ty + 80, 6, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.font = '7px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('NOZZLE', cx - 20, ty + 70);
+
+  // Blue boom arm (bottom)
+  ctx.strokeStyle = '#3498db';
+  ctx.lineWidth = 3;
+  ctx.setLineDash([6, 3]);
+  ctx.beginPath();
+  ctx.moveTo(cx, ty + th + 10);
+  ctx.lineTo(cx + 30, ty + th - 80);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#3498db';
+  ctx.beginPath();
+  ctx.arc(cx + 30, ty + th - 80, 6, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.font = '7px sans-serif';
+  ctx.fillText('NOZZLE', cx + 30, ty + th - 68);
+
+  // ---- BOOM ARM POSTS ----
+  ctx.fillStyle = '#ff6b35';
+  ctx.fillRect(cx - 4, ty - 18, 8, 12);
+  ctx.fillStyle = '#fff';
+  ctx.font = '7px sans-serif';
+  ctx.fillText('BOOM POST', cx, ty - 22);
+
+  ctx.fillStyle = '#3498db';
+  ctx.fillRect(cx - 4, ty + th + 6, 8, 12);
+  ctx.fillStyle = '#fff';
+  ctx.fillText('BOOM POST', cx, ty + th + 26);
+
+  // ---- PLAYER LABELS ----
+  ctx.fillStyle = '#e74c3c';
+  ctx.font = 'bold 12px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('RED PLAYER', cx, ty - 35);
+
+  ctx.fillStyle = '#3498db';
+  ctx.fillText('BLUE PLAYER', cx, ty + th + 42);
+
+  // ---- DIMENSION LINES ----
+  ctx.strokeStyle = '#555';
+  ctx.lineWidth = 1;
+  ctx.fillStyle = '#888';
+  ctx.font = '9px sans-serif';
+
+  // Width dimension
+  ctx.beginPath();
+  ctx.moveTo(tx, ty - 5);
+  ctx.lineTo(tx + tw, ty - 5);
+  ctx.stroke();
+  ctx.textAlign = 'center';
+  ctx.fillText('36"', tx + tw/2, ty - 10);
+
+  // Height dimension
+  ctx.beginPath();
+  ctx.moveTo(tx - 5, ty);
+  ctx.lineTo(tx - 5, ty + th);
+  ctx.stroke();
+  ctx.save();
+  ctx.translate(tx - 14, ty + th/2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText('60"', 0, 0);
+  ctx.restore();
+
+  // ---- DEBRIS PARTICLES ----
+  ctx.globalAlpha = 0.5;
+  const debrisColors = ['#ff69b4', '#ffd700', '#90ee90', '#ffa07a', '#dda0dd'];
+  for (let i = 0; i < 25; i++) {
+    const dx = tx + 20 + Math.random() * (tw - 40);
+    const dy = ty + 20 + Math.random() * (th - 40);
+    ctx.fillStyle = debrisColors[i % debrisColors.length];
+    ctx.save();
+    ctx.translate(dx, dy);
+    ctx.rotate(Math.random() * Math.PI);
+    ctx.fillRect(-2, -1, 4, 2);
+    ctx.restore();
+  }
+  ctx.globalAlpha = 1;
+
+  // Title
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 11px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('TOP-DOWN VIEW', W/2, 18);
+
+})();
+
+// ============ SIDE CROSS-SECTION ============
+(function() {
+  const c = document.getElementById('sideView');
+  const ctx = c.getContext('2d');
+  const W = c.width, H = c.height;
+
+  ctx.fillStyle = '#0d0d1a';
+  ctx.fillRect(0, 0, W, H);
+
+  // Ground line
+  const groundY = H - 80;
+  ctx.strokeStyle = '#444';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(0, groundY);
+  ctx.lineTo(W, groundY);
+  ctx.stroke();
+
+  // ---- TABLE ----
+  const tableLeft = 40, tableRight = 300;
+  const tableTop = groundY - 200;
+  const tableW = tableRight - tableLeft;
+  const legH = 200;
+
+  // Legs
+  ctx.fillStyle = '#5a3a1a';
+  ctx.fillRect(tableLeft + 10, tableTop, 8, legH);
+  ctx.fillRect(tableRight - 18, tableTop, 8, legH);
+
+  // Tabletop
+  ctx.fillStyle = '#2a2a2a';
+  ctx.fillRect(tableLeft, tableTop - 8, tableW, 8);
+
+  // Edge walls
+  ctx.fillStyle = '#3a3a3a';
+  ctx.fillRect(tableLeft, tableTop - 60, 6, 60);
+  ctx.fillRect(tableRight - 6, tableTop - 60, 6, 60);
+
+  // Collection tray under shelter
+  ctx.fillStyle = '#333';
+  ctx.fillRect(tableLeft + 100, tableTop, 40, 20);
+  ctx.fillStyle = '#888';
+  ctx.font = '7px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('collection tray', tableLeft + 120, tableTop + 30);
+
+  // Shelter opening in tabletop
+  ctx.fillStyle = '#ffd700';
+  ctx.fillRect(tableLeft + 108, tableTop - 10, 24, 10);
+  ctx.fillStyle = '#0d0d1a';
+  ctx.fillRect(tableLeft + 112, tableTop - 8, 16, 6);
+
+  // One-way flap
+  ctx.strokeStyle = '#ff6b35';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(tableLeft + 112, tableTop - 8);
+  ctx.lineTo(tableLeft + 118, tableTop - 2);
+  ctx.stroke();
+  ctx.fillStyle = '#ff6b35';
+  ctx.font = '7px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('flap', tableLeft + 70, tableTop - 2);
+  ctx.strokeStyle = '#ff6b35';
+  ctx.setLineDash([2, 2]);
+  ctx.beginPath();
+  ctx.moveTo(tableLeft + 90, tableTop - 2);
+  ctx.lineTo(tableLeft + 112, tableTop - 2);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Flag indicator
+  ctx.strokeStyle = '#ffd700';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(tableLeft + 135, tableTop - 8);
+  ctx.lineTo(tableLeft + 135, tableTop - 30);
+  ctx.stroke();
+  ctx.fillStyle = '#ffd700';
+  ctx.beginPath();
+  ctx.moveTo(tableLeft + 135, tableTop - 30);
+  ctx.lineTo(tableLeft + 145, tableTop - 26);
+  ctx.lineTo(tableLeft + 135, tableTop - 22);
+  ctx.fill();
+  ctx.fillStyle = '#ffd700';
+  ctx.font = '7px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('score flag', tableLeft + 148, tableTop - 24);
+
+  // ---- BUILDINGS ON TABLE ----
+  // Water tower
+  ctx.fillStyle = '#c0c0c0';
+  ctx.fillRect(tableLeft + 140, tableTop - 48, 20, 36);
+  // Tower legs
+  ctx.fillRect(tableLeft + 142, tableTop - 12, 4, 4);
+  ctx.fillRect(tableLeft + 154, tableTop - 12, 4, 4);
+  ctx.fillStyle = '#888';
+  ctx.font = '7px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Water', tableLeft + 150, tableTop - 52);
+  ctx.fillText('Tower', tableLeft + 150, tableTop - 44);
+
+  // House
+  ctx.fillStyle = '#6a9f6a';
+  ctx.fillRect(tableLeft + 60, tableTop - 24, 18, 16);
+  // Roof
+  ctx.fillStyle = '#4a7a4a';
+  ctx.beginPath();
+  ctx.moveTo(tableLeft + 58, tableTop - 24);
+  ctx.lineTo(tableLeft + 69, tableTop - 34);
+  ctx.lineTo(tableLeft + 80, tableTop - 24);
+  ctx.fill();
+
+  // Church with steeple
+  ctx.fillStyle = '#f5f5dc';
+  ctx.fillRect(tableLeft + 190, tableTop - 28, 22, 20);
+  // Steeple
+  ctx.fillStyle = '#ddd';
+  ctx.beginPath();
+  ctx.moveTo(tableLeft + 197, tableTop - 28);
+  ctx.lineTo(tableLeft + 201, tableTop - 46);
+  ctx.lineTo(tableLeft + 205, tableTop - 28);
+  ctx.fill();
+
+  // ---- RIBBON STREAMERS ----
+  function drawStreamer(x, y, angle, len) {
+    ctx.strokeStyle = 'rgba(255, 105, 180, 0.8)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    const endX = x + Math.cos(angle) * len;
+    const endY = y + Math.sin(angle) * len;
+    const midX = (x + endX) / 2 + Math.sin(angle) * 3;
+    const midY = (y + endY) / 2 - Math.cos(angle) * 3;
+    ctx.quadraticCurveTo(midX, midY, endX, endY);
+    ctx.stroke();
+  }
+  drawStreamer(tableLeft + 150, tableTop - 48, -0.4, 16);
+  drawStreamer(tableLeft + 155, tableTop - 48, -0.2, 14);
+  drawStreamer(tableLeft + 69, tableTop - 34, -0.6, 12);
+  drawStreamer(tableLeft + 201, tableTop - 46, 0.3, 14);
+
+  // ---- PINWHEEL ON FENCE ----
+  ctx.fillStyle = '#d2a679';
+  ctx.fillRect(tableLeft + 240, tableTop - 14, 3, 6);
+  // Pinwheel
+  ctx.save();
+  ctx.translate(tableLeft + 241.5, tableTop - 16);
+  for (let i = 0; i < 4; i++) {
+    ctx.rotate(Math.PI / 2);
+    ctx.fillStyle = i % 2 === 0 ? '#e8e8e8' : '#aaa';
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(3, -1.5);
+    ctx.lineTo(0, -5);
+    ctx.closePath();
+    ctx.fill();
+  }
+  ctx.restore();
+
+  // ---- PING PONG BALL on table ----
+  const ballGrad = ctx.createRadialGradient(tableLeft + 88, tableTop - 13, 1, tableLeft + 90, tableTop - 11, 5);
+  ballGrad.addColorStop(0, '#ff6666');
+  ballGrad.addColorStop(1, '#cc2222');
+  ctx.fillStyle = ballGrad;
+  ctx.beginPath();
+  ctx.arc(tableLeft + 90, tableTop - 11, 5, 0, Math.PI * 2);
+  ctx.fill();
+
+  const ballGrad2 = ctx.createRadialGradient(tableLeft + 218, tableTop - 13, 1, tableLeft + 220, tableTop - 11, 5);
+  ballGrad2.addColorStop(0, '#66aaff');
+  ballGrad2.addColorStop(1, '#2266cc');
+  ctx.fillStyle = ballGrad2;
+  ctx.beginPath();
+  ctx.arc(tableLeft + 220, tableTop - 11, 5, 0, Math.PI * 2);
+  ctx.fill();
+
+  // ---- BOOM ARM + POST ----
+  // Post (left side in side view = one player's end)
+  const postX = tableLeft + 20;
+  const postBottom = tableTop - 60;
+  const postTop = postBottom - 180;
+
+  ctx.fillStyle = '#ff6b35';
+  ctx.fillRect(postX - 3, postTop, 6, 180);
+
+  // Arm extending from post top toward center
+  ctx.strokeStyle = '#ff6b35';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(postX, postTop + 10);
+  ctx.lineTo(postX + 130, postTop + 40);
+  ctx.stroke();
+
+  // Counterweight on back
+  ctx.fillStyle = '#666';
+  ctx.fillRect(postX - 14, postTop + 4, 12, 10);
+  ctx.fillStyle = '#888';
+  ctx.font = '6px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('weight', postX - 8, postTop + 20);
+
+  // Nozzle at end
+  ctx.fillStyle = '#ff6b35';
+  ctx.beginPath();
+  ctx.moveTo(postX + 130, postTop + 36);
+  ctx.lineTo(postX + 124, postTop + 46);
+  ctx.lineTo(postX + 136, postTop + 46);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.font = '7px sans-serif';
+  ctx.fillText('NOZZLE', postX + 130, postTop + 30);
+
+  // Hose from blower up to arm (dashed)
+  ctx.strokeStyle = 'rgba(255, 107, 53, 0.4)';
+  ctx.lineWidth = 4;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  ctx.moveTo(postX - 20, groundY - 20);
+  ctx.quadraticCurveTo(postX - 10, postBottom, postX, postTop + 10);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // ---- WIND BLAST from nozzle ----
+  const windGrad = ctx.createLinearGradient(postX + 130, postTop + 46, postX + 130, tableTop - 10);
+  windGrad.addColorStop(0, 'rgba(255, 107, 53, 0.3)');
+  windGrad.addColorStop(1, 'rgba(255, 107, 53, 0)');
+  ctx.fillStyle = windGrad;
+  ctx.beginPath();
+  ctx.moveTo(postX + 124, postTop + 46);
+  ctx.lineTo(postX + 100, tableTop - 10);
+  ctx.lineTo(postX + 160, tableTop - 10);
+  ctx.lineTo(postX + 136, postTop + 46);
+  ctx.closePath();
+  ctx.fill();
+
+  // Wind arrows
+  ctx.strokeStyle = 'rgba(255, 107, 53, 0.5)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i < 3; i++) {
+    const ay = postTop + 60 + i * 30;
+    const ax = postX + 115 + i * 5;
+    ctx.beginPath();
+    ctx.moveTo(ax, ay);
+    ctx.lineTo(ax, ay + 12);
+    ctx.moveTo(ax - 3, ay + 8);
+    ctx.lineTo(ax, ay + 12);
+    ctx.lineTo(ax + 3, ay + 8);
+    ctx.stroke();
+  }
+
+  // ---- FOG LAYER ----
+  const fogGrad = ctx.createLinearGradient(0, tableTop - 20, 0, tableTop - 8);
+  fogGrad.addColorStop(0, 'rgba(180, 200, 255, 0)');
+  fogGrad.addColorStop(0.5, 'rgba(180, 200, 255, 0.15)');
+  fogGrad.addColorStop(1, 'rgba(180, 200, 255, 0.08)');
+  ctx.fillStyle = fogGrad;
+  ctx.fillRect(tableLeft, tableTop - 20, tableW, 14);
+  ctx.fillStyle = 'rgba(180, 200, 255, 0.4)';
+  ctx.font = '7px sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText('fog layer', tableLeft - 4, tableTop - 10);
+
+  // ---- BLOWER ON GROUND ----
+  ctx.fillStyle = '#444';
+  // Blower body
+  ctx.fillRect(postX - 30, groundY - 30, 30, 25);
+  ctx.fillStyle = '#ff6b35';
+  ctx.fillRect(postX - 28, groundY - 28, 26, 21);
+  ctx.fillStyle = '#fff';
+  ctx.font = '7px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('450W', postX - 15, groundY - 14);
+  ctx.fillText('BLOWER', postX - 15, groundY - 6);
+
+  // ---- STICK FIGURE PLAYER ----
+  const playerX = postX - 45;
+  const playerFeetY = groundY;
+  const playerH = 110;
+
+  ctx.strokeStyle = '#e74c3c';
+  ctx.lineWidth = 2;
+  // Body
+  ctx.beginPath();
+  ctx.moveTo(playerX, playerFeetY - playerH * 0.6);
+  ctx.lineTo(playerX, playerFeetY - playerH * 0.25);
+  ctx.stroke();
+  // Head
+  ctx.beginPath();
+  ctx.arc(playerX, playerFeetY - playerH * 0.68, 7, 0, Math.PI * 2);
+  ctx.stroke();
+  // Legs
+  ctx.beginPath();
+  ctx.moveTo(playerX, playerFeetY - playerH * 0.25);
+  ctx.lineTo(playerX - 8, playerFeetY);
+  ctx.moveTo(playerX, playerFeetY - playerH * 0.25);
+  ctx.lineTo(playerX + 8, playerFeetY);
+  ctx.stroke();
+  // Arms reaching to nozzle
+  ctx.beginPath();
+  ctx.moveTo(playerX, playerFeetY - playerH * 0.5);
+  ctx.lineTo(playerX + 40, playerFeetY - playerH * 0.65);
+  ctx.stroke();
+
+  ctx.fillStyle = '#e74c3c';
+  ctx.font = '9px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('RED', playerX, playerFeetY - playerH * 0.78);
+  ctx.fillText('PLAYER', playerX, playerFeetY - playerH * 0.68 - 14);
+
+  // ---- DIMENSION LABELS ----
+  ctx.fillStyle = '#888';
+  ctx.font = '9px sans-serif';
+  ctx.strokeStyle = '#555';
+  ctx.lineWidth = 1;
+
+  // Table height
+  ctx.textAlign = 'right';
+  ctx.beginPath();
+  ctx.moveTo(tableRight + 15, groundY);
+  ctx.lineTo(tableRight + 15, tableTop);
+  ctx.stroke();
+  ctx.fillText('30"', tableRight + 35, (groundY + tableTop) / 2 + 3);
+
+  // Wall height
+  ctx.beginPath();
+  ctx.moveTo(tableRight + 25, tableTop);
+  ctx.lineTo(tableRight + 25, tableTop - 60);
+  ctx.stroke();
+  ctx.fillText('8"', tableRight + 45, tableTop - 30);
+
+  // Boom height
+  ctx.beginPath();
+  ctx.moveTo(postX + 20, tableTop - 60);
+  ctx.lineTo(postX + 20, postTop);
+  ctx.stroke();
+  ctx.textAlign = 'left';
+  ctx.fillText('48"', postX + 24, (tableTop - 60 + postTop) / 2);
+  ctx.fillText('boom', postX + 24, (tableTop - 60 + postTop) / 2 + 10);
+
+  // ---- UV GLOW STRIP ----
+  ctx.fillStyle = '#bb44ff';
+  ctx.shadowColor = '#bb44ff';
+  ctx.shadowBlur = 6;
+  ctx.fillRect(postX - 2, postTop + 60, 4, 30);
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = '#bb44ff';
+  ctx.font = '6px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('UV strip', postX + 6, postTop + 78);
+  ctx.fillText('(optional)', postX + 6, postTop + 86);
+
+  // ---- DAMPER VALVE callout ----
+  ctx.fillStyle = '#ff6b35';
+  ctx.beginPath();
+  ctx.arc(postX - 10, groundY - 55, 4, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.font = '6px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('damper', postX - 2, groundY - 60);
+  ctx.fillText('valve', postX - 2, groundY - 53);
+
+  // Title
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 11px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('SIDE CROSS-SECTION', W/2, 18);
+
+  // Zone sidebar
+  const zones = [
+    { label: 'BOOM ARM', color: '#ff6b35', y1: postTop - 5, y2: postTop + 50 },
+    { label: 'WIND ZONE', color: 'rgba(255,107,53,0.3)', y1: postTop + 50, y2: tableTop - 60 },
+    { label: 'ARENA', color: '#27ae60', y1: tableTop - 60, y2: tableTop },
+    { label: 'TABLE', color: '#5a3a1a', y1: tableTop, y2: groundY }
+  ];
+  zones.forEach(z => {
+    ctx.fillStyle = z.color;
+    ctx.globalAlpha = 0.3;
+    ctx.fillRect(W - 18, z.y1, 14, z.y2 - z.y1);
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = '#aaa';
+    ctx.font = '6px sans-serif';
+    ctx.save();
+    ctx.translate(W - 11, (z.y1 + z.y2) / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center';
+    ctx.fillText(z.label, 0, 0);
+    ctx.restore();
+  });
+
+})();
+</script>
+
+</body>
+</html>
